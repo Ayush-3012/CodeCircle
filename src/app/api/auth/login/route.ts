@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 import prisma from "@/lib/prism";
-import jwt from "jsonwebtoken";
+import { createToken } from "@/utils/token-manager";
+import { cookies } from "next/headers";
 
 export async function POST(req: Request) {
   try {
@@ -23,16 +24,15 @@ export async function POST(req: Request) {
         { status: 401 }
       );
 
-    const token = jwt.sign(
-      { userId: foundUser.id, email: foundUser.email },
-      process.env.JWT_SECRET!,
-      { expiresIn: "7d" }
-    );
+    const token = createToken(foundUser.id.toString());
+    (await cookies()).set(process.env.COOKIE_NAME!, token, {
+      httpOnly: true,
+      path: "/",
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 7 * 24 * 60 * 60,
+    });
 
-    return NextResponse.json(
-      { message: "Login successful", token, foundUser },
-      { status: 200 }
-    );
+    return NextResponse.json({ message: "User Logged In" }, { status: 200 });
   } catch (error) {
     console.log("LOGIN ERROR:", error);
     return NextResponse.json(
