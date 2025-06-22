@@ -1,7 +1,11 @@
 import axios from "@/lib/axios";
 
-export const createPost = async (content: string) => {
-  const res = await axios.post(`/post/create`, { content });
+export const createPost = async (formData: FormData) => {
+  const res = await axios.post(`/post/create`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
   return res.data;
 };
 
@@ -12,5 +16,10 @@ export const getAllPosts = async () => {
 
 export const getSinglePost = async (id: string) => {
   const res = await axios.get(`/post/${id}`);
+  return res.data;
+};
+
+export const deletePost = async (postId: string) => {
+  const res = await axios.delete(`/post/${postId}`);
   return res.data;
 };

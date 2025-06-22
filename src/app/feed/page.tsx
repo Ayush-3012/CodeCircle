@@ -1,10 +1,12 @@
 import PostCard from "@/components/PostCard";
 import PostForm from "@/components/PostForm";
 import { getAllPosts } from "@/services/postService";
+import { getCurrentUser } from "@/utils/getCurrentUser";
 
 export default async function FeedPage() {
   const res = await getAllPosts();
   const posts = (await res?.allPosts) || [];
+  const user = await getCurrentUser();
 
   return (
     <>
@@ -17,9 +19,17 @@ export default async function FeedPage() {
           posts.map((post: any) => (
             <PostCard
               key={post.id}
+              id={post.id}
               content={post.content}
+              media={post.mediaUrl}
               createdAt={post.createdAt}
-              author={post.author}
+              author={{
+                id: post.author.id,
+                name: post.author.name,
+                username: post.author.username,
+                image: post.author.image,
+              }}
+              currentUserId={user?.userId || ""}
             />
           ))
         )}

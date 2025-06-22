@@ -1,4 +1,5 @@
 import { verifyToken } from "@/utils/token-manager";
+
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
@@ -14,7 +15,7 @@ export async function POST() {
       expires: new Date(0),
     });
 
-    return NextResponse.json({ message: "User Logged out successfully" });
+    return NextResponse.redirect("http://localhost:3000/");
   } catch (error) {
     return NextResponse.json(
       { message: "Logout failed", error },

@@ -1,18 +1,40 @@
 "use client";
 
+import { deletePost } from "@/services/postService";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 type PostCardProps = {
+  id: string;
   content: string;
   createdAt: string;
+  media: string | null;
   author: {
+    id: string;
     name: string;
     username: string;
     image: string;
   };
+  currentUserId: string;
 };
 
-const PostCard = ({ content, createdAt, author }: PostCardProps) => {
+const PostCard = ({
+  id,
+  content,
+  media,
+  createdAt,
+  author,
+  currentUserId,
+}: PostCardProps) => {
+  const router = useRouter();
+
+  const handleDelete = async () => {
+    if (confirm("Are you sure you want to delete this post?")) {
+      await deletePost(id);
+      router.refresh();
+    }
+  };
+
   return (
     <>
       <div className="border rounded p-4 shadow-sm bg-white">
@@ -29,10 +51,30 @@ const PostCard = ({ content, createdAt, author }: PostCardProps) => {
             <p className="text-sm text-gray-500">@{author.username}</p>
           </div>
         </div>
-        <p className="text-gray-800">{content}</p>
-        <p className="text-xs text-gray-400 mt-2">
-          {new Date(createdAt).toLocaleString()}
-        </p>
+        <div>
+          <p className="text-gray-800">{content}</p>
+          {media && (
+            <Image
+              src={media}
+              height={200}
+              width={200}
+              alt={content}
+              className="bg-black"
+            />
+          )}
+          <p className="text-xs text-gray-400 mt-2">
+            {new Date(createdAt).toLocaleString()}
+          </p>
+
+          {currentUserId === author.id && (
+            <button
+              onClick={handleDelete}
+              className="text-red-500 hover:underline mt-2"
+            >
+              Delete
+            </button>
+          )}
+        </div>
       </div>
     </>
   );

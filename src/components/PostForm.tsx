@@ -6,28 +6,39 @@ import { useState } from "react";
 
 const PostForm = () => {
   const [content, setContent] = useState("");
+  const [media, setMedia] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!content.trim()) return;
+    if (!content.trim() && !media) return;
+
     setLoading(true);
-    const res = await createPost(content);
+
+    const formData = new FormData();
+    if (content) formData.append("content", content);
+    if (media) formData.append("media", media);
+
+    const res = await createPost(formData);
     setLoading(false);
 
-    console.log(res);
     if (res?.newPost) {
       setContent("");
+      setMedia(null);
       router.refresh();
     } else {
       alert("Post failed");
+      console.log(res);
     }
   };
 
   return (
     <>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-3 border p-4 rounded"
+      >
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
@@ -35,6 +46,14 @@ const PostForm = () => {
           className="border p-2 rounded"
           rows={4}
         ></textarea>
+
+        <input
+          type="file"
+          accept="image/*,video/*"
+          onChange={(e) => setMedia(e.target.files?.[0] || null)}
+          className="border p-2 rounded"
+        />
+
         <button
           type="submit"
           disabled={loading}

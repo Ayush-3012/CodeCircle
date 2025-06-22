@@ -1,6 +1,7 @@
 "use client";
 
 import { registerUser } from "@/services/authService";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const RegisterPage = () => {
@@ -12,6 +13,7 @@ const RegisterPage = () => {
     image: "",
   });
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -23,6 +25,7 @@ const RegisterPage = () => {
     try {
       const res = registerUser(formData);
       console.log("✅ User registered", res);
+      router.push("/auth/login");
     } catch (error: any) {
       console.error(
         "❌ Error:",

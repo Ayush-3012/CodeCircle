@@ -23,8 +23,3 @@ export const userProfile = async () => {
   const res = await axios.get(`/user/profile`);
   return res.data;
 };
-
-export const logoutUser = async () => {
-  const res = await axios.post(`/auth/logout`);
-  return res.data;
-};

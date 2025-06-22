@@ -1,11 +1,16 @@
 import prisma from "@/lib/prism";
-import { NextResponse } from "next/server";
+import { getCurrentUser } from "@/utils/getCurrentUser";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
-  req: Request,
+  req: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
+    const user = await getCurrentUser();
+    if (!user || !user.userId)
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+
     const foundPost = await prisma.post.findUnique({
       where: { id: await params.id },
       include: {
@@ -27,4 +32,28 @@ export async function GET(
       { status: 500 }
     );
   }
+}
+
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const user = await getCurrentUser();
+
+  if (!user || !user.userId)
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+
+  const post = await prisma.post.findUnique({ where: { id: await params.id } });
+  if (!post)
+    return NextResponse.json({ message: "Post not found" }, { status: 404 });
+
+  if (post.authorId !== user.userId)
+    return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+
+  await prisma.post.delete({ where: { id: params.id } });
+
+  return NextResponse.json(
+    { message: "Post deleted successfully" },
+    { status: 200 }
+  );
 }

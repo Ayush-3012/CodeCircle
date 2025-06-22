@@ -17,7 +17,7 @@ const LoginPage = () => {
     try {
       const res = await loginUser({ email, password });
       console.log("✅ User LoggedIn", res);
-      // router.push("/dashboard");
+      router.push("/feed");
     } catch (error: any) {
       console.error(
         "❌ Error:",
