@@ -19,6 +19,15 @@ export const getSinglePost = async (id: string) => {
   return res.data;
 };
 
+export const updatePost = async (postId: string, formData: FormData) => {
+  const res = await axios.put(`/post/${postId}`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return res.data;
+};
+
 export const deletePost = async (postId: string) => {
   const res = await axios.delete(`/post/${postId}`);
   return res.data;

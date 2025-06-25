@@ -1,11 +1,26 @@
 "use client";
 
-import { createPost } from "@/services/postService";
+import { createPost, updatePost } from "@/services/postService";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-const PostForm = () => {
-  const [content, setContent] = useState("");
+type PostFormProps = {
+  initialContent?: string;
+  initialMediaUrl?: string;
+  isEditing?: boolean;
+  postId?: string;
+  onSuccess?: () => void;
+};
+
+const PostForm = ({
+  initialContent = "",
+  initialMediaUrl = "",
+  isEditing = false,
+  postId,
+  onSuccess,
+}: PostFormProps) => {
+  const [content, setContent] = useState(initialContent);
   const [media, setMedia] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -17,15 +32,19 @@ const PostForm = () => {
     setLoading(true);
 
     const formData = new FormData();
-    if (content) formData.append("content", content);
+    formData.append("content", content);
     if (media) formData.append("media", media);
 
-    const res = await createPost(formData);
+    const res = isEditing
+      ? await updatePost(postId!, formData)
+      : await createPost(formData);
+
     setLoading(false);
 
-    if (res?.newPost) {
+    if (res?.newPost || res?.updatedPost) {
       setContent("");
       setMedia(null);
+      onSuccess?.();
       router.refresh();
     } else {
       alert("Post failed");
@@ -37,7 +56,7 @@ const PostForm = () => {
     <>
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col gap-3 border p-4 rounded"
+        className="flex flex-col bg-black gap-3 border p-4 rounded"
       >
         <textarea
           value={content}
@@ -46,6 +65,17 @@ const PostForm = () => {
           className="border p-2 rounded"
           rows={4}
         ></textarea>
+
+        {isEditing && initialMediaUrl && !media && (
+          <div className="relative w-40 h-40 border rounded overflow-hidden">
+            <Image
+              src={initialMediaUrl}
+              alt="Current media"
+              fill
+              className="object-cover"
+            />
+          </div>
+        )}
 
         <input
           type="file"
@@ -59,7 +89,13 @@ const PostForm = () => {
           disabled={loading}
           className="bg-blue-600 text-white py-2 rounded"
         >
-          {loading ? "Posting..." : "Post"}
+          {loading
+            ? isEditing
+              ? "Updating..."
+              : "Posting..."
+            : isEditing
+            ? "Update"
+            : "Post"}
         </button>
       </form>
     </>

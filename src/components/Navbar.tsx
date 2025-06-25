@@ -1,4 +1,3 @@
-import { logoutUser } from "@/services/authService";
 import { getCurrentUser } from "@/utils/getCurrentUser";
 import Link from "next/link";
 
@@ -15,11 +14,8 @@ export default async function Navbar() {
         <div className="flex gap-4">
           {user ? (
             <>
-              <Link
-                href="/create-post"
-                className="hover:text-blue-500 transition"
-              >
-                Create Post
+              <Link href="/feed" className="hover:text-blue-500 transition">
+                Feed
               </Link>
               <Link href="/profile" className="hover:text-blue-500 transition">
                 Profile
