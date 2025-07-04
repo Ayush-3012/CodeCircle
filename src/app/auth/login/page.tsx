@@ -21,7 +21,7 @@ const LoginPage = () => {
     } catch (error: any) {
       console.error(
         "❌ Error:",
-        error?.response?.data?.message || error.message
+        error?.response?.data?.message || error?.message
       );
     } finally {
       setLoading(false);

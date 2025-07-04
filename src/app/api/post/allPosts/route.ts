@@ -1,8 +1,13 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prism";
+import { verifyToken } from "@/utils/token-manager";
 
 export async function GET() {
   try {
+    const session = await verifyToken();
+    if (!session)
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+
     const allPosts =
       (await prisma.post.findMany({
         orderBy: { createdAt: "desc" },

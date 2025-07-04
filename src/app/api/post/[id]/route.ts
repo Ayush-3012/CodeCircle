@@ -1,6 +1,6 @@
 import cloudinary from "@/lib/cloudinary";
 import prisma from "@/lib/prism";
-import { getCurrentUser } from "@/utils/getCurrentUser";
+import { verifyToken } from "@/utils/token-manager";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
@@ -8,8 +8,8 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const user = await getCurrentUser();
-    if (!user || !user.userId)
+    const session = await verifyToken();
+    if (!session || !session.userId)
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
     const foundPost = await prisma.post.findUnique({
@@ -39,8 +39,8 @@ export async function PUT(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const user = await getCurrentUser();
-  if (!user || !user.userId)
+  const session = await verifyToken();
+  if (!session || !session.userId)
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
   const formData = await req.formData();
@@ -71,7 +71,7 @@ export async function PUT(
   }
 
   const post = await prisma.post.findUnique({ where: { id: await params.id } });
-  if (!post || post.authorId !== user.userId) {
+  if (!post || post.authorId !== session.userId) {
     return NextResponse.json({ message: "Forbidden" }, { status: 403 });
   }
 
@@ -94,16 +94,15 @@ export async function DELETE(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const user = await getCurrentUser();
-
-  if (!user || !user.userId)
+  const session = await verifyToken();
+  if (!session || !session.userId)
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
   const post = await prisma.post.findUnique({ where: { id: await params.id } });
   if (!post)
     return NextResponse.json({ message: "Post not found" }, { status: 404 });
 
-  if (post.authorId !== user.userId)
+  if (post.authorId !== session.userId)
     return NextResponse.json({ message: "Forbidden" }, { status: 403 });
 
   await prisma.post.delete({ where: { id: params.id } });

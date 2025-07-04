@@ -46,8 +46,8 @@ const PostCard = ({
         <Image
           src={author.image}
           alt={author.name}
-          width={200}
-          height={200}
+          width={50}
+          height={50}
           className="w-10 h-10 rounded-full"
         />
         <div>
@@ -73,7 +73,7 @@ const PostCard = ({
               height={200}
               width={200}
               alt={content}
-              className="bg-black mt-2"
+              className="bg-black mt-2 w-auto h-auto"
             />
           )}
           <p className="text-xs text-gray-400 mt-2">

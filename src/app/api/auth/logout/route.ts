@@ -1,12 +1,11 @@
 import { verifyToken } from "@/utils/token-manager";
-
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 export async function POST() {
   try {
-    const success = await verifyToken();
-    if (!success)
+    const session = await verifyToken();
+    if (!session)
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
     (await cookies()).set(process.env.COOKIE_NAME!, "", {

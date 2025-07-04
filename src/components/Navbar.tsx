@@ -3,7 +3,6 @@ import Link from "next/link";
 
 export default async function Navbar() {
   const user = await getCurrentUser();
-
   return (
     <>
       <nav className="flex justify-between p-4 border-b">

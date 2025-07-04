@@ -18,3 +18,8 @@ export const loginUser = async (FormData: {
   const res = await axios.post(`/auth/login`, FormData);
   return res.data;
 };
+
+export const logoutUser = async () => {
+  const res = await axios.post("/auth/logout");
+  return res.data;
+};

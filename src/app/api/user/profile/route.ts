@@ -1,29 +1,26 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prism";
-import { getCurrentUser } from "@/utils/getCurrentUser";
+import { verifyToken } from "@/utils/token-manager";
 
 export async function GET() {
   try {
-    const user = await getCurrentUser();
-
-    if (!user || !user.userId) {
+    const session = await verifyToken();
+    if (!session || !session.userId)
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-    }
-    console.log(user);
-    // const foundUser = await prisma.user.findUnique({
-    //   where: { id: await user.userId },
-    //   select: {
-    //     id: true,
-    //     name: true,
-    //     email: true,
-    //   },
-    // });
 
-    // if (!foundUser) {
-    //   return NextResponse.json({ message: "User not found" }, { status: 404 });
-    // }
-    // return NextResponse.json({ foundUser }, { status: 200 });
-    return NextResponse.json({ message: "found" }, { status: 200 });
+    const foundUser = await prisma.user.findUnique({
+      where: { id: await session.userId },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+      },
+    });
+
+    if (!foundUser) {
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    }
+    return NextResponse.json({ foundUser }, { status: 200 });
   } catch (error) {
     console.error("PROFILE ERROR:", error);
     return NextResponse.json(

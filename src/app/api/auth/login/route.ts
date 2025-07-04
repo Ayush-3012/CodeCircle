@@ -28,10 +28,12 @@ export async function POST(req: Request) {
     (await cookies()).set(process.env.COOKIE_NAME!, token, {
       httpOnly: true,
       path: "/",
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 7 * 24 * 60 * 60,
+      // secure: process.env.NODE_ENV === "production",
+      maxAge: 7 * 24 * 60 * 60, // 7 days
+      secure: false,
+      sameSite: "lax",
+      // sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     });
-
     return NextResponse.json({ message: "User Logged In" }, { status: 200 });
   } catch (error) {
     console.log("LOGIN ERROR:", error);

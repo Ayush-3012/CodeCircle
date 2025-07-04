@@ -1,17 +1,20 @@
-// app/profile/page.tsx
 import { getCurrentUserProfile, getPostsByUser } from "@/services/userService";
-import PostCard from "@/components/PostCard";
-import Image from "next/image";
+import { cookies } from "next/headers";
+// import PostCard from "@/components/PostCard";
+// import Image from "next/image";
 
 export default async function ProfilePage() {
-  const user = await getCurrentUserProfile();
+  const cookieStore = cookies();
+  const token = (await cookieStore).get(process.env.COOKIE_NAME!)?.value;
+
+  const user = await getCurrentUserProfile(token);
   //   const postData = await getPostsByUser(user.userId);
   //   const posts = postData.posts;
 
   return (
     <div className="max-w-2xl mx-auto mt-8 px-4 space-y-6">
       <div className="flex items-center gap-4">
-        <Image
+        {/* <Image
           src={user.image}
           alt={user.name}
           fill
@@ -20,7 +23,7 @@ export default async function ProfilePage() {
         <div>
           <h2 className="text-2xl font-semibold">{user.name}</h2>
           <p className="text-gray-600">@{user.username}</p>
-        </div>
+        </div> */}
       </div>
 
       {/* <div className="text-gray-700">

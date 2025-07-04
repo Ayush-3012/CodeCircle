@@ -1,9 +1,17 @@
 import axios from "@/lib/axios";
 
-export const getCurrentUserProfile = async () => {
-  const res = await axios.get("/user/profile");
-  //   return res.data;
-  console.log(res);
+export const getCurrentUserProfile = async (token: string | undefined) => {
+  try {
+    const res = await axios.get(`/user/profile`, {
+      headers: {
+        Cookie: token && `${(process.env.COOKIE_NAME = token)}`,
+      },
+    });
+    console.log(res.data);
+    return res.data;
+  } catch (error) {
+    return error;
+  }
 };
 
 export const getPostsByUser = async (userId: string) => {

@@ -9,9 +9,17 @@ export const createPost = async (formData: FormData) => {
   return res.data;
 };
 
-export const getAllPosts = async () => {
-  const res = await axios.get(`/post/allPosts`);
-  return res.data;
+export const getAllPosts = async (token: string | undefined) => {
+  try {
+    const res = await axios.get(`/post/allPosts`, {
+      headers: {
+        Cookie: `${(process.env.COOKIE_NAME = token)}`,
+      },
+    });
+    return res.data;
+  } catch (error) {
+    return error;
+  }
 };
 
 export const getSinglePost = async (id: string) => {
@@ -25,6 +33,7 @@ export const updatePost = async (postId: string, formData: FormData) => {
       "Content-Type": "multipart/form-data",
     },
   });
+
   return res.data;
 };
 

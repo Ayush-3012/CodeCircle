@@ -2,9 +2,13 @@ import PostCard from "@/components/PostCard";
 import PostForm from "@/components/PostForm";
 import { getAllPosts } from "@/services/postService";
 import { getCurrentUser } from "@/utils/getCurrentUser";
+import { cookies } from "next/headers";
 
 export default async function FeedPage() {
-  const res = await getAllPosts();
+  const cookieStore = cookies();
+  const token = (await cookieStore).get(process.env.COOKIE_NAME!)?.value;
+
+  const res = await getAllPosts(token);
   const posts = (await res?.allPosts) || [];
   const user = await getCurrentUser();
 
