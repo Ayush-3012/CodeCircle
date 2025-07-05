@@ -34,7 +34,10 @@ export async function POST(req: Request) {
       sameSite: "lax",
       // sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     });
-    return NextResponse.json({ message: "User Logged In" }, { status: 200 });
+    return NextResponse.json(
+      { message: "User Logged In", userId: foundUser.id },
+      { status: 200 }
+    );
   } catch (error) {
     console.log("LOGIN ERROR:", error);
     return NextResponse.json(

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
+import NavbarWrapper from "@/components/NavbarWrapper";
 
 export const metadata: Metadata = {
   title: "DevConnect",
@@ -15,7 +15,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body suppressHydrationWarning>
-        <Navbar />
+        <NavbarWrapper />
         <div>{children}</div>
       </body>
     </html>

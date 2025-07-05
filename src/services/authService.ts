@@ -19,6 +19,15 @@ export const loginUser = async (FormData: {
   return res.data;
 };
 
+export const isUserLoggedIn = async () => {
+  try {
+    const res = await axios.get("/auth/me");
+    return res.data;
+  } catch (error) {
+    return error;
+  }
+};
+
 export const logoutUser = async () => {
   const res = await axios.post("/auth/logout");
   return res.data;

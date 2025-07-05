@@ -16,8 +16,9 @@ const LoginPage = () => {
     setLoading(true);
     try {
       const res = await loginUser({ email, password });
-      console.log("✅ User LoggedIn", res);
-      router.push("/feed");
+      if (res.userId) {
+        router.push("/feed");
+      }
     } catch (error: any) {
       console.error(
         "❌ Error:",

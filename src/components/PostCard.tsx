@@ -1,6 +1,6 @@
 "use client";
 
-import { deletePost } from "@/services/postService";
+import { deletePost, toggleLikePost } from "@/services/postService";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -11,6 +11,7 @@ type PostCardProps = {
   content: string;
   createdAt: string;
   media: string | null;
+  likes: string[];
   author: {
     id: string;
     name: string;
@@ -23,13 +24,16 @@ type PostCardProps = {
 const PostCard = ({
   id,
   content,
-  media,
   createdAt,
+  media,
+  likes: initialLikes,
   author,
   currentUserId,
 }: PostCardProps) => {
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
+  const [likes, setLikes] = useState<string[]>(initialLikes);
+  const hasLiked = likes.includes(currentUserId);
 
   const handleDelete = async () => {
     if (confirm("Are you sure you want to delete this post?")) {
@@ -40,8 +44,19 @@ const PostCard = ({
 
   const handleEditToggle = () => setIsEditing((prev) => !prev);
 
+  const handleLike = async () => {
+    try {
+      const res = await toggleLikePost(id);
+      if (res?.updatedPost?.likes) {
+        setLikes(res.updatedPost.likes);
+      }
+    } catch (err) {
+      console.error("Like toggle failed", err);
+    }
+  };
+
   return (
-    <div className="border rounded p-4 shadow-sm bg-white">
+    <div className="border rounded p-4 shadow-sm bg-white dark:bg-gray-900">
       <div className="flex items-center gap-3 mb-2">
         <Image
           src={author.image}
@@ -51,7 +66,9 @@ const PostCard = ({
           className="w-10 h-10 rounded-full"
         />
         <div>
-          <p className="font-semibold text-black">{author.name}</p>
+          <p className="font-semibold text-gray-800 dark:text-white">
+            {author.name}
+          </p>
           <p className="text-sm text-gray-500">@{author.username}</p>
         </div>
       </div>
@@ -65,23 +82,35 @@ const PostCard = ({
           onSuccess={() => setIsEditing(false)}
         />
       ) : (
-        <>
-          <p className="text-gray-800">{content}</p>
+        <div className="flex flex-col items-center justify-center">
+          <p className="text-gray-800 dark:text-gray-200 text-xl mb-2">
+            {content}
+          </p>
           {media && (
             <Image
               src={media}
               height={200}
               width={200}
-              alt={content}
-              className="bg-black mt-2 w-auto h-auto"
+              alt="media"
+              className="bg-black mt-2 w-auto h-auto rounded"
             />
           )}
-          <p className="text-xs text-gray-400 mt-2">
+          <p className="text-xs text-gray-500 self-start ml-4 mt-2">
             {new Date(createdAt).toLocaleString()}
           </p>
 
+          <div className="flex items-center gap-4 mt-2 self-start ml-4">
+            <button
+              onClick={handleLike}
+              className="text-pink-600 cursor-pointer text-sm"
+            >
+              {hasLiked ? "❤️ Unlike" : "🤍 Like"}
+            </button>
+            <span className="text-sm text-gray-500">{likes.length} Likes</span>
+          </div>
+
           {currentUserId === author.id && (
-            <div className="flex gap-4 mt-2">
+            <div className="flex gap-4 mt-2 self-start ml-4">
               <button
                 onClick={handleDelete}
                 className="text-red-500 cursor-pointer hover:underline"
@@ -96,7 +125,7 @@ const PostCard = ({
               </button>
             </div>
           )}
-        </>
+        </div>
       )}
     </div>
   );

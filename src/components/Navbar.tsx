@@ -1,8 +1,12 @@
-import { getCurrentUser } from "@/utils/getCurrentUser";
-import Link from "next/link";
+"use client";
 
-export default async function Navbar() {
-  const user = await getCurrentUser();
+import { logoutUser } from "@/services/authService";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+
+const Navbar = ({ user, setUser }: { user: any; setUser: any }) => {
+  const router = useRouter();
+
   return (
     <>
       <nav className="flex justify-between p-4 border-b">
@@ -10,7 +14,7 @@ export default async function Navbar() {
           CodeCircle
         </Link>
 
-        <div className="flex gap-4">
+        <div className=" flex gap-2 items-center justify-center">
           {user ? (
             <>
               <Link href="/feed" className="hover:text-blue-500 transition">
@@ -19,14 +23,16 @@ export default async function Navbar() {
               <Link href="/profile" className="hover:text-blue-500 transition">
                 Profile
               </Link>
-              <form action="/api/auth/logout" method="POST">
-                <button
-                  type="submit"
-                  className="hover:text-blue-500 transition cursor-pointer"
-                >
-                  Logout
-                </button>
-              </form>
+              <button
+                className="hover:text-blue-500 transition cursor-pointer"
+                onClick={async () => {
+                  await logoutUser();
+                  setUser(null);
+                  router.push("/");
+                }}
+              >
+                Logout
+              </button>
             </>
           ) : (
             <>
@@ -48,4 +54,6 @@ export default async function Navbar() {
       </nav>
     </>
   );
-}
+};
+
+export default Navbar;
