@@ -1,8 +1,10 @@
 "use client";
 
+import { setUser } from "@/lib/redux/slices/authSlice";
 import { loginUser } from "@/services/authService";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -10,6 +12,7 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,6 +20,7 @@ const LoginPage = () => {
     try {
       const res = await loginUser({ email, password });
       if (res.userId) {
+        dispatch(setUser(res.userId));
         router.push("/feed");
       }
     } catch (error: any) {

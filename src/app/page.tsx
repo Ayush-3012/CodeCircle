@@ -8,7 +8,6 @@ import { isUserLoggedIn } from "@/services/authService";
 
 export default function Home() {
   const router = useRouter();
-
   useEffect(() => {
     const checkAuth = async () => {
       const res = await isUserLoggedIn();

@@ -1,10 +1,15 @@
 "use client";
 
+import { removeUser } from "@/lib/redux/slices/authSlice";
 import { logoutUser } from "@/services/authService";
+import { RootState } from "@reduxjs/toolkit/query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
 
-const Navbar = ({ user, setUser }: { user: any; setUser: any }) => {
+const Navbar = () => {
+  const user = useSelector((state: RootState) => state.auth.user);
+  const dispatch = useDispatch();
   const router = useRouter();
 
   return (
@@ -27,7 +32,7 @@ const Navbar = ({ user, setUser }: { user: any; setUser: any }) => {
                 className="hover:text-blue-500 transition cursor-pointer"
                 onClick={async () => {
                   await logoutUser();
-                  setUser(null);
+                  dispatch(removeUser());
                   router.push("/");
                 }}
               >
