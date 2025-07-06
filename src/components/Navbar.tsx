@@ -2,13 +2,12 @@
 
 import { removeUser } from "@/lib/redux/slices/authSlice";
 import { logoutUser } from "@/services/authService";
-import { RootState } from "@reduxjs/toolkit/query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 
 const Navbar = () => {
-  const user = useSelector((state: RootState) => state.auth.user);
+  const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
   const router = useRouter();
 

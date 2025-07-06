@@ -3,7 +3,7 @@
 import { setUser } from "@/lib/redux/slices/authSlice";
 import { loginUser } from "@/services/authService";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 
 const LoginPage = () => {

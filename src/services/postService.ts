@@ -22,8 +22,12 @@ export const getAllPosts = async (token: string | undefined) => {
   }
 };
 
-export const getSinglePost = async (id: string) => {
-  const res = await axios.get(`/post/${id}`);
+export const getSinglePost = async (id: string, token: string | undefined) => {
+  const res = await axios.get(`/post/${id}`, {
+    headers: {
+      Cookie: `auth_token=${token}`,
+    },
+  });
   return res.data;
 };
 

@@ -25,6 +25,7 @@ model User {
   updatedAt DateTime @updatedAt
 
   posts Post[]
+  comments Comment[]
 }
 
 model Post {
@@ -32,8 +33,24 @@ model Post {
   content   String
   mediaUrl String?
   mediaType String?
-  author    User     @relation(fields: [authorId], references: [id])
   authorId  String   @db.ObjectId
   likes String[] @db.ObjectId
   createdAt DateTime @default(now())
+
+  comments Comment[]
+
+  author    User     @relation(fields: [authorId], references: [id])
+}
+
+model Comment {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  content String
+  postId    String   @db.ObjectId
+  authorId  String   @db.ObjectId
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  post   Post   @relation(fields: [postId], references: [id])
+  author User   @relation(fields: [authorId], references: [id])
 }

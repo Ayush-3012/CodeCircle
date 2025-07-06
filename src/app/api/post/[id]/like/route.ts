@@ -11,8 +11,9 @@ export async function POST(
     if (!session || !session?.userId)
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
+    const { id } = await params;
     const post = await prisma.post.findUnique({
-      where: { id: await params.id },
+      where: { id },
     });
     if (!post)
       return NextResponse.json({ message: "Post not found" }, { status: 404 });

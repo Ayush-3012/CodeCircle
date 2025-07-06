@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import ReduxProvider from "@/lib/redux/Provider";
 import Navbar from "@/components/Navbar";
+import AppProvider from "@/lib/redux/Provider";
 
 export const metadata: Metadata = {
   title: "DevConnect",
@@ -16,10 +16,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body suppressHydrationWarning>
-        <ReduxProvider>
+        <AppProvider>
           <Navbar />
           <div>{children}</div>
-        </ReduxProvider>
+        </AppProvider>
       </body>
     </html>
   );

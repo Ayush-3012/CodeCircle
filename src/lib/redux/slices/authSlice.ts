@@ -1,10 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-interface AuthState {
-  user: any | null;
-}
-
-const initialState: AuthState = {
+const initialState = {
   user: null,
 };
 
@@ -17,6 +13,7 @@ const authSlice = createSlice({
     },
     removeUser: (state) => {
       state.user = null;
+      localStorage.removeItem("persist:root");
     },
   },
 });

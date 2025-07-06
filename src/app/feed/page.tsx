@@ -12,6 +12,7 @@ export default async function FeedPage() {
 
   const res = await getAllPosts(token);
   const posts = (await res?.allPosts) || [];
+
   const user = await getCurrentUser();
 
   return (
@@ -37,6 +38,7 @@ export default async function FeedPage() {
                 image: post.author.image,
               }}
               currentUserId={user?.userId || ""}
+              showCommentCount={true}
             />
           ))
         )}

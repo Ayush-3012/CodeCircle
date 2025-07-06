@@ -4,7 +4,7 @@ import { verifyToken } from "@/utils/token-manager";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
-  req: NextRequest,
+  _req: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -12,8 +12,9 @@ export async function GET(
     if (!session || !session.userId)
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
+    const { id } = await params;
     const foundPost = await prisma.post.findUnique({
-      where: { id: await params.id },
+      where: { id },
       include: {
         author: {
           select: { id: true, name: true, username: true, image: true },
@@ -21,9 +22,8 @@ export async function GET(
       },
     });
 
-    if (!foundPost) {
+    if (!foundPost)
       return NextResponse.json({ message: "Post not found" }, { status: 404 });
-    }
 
     return NextResponse.json({ foundPost }, { status: 200 });
   } catch (error) {

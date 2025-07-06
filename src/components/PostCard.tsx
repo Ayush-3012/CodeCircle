@@ -5,6 +5,8 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import PostForm from "./PostForm";
+import Link from "next/link";
+import CommentSection from "./CommentSection";
 
 type PostCardProps = {
   id: string;
@@ -19,6 +21,7 @@ type PostCardProps = {
     image: string;
   };
   currentUserId: string;
+  showCommentCount?: boolean;
 };
 
 const PostCard = ({
@@ -29,6 +32,7 @@ const PostCard = ({
   likes: initialLikes,
   author,
   currentUserId,
+  showCommentCount,
 }: PostCardProps) => {
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
@@ -42,8 +46,6 @@ const PostCard = ({
     }
   };
 
-  const handleEditToggle = () => setIsEditing((prev) => !prev);
-
   const handleLike = async () => {
     try {
       const res = await toggleLikePost(id);
@@ -56,78 +58,88 @@ const PostCard = ({
   };
 
   return (
-    <div className="border rounded p-4 shadow-sm bg-white dark:bg-gray-900">
-      <div className="flex items-center gap-3 mb-2">
-        <Image
-          src={author.image}
-          alt={author.name}
-          width={50}
-          height={50}
-          className="w-10 h-10 rounded-full"
-        />
-        <div>
-          <p className="font-semibold text-gray-800 dark:text-white">
-            {author.name}
-          </p>
-          <p className="text-sm text-gray-500">@{author.username}</p>
-        </div>
-      </div>
-
-      {isEditing ? (
-        <PostForm
-          initialContent={content}
-          initialMediaUrl={media || ""}
-          isEditing={true}
-          postId={id}
-          onSuccess={() => setIsEditing(false)}
-        />
-      ) : (
-        <div className="flex flex-col items-center justify-center">
-          <p className="text-gray-800 dark:text-gray-200 text-xl mb-2">
-            {content}
-          </p>
-          {media && (
-            <Image
-              src={media}
-              height={200}
-              width={200}
-              alt="media"
-              className="bg-black mt-2 w-auto h-auto rounded"
-            />
-          )}
-          <p className="text-xs text-gray-500 self-start ml-4 mt-2">
-            {new Date(createdAt).toLocaleString()}
-          </p>
-
-          <div className="flex items-center gap-4 mt-2 self-start ml-4">
-            <button
-              onClick={handleLike}
-              className="text-pink-600 cursor-pointer text-sm"
-            >
-              {hasLiked ? "❤️ Unlike" : "🤍 Like"}
-            </button>
-            <span className="text-sm text-gray-500">{likes.length} Likes</span>
+    <>
+      <div className="border rounded p-4 shadow-sm bg-white dark:bg-gray-900">
+        <div className="flex items-center gap-3 mb-2">
+          <Image
+            src={author.image}
+            alt={author.name}
+            width={50}
+            height={50}
+            className="w-10 h-10 rounded-full"
+          />
+          <div>
+            <p className="font-semibold text-gray-800 dark:text-white">
+              {author.name}
+            </p>
+            <p className="text-sm text-gray-500">@{author.username}</p>
           </div>
-
-          {currentUserId === author.id && (
-            <div className="flex gap-4 mt-2 self-start ml-4">
-              <button
-                onClick={handleDelete}
-                className="text-red-500 cursor-pointer hover:underline"
-              >
-                Delete
-              </button>
-              <button
-                onClick={handleEditToggle}
-                className="text-blue-500 cursor-pointer hover:underline"
-              >
-                {isEditing ? "Cancel" : "Edit"}
-              </button>
-            </div>
-          )}
         </div>
-      )}
-    </div>
+
+        {isEditing ? (
+          <PostForm
+            initialContent={content}
+            initialMediaUrl={media || ""}
+            isEditing={true}
+            postId={id}
+            onSuccess={() => setIsEditing(false)}
+          />
+        ) : (
+          <div className="flex flex-col items-center justify-center">
+            <Link href={`/post/${id}`}>
+              <p className="text-gray-800 dark:text-gray-200 text-xl mb-2">
+                {content}
+              </p>
+              {media && (
+                <Image
+                  src={media}
+                  height={200}
+                  width={200}
+                  alt="media"
+                  className="bg-black mt-2 w-auto h-auto rounded-lg"
+                />
+              )}
+              <p className="text-xs text-gray-500 self-start ml-4 mt-2">
+                {new Date(createdAt).toLocaleString()}
+              </p>
+            </Link>
+            <div className="flex items-center gap-4 mt-2 self-start ml-4">
+              <button
+                onClick={handleLike}
+                className={`${
+                  hasLiked ? "text-pink-400" : "text-white"
+                } hover:text-pink-600 cursor-pointer text-sm`}
+              >
+                {hasLiked ? "❤️ Unlike" : "🤍 Like"}
+              </button>
+              <span className="text-sm text-gray-500">
+                {likes.length} Likes
+              </span>
+              {showCommentCount && (
+                <CommentSection postId={id} fromFeed={true} />
+              )}
+            </div>
+
+            {currentUserId === author.id && (
+              <div className="flex gap-4 mt-2 self-start ml-4">
+                <button
+                  onClick={handleDelete}
+                  className="text-red-500 cursor-pointer hover:underline"
+                >
+                  Delete
+                </button>
+                <button
+                  onClick={() => setIsEditing((prev) => !prev)}
+                  className="text-blue-500 cursor-pointer hover:underline"
+                >
+                  {isEditing ? "Cancel" : "Edit"}
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 
