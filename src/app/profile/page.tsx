@@ -1,6 +1,8 @@
 import { getCurrentUserProfile, getPostsByUser } from "@/services/userService";
 import { cookies } from "next/headers";
 import Image from "next/image";
+import Link from "next/link";
+import { FaCode, FaGithub, FaLinkedin } from "react-icons/fa";
 
 export default async function ProfilePage() {
   const cookieStore = cookies();
@@ -12,32 +14,63 @@ export default async function ProfilePage() {
 
   return (
     <div className="max-w-7xl mx-auto mt-8 px-4 space-y-6">
-      <div className="flex items-center gap-4">
-        <Image
-          src={foundUser.image}
-          alt={foundUser.name}
-          width={100}
-          height={100}
-          className="w-25 h-25 rounded-full object-cover"
-        />
-        <div>
-          <h2 className="text-2xl font-semibold">{foundUser.name}</h2>
-          <p className="text-gray-400">@{foundUser.username}</p>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <Image
+            src={foundUser?.image}
+            alt={foundUser?.name}
+            width={100}
+            height={100}
+            className="w-25 h-25 rounded-full object-cover"
+          />
+          <div>
+            <h2 className="text-2xl font-semibold">{foundUser?.name}</h2>
+            <p className="text-gray-400">@{foundUser?.username}</p>
+          </div>
+        </div>
+        <div className="flex gap-4 items-center justify-center">
+          {foundUser.githubUrl && (
+            <Link href={foundUser?.githubUrl} target="_blank">
+              <FaGithub className="text-4xl text-fuchsia-400 hover:text-emerald-400" />
+            </Link>
+          )}
+          {foundUser.linkedInUrl && (
+            <Link href={foundUser?.linkedInUrl} target="_blank">
+              <FaLinkedin className="text-4xl text-fuchsia-400 hover:text-emerald-400" />
+            </Link>
+          )}
+          {foundUser.portfolioUrl && (
+            <Link href={foundUser?.portfolioUrl} target="_blank">
+              <FaCode className="text-4xl text-fuchsia-400 hover:text-emerald-400" />
+            </Link>
+          )}
         </div>
       </div>
 
-      <div className="text-gray-200">
-        <p>Total Posts: {posts.length}</p>
+      <div className="flex justify-between items-center">
+        <div className="text-gray-200">
+          <p>Total Posts: {posts.length}</p>
+        </div>
+        <div>
+          <p className="text-lg font-serif">{foundUser?.bio}</p>
+        </div>
+        <Link
+          href="/edit-profile"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500 transition"
+        >
+          Edit Profile
+        </Link>
       </div>
 
       <hr />
 
+      <h3 className="text-xl text-white font-semibold mb-2">Your Posts</h3>
       <div className="grid max-md:grid-cols-2 grid-cols-4 max-lg:grid-cols-3 max-sm:grid-cols-1 max-sm:mx-4 w-full gap-8">
         {posts.map((post: any) => (
-          <div
+          <Link
+            href={`/post/${post.id}`}
             key={post.id}
             className="h-52 text-center group flex items-center justify-center hover:scale-105 cursor-pointer relative transition-all rounded-xl overflow-hidden duration-300"
-            // onClick={() => navigate(`/books/${category.category}`)}
           >
             <div
               className="absolute inset-0 bg-cover bg-center transition-all duration-300 group-hover:scale-110 group-hover:opacity-30 "
@@ -48,7 +81,7 @@ export default async function ProfilePage() {
             <p className="text-xl font-bold text-white relative z-10 duration-200">
               {post.content}
             </p>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

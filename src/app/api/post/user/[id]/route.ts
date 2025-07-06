@@ -10,11 +10,12 @@ export async function GET(
   if (!session || !session.userId)
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
+  const { id } = await params;
   const posts = await prisma.post.findMany({
-    where: { authorId: await params.id },
+    where: { authorId: id },
     orderBy: { createdAt: "desc" },
     include: { author: true },
-  });   
+  });
 
   return NextResponse.json({ posts });
 }

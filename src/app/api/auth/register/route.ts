@@ -4,7 +4,18 @@ import prisma from "@/lib/prism";
 
 export async function POST(req: Request) {
   try {
-    const { name, username, email, password, image } = await req.json();
+    const {
+      name,
+      username,
+      email,
+      password,
+      image,
+      bio,
+      githubUrl,
+      linkedInUrl,
+      portfolioUrl,
+    } = await req.json();
+
     if (!name || !email || !password || !username) {
       return NextResponse.json(
         { message: "All fields are required" },
@@ -40,7 +51,11 @@ export async function POST(req: Request) {
         username: lowerUsername,
         email: lowerEmail,
         password: hashedPassword,
-        image,
+        image: image || "",
+        bio: bio || null,
+        githubUrl: githubUrl || null,
+        linkedInUrl: linkedInUrl || null,
+        portfolioUrl: portfolioUrl || null,
       },
     });
 

@@ -1,8 +1,12 @@
 import axios from "@/lib/axios";
 
 export const getCommentsByPost = async (postId: string) => {
-  const res = await axios.get(`/comment/post/${postId}`);
-  return res.data;
+  try {
+    const res = await axios.get(`/comment/post/${postId}`);
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const addCommentToPost = async ({

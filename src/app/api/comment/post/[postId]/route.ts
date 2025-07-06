@@ -19,7 +19,6 @@ export async function GET(
       include: { author: true },
       orderBy: { createdAt: "desc" },
     });
-    
     return NextResponse.json({ comments }, { status: 200 });
   } catch (error) {
     return NextResponse.json(

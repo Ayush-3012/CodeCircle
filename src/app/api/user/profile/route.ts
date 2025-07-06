@@ -15,6 +15,10 @@ export async function GET() {
         name: true,
         username: true,
         image: true,
+        bio: true,
+        githubUrl: true,
+        linkedInUrl: true,
+        portfolioUrl: true,
       },
     });
 

@@ -15,42 +15,47 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  name      String
-  username  String   @unique
-  email     String   @unique
-  password  String
-  image     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  username     String   @unique
+  email        String   @unique
+  password     String
+  image        String?
+  bio          String?
+  githubUrl    String?
+  linkedInUrl  String?
+  portfolioUrl String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime  @updatedAt
 
-  posts Post[]
+  posts    Post[]
   comments Comment[]
 }
 
 model Post {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   content   String
-  mediaUrl String?
+  mediaUrl  String?
   mediaType String?
   authorId  String   @db.ObjectId
-  likes String[] @db.ObjectId
+  likes     String[] @db.ObjectId
   createdAt DateTime @default(now())
+  updatedAt DateTime  @updatedAt
 
   comments Comment[]
 
-  author    User     @relation(fields: [authorId], references: [id])
+  author User @relation(fields: [authorId], references: [id])
 }
 
 model Comment {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  content String
-  postId    String   @db.ObjectId
-  authorId  String   @db.ObjectId
-  
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  content  String
+  postId   String @db.ObjectId
+  authorId String @db.ObjectId
+
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  
-  post   Post   @relation(fields: [postId], references: [id])
-  author User   @relation(fields: [authorId], references: [id])
+  updatedAt DateTime  @updatedAt
+
+  post   Post @relation(fields: [postId], references: [id])
+  author User @relation(fields: [authorId], references: [id])
 }

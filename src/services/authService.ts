@@ -1,12 +1,7 @@
 import axios from "@/lib/axios";
+import { RegisterFormData } from "@/utils/types/users";
 
-export const registerUser = async (formData: {
-  name: string;
-  username: string;
-  email: string;
-  password: string;
-  image: string;
-}) => {
+export const registerUser = async (formData: RegisterFormData) => {
   const res = await axios.post(`/auth/register`, formData);
   return res.data;
 };
