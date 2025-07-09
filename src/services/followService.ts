@@ -1,5 +1,15 @@
 import axios from "@/lib/axios";
 
+export const toggleFollow = async (targetUserId: string) => {
+  try {
+    const res = await axios.post(`/user/${targetUserId}/follow`);
+    return res.data;
+  } catch (error) {
+    console.error("Follow/Unfollow failed:", error);
+    throw error;
+  }
+};
+
 export const getFollowerList = async (
   userId: string,
   token: string | undefined

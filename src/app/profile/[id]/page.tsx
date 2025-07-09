@@ -1,3 +1,4 @@
+import FollowButton from "@/components/FollowButton";
 import { getFollowerList, getFollowingList } from "@/services/followService";
 import { getPostsByUser, getUserProfile } from "@/services/userService";
 import { verifyToken } from "@/utils/token-manager";
@@ -23,6 +24,10 @@ export default async function ProfilePage({
 
   const followersData = await getFollowerList(foundUser?.id, token);
   const followingData = await getFollowingList(foundUser?.id, token);
+
+  const isFollowed = followersData?.followers?.some(
+    (follower: any) => follower?.id === loggedInUserId
+  );
 
   return (
     <div className="max-w-7xl mx-auto mt-8 px-4 space-y-6">
@@ -83,13 +88,18 @@ export default async function ProfilePage({
         <div>
           <p className="text-lg font-serif">{foundUser?.bio}</p>
         </div>
-        {loggedInUserId === foundUser?.id && (
+        {loggedInUserId === foundUser?.id ? (
           <Link
             href={`/edit-profile/`}
             className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500 transition"
           >
             Edit Profile
           </Link>
+        ) : (
+          <FollowButton
+            isFollowedInitially={isFollowed}
+            targetUserId={foundUser?.id}
+          />
         )}
       </div>
 

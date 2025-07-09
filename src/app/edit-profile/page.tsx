@@ -42,7 +42,7 @@ const EditProfilePage = () => {
     try {
       setLoading(true);
       await updateUserProfile(data);
-      router.push("/profile");
+      router.push(`/profile/${user}`);
     } catch (err) {
       console.error("Error updating profile", err);
     } finally {
