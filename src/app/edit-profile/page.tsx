@@ -1,23 +1,22 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  getCurrentUserProfile,
-  updateUserProfile,
-} from "@/services/userService";
+import { getUserProfile, updateUserProfile } from "@/services/userService";
 import { useRouter } from "next/navigation";
 import RegisterForm from "@/components/RegisterForm";
 import { RegisterFormData } from "@/utils/types/users";
+import { useSelector } from "react-redux";
 
 const EditProfilePage = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [initialData, setInitialData] = useState<RegisterFormData | null>(null);
 
+  const user = useSelector((state) => state.auth.user);
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await getCurrentUserProfile(undefined);
+        const res = await getUserProfile(user, undefined);
         if (res?.foundUser) {
           const user = res.foundUser;
           setInitialData({

@@ -1,16 +1,28 @@
-import { getCurrentUserProfile, getPostsByUser } from "@/services/userService";
+import { getFollowerList, getFollowingList } from "@/services/followService";
+import { getPostsByUser, getUserProfile } from "@/services/userService";
+import { verifyToken } from "@/utils/token-manager";
 import { cookies } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
 import { FaCode, FaGithub, FaLinkedin } from "react-icons/fa";
 
-export default async function ProfilePage() {
+export default async function ProfilePage({
+  params,
+}: {
+  params: { id: string };
+}) {
   const cookieStore = cookies();
   const token = (await cookieStore).get("auth_token")?.value;
+  const session = await verifyToken();
+  const loggedInUserId = session?.userId;
+  const { id } = await params;
 
-  const { foundUser } = await getCurrentUserProfile(token);
+  const { foundUser } = await getUserProfile(id, token);
   const postData = await getPostsByUser(foundUser?.id, token);
-  const posts = postData.posts;
+  const posts = postData?.posts;
+
+  const followersData = await getFollowerList(foundUser?.id, token);
+  const followingData = await getFollowingList(foundUser?.id, token);
 
   return (
     <div className="max-w-7xl mx-auto mt-8 px-4 space-y-6">
@@ -28,6 +40,23 @@ export default async function ProfilePage() {
             <p className="text-gray-400">@{foundUser?.username}</p>
           </div>
         </div>
+
+        <div className="flex gap-6 mt-2 text-gray-300 text-xl">
+          <Link
+            href={`/profile/${foundUser?.id}/followList?type=followers`}
+            className="hover:underline"
+          >
+            Followers: {followersData?.followers?.length}
+          </Link>
+          <span>|</span>
+          <Link
+            href={`/profile/${foundUser?.id}/followList?type=following`}
+            className="hover:underline"
+          >
+            Following: {followingData?.following?.length}
+          </Link>
+        </div>
+
         <div className="flex gap-4 items-center justify-center">
           {foundUser.githubUrl && (
             <Link href={foundUser?.githubUrl} target="_blank">
@@ -49,24 +78,26 @@ export default async function ProfilePage() {
 
       <div className="flex justify-between items-center">
         <div className="text-gray-200">
-          <p>Total Posts: {posts.length}</p>
+          <p>Total Posts: {posts?.length}</p>
         </div>
         <div>
           <p className="text-lg font-serif">{foundUser?.bio}</p>
         </div>
-        <Link
-          href="/edit-profile"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500 transition"
-        >
-          Edit Profile
-        </Link>
+        {loggedInUserId === foundUser?.id && (
+          <Link
+            href={`/edit-profile/`}
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500 transition"
+          >
+            Edit Profile
+          </Link>
+        )}
       </div>
 
       <hr />
 
       <h3 className="text-xl text-white font-semibold mb-2">Your Posts</h3>
       <div className="grid max-md:grid-cols-2 grid-cols-4 max-lg:grid-cols-3 max-sm:grid-cols-1 max-sm:mx-4 w-full gap-8">
-        {posts.map((post: any) => (
+        {posts?.map((post: any) => (
           <Link
             href={`/post/${post.id}`}
             key={post.id}

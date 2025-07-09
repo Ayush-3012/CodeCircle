@@ -1,9 +1,9 @@
 import axios from "@/lib/axios";
 import { RegisterFormData } from "@/utils/types/users";
 
-export const getCurrentUserProfile = async (token: string | undefined) => {
+export const getUserProfile = async (id: string, token: string | undefined) => {
   try {
-    const res = await axios.get(`/user/profile`, {
+    const res = await axios.get(`/user/${id}/profile`, {
       headers: {
         Cookie: `auth_token=${token}`,
       },

@@ -24,7 +24,10 @@ const Navbar = () => {
               <Link href="/feed" className="hover:text-blue-500 transition">
                 Feed
               </Link>
-              <Link href="/profile" className="hover:text-blue-500 transition">
+              <Link
+                href={`/profile/${user}`}
+                className="hover:text-blue-500 transition"
+              >
                 Profile
               </Link>
               <button
