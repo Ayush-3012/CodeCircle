@@ -1,6 +1,6 @@
 import { verifyToken } from "@/utils/token-manager";
-import prisma from "@/lib/prism";
 import { NextResponse } from "next/server";
+import { getFollowers } from "@/lib/services/userServices/getFollowers";
 
 export async function GET(
   _req: Request,
@@ -12,19 +12,7 @@ export async function GET(
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
     const { id } = await params;
-    const followers = await prisma.follow.findMany({
-      where: { followingId: id },
-      include: {
-        follower: {
-          select: {
-            id: true,
-            name: true,
-            username: true,
-            image: true,
-          },
-        },
-      },
-    });
+    const followers = await getFollowers(id);
 
     return NextResponse.json({ followers });
   } catch (error) {

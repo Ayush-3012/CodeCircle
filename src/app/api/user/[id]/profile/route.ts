@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import prisma from "@/lib/prism";
 import { verifyToken } from "@/utils/token-manager";
+import { getUserProfile } from "@/lib/services/userServices/getUserProfile";
 
 export async function GET(
   _req: Request,
@@ -12,24 +12,12 @@ export async function GET(
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
     const { id } = await params;
-    const foundUser = await prisma.user.findUnique({
-      where: { id },
-      select: {
-        id: true,
-        name: true,
-        username: true,
-        image: true,
-        bio: true,
-        githubUrl: true,
-        linkedInUrl: true,
-        portfolioUrl: true,
-      },
-    });
+    const user = await getUserProfile(id);
 
-    if (!foundUser)
+    if (!user)
       return NextResponse.json({ message: "User not found" }, { status: 404 });
 
-    return NextResponse.json({ foundUser }, { status: 200 });
+    return NextResponse.json({ user }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
       { message: "Something went wrong", error },

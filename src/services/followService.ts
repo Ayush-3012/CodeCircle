@@ -10,26 +10,22 @@ export const toggleFollow = async (targetUserId: string) => {
   }
 };
 
-export const getFollowerList = async (
-  userId: string,
-  token: string | undefined
-) => {
-  const res = await axios.get(`/user/${userId}/followers`, {
-    headers: {
-      Cookie: `auth_token=${token}`,
-    },
-  });
-  return res.data;
+export const getFollowerList = async (userId: string) => {
+  try {
+    const res = await axios.get(`/user/${userId}/followers`);
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 };
 
-export const getFollowingList = async (
-  userId: string,
-  token: string | undefined
-) => {
-  const res = await axios.get(`/user/${userId}/following`, {
-    headers: {
-      Cookie: `auth_token=${token}`,
-    },
-  });
-  return res.data;
+export const getFollowingList = async (userId: string) => {
+  try {
+    const res = await axios.get(`/user/${userId}/following`);
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 };

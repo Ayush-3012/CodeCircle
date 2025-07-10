@@ -1,52 +1,65 @@
 import axios from "@/lib/axios";
 
 export const createPost = async (formData: FormData) => {
-  const res = await axios.post(`/post/create`, formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
-  return res.data;
-};
-
-export const getAllPosts = async (token: string | undefined) => {
   try {
-    const res = await axios.get(`/post/allPosts`, {
+    const res = await axios.post(`/post/create`, formData, {
       headers: {
-        Cookie: `auth_token=${token}`,
+        "Content-Type": "multipart/form-data",
       },
     });
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getAllPosts = async () => {
+  try {
+    const res = await axios.get(`/post/allPosts`);
     return res.data;
   } catch (error) {
     return error;
   }
 };
 
-export const getSinglePost = async (id: string, token: string | undefined) => {
-  const res = await axios.get(`/post/${id}`, {
-    headers: {
-      Cookie: `auth_token=${token}`,
-    },
-  });
-  return res.data;
+export const getSinglePost = async (id: string) => {
+  try {
+    const res = await axios.get(`/post/${id}`);
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const updatePost = async (postId: string, formData: FormData) => {
-  const res = await axios.put(`/post/${postId}`, formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
-
-  return res.data;
+  try {
+    const res = await axios.put(`/post/${postId}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const deletePost = async (postId: string) => {
-  const res = await axios.delete(`/post/${postId}`);
-  return res.data;
+  try {
+    const res = await axios.delete(`/post/${postId}`);
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 };
 
 export const toggleLikePost = async (postId: string) => {
-  const res = await axios.post(`/post/${postId}/like`);
-  return res.data;
+  try {
+    const res = await axios.post(`/post/${postId}/like`);
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 };

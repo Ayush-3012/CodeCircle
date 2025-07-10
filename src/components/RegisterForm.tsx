@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { RegisterFormData } from "@/utils/types/users";
-import { useRouter } from "next/navigation";
 
 type RegisterFormProps = {
   initialData?: RegisterFormData;
@@ -17,7 +16,7 @@ const RegisterForm = ({
   isEdit = false,
   loading = false,
 }: RegisterFormProps) => {
-  const router = useRouter();
+  
   const [formData, setFormData] = useState<RegisterFormData>(
     initialData || {
       name: "",

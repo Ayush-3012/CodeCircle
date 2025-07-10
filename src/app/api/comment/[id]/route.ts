@@ -1,6 +1,7 @@
 import { verifyToken } from "@/utils/token-manager";
-import prisma from "@/lib/prism";
 import { NextResponse } from "next/server";
+import { updateComment } from "@/lib/services/commentServices/updateComment";
+import { deleteComment } from "@/lib/services/commentServices/deleteComment";
 
 export async function PUT(
   req: Request,
@@ -14,30 +15,21 @@ export async function PUT(
     const { id } = await params;
     const { content } = await req.json();
 
-    const foundComment = await prisma.comment.findUnique({
-      where: { id },
-    });
+    const result = await updateComment(id, content, session?.userId);
 
-    if (!foundComment)
+    if (result.notFound)
       return NextResponse.json(
         { message: "Comment Not Found" },
         { status: 404 }
       );
 
-    if (foundComment.authorId !== session.userId)
+    if (result.forbidden)
       return NextResponse.json(
-        { message: "You are not allowed to edit this comment" },
+        { message: "Not allowed to edit this comment" },
         { status: 403 }
       );
 
-    const updatedComment = await prisma.comment.update({
-      where: { id },
-      data: {
-        content,
-      },
-    });
-
-    return NextResponse.json(updatedComment, { status: 200 });
+    return NextResponse.json(result.updatedComment, { status: 200 });
   } catch (error) {
     return NextResponse.json(
       { message: "Something went wrong", error },
@@ -56,26 +48,15 @@ export async function DELETE(
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
     const { id } = await params;
+    const result = await deleteComment(id, session.userId);
 
-    const foundComment = await prisma.comment.findUnique({
-      where: { id },
-    });
-
-    if (!foundComment)
+    if (result.notFound)
       return NextResponse.json(
         { message: "Comment Not Found" },
         { status: 404 }
       );
-
-    if (foundComment.authorId !== session.userId)
-      return NextResponse.json(
-        { message: "You are not allowed to edit this comment" },
-        { status: 403 }
-      );
-
-    await prisma.comment.delete({
-      where: { id },
-    });
+    if (result.forbidden)
+      return NextResponse.json({ message: "Not allowed" }, { status: 403 });
 
     return NextResponse.json(
       { message: "Comment deleted successfully" },

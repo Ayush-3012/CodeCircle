@@ -9,29 +9,32 @@ export const getCommentsByPost = async (postId: string) => {
   }
 };
 
-export const addCommentToPost = async ({
-  postId,
-  content,
-}: {
-  postId: string;
-  content: string;
-}) => {
-  const res = await axios.post(`/comment/create`, { postId, content });
-  return res.data;
+export const addCommentToPost = async (postId: string, content: string) => {
+  try {
+    const res = await axios.post(`/comment/create`, { postId, content });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 };
 
-export const editComment = async ({
-  id,
-  content,
-}: {
-  id: string;
-  content: string;
-}) => {
-  const res = await axios.put(`/comment/${id}`, { content });
-  return res.data;
+export const updateComment = async (commentId: string, content: string) => {
+  try {
+    const res = await axios.put(`/comment/${commentId}`, { content });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 };
 
 export const deleteComment = async (id: string) => {
-  const res = await axios.delete(`/comment/${id}`);
-  return res.data;
+  try {
+    const res = await axios.delete(`/comment/${id}`);
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 };

@@ -2,16 +2,24 @@ import axios from "@/lib/axios";
 import { RegisterFormData } from "@/utils/types/users";
 
 export const registerUser = async (formData: RegisterFormData) => {
-  const res = await axios.post(`/auth/register`, formData);
-  return res.data;
+  try {
+    const res = await axios.post(`/auth/register`, formData);
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
 };
 
-export const loginUser = async (FormData: {
+export const loginUser = async (formData: {
   email: string;
   password: string;
 }) => {
-  const res = await axios.post(`/auth/login`, FormData);
-  return res.data;
+  try {
+    const res = await axios.post(`/auth/login`, formData);
+    return res.data;
+  } catch (err) {
+    throw err;
+  }
 };
 
 export const isUserLoggedIn = async () => {
@@ -19,11 +27,15 @@ export const isUserLoggedIn = async () => {
     const res = await axios.get("/auth/me");
     return res.data;
   } catch (error) {
-    return error;
+    throw error;
   }
 };
 
 export const logoutUser = async () => {
-  const res = await axios.post("/auth/logout");
-  return res.data;
+  try {
+    const res = await axios.post("/auth/logout");
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
 };

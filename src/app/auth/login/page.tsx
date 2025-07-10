@@ -1,3 +1,5 @@
+// CLIENT COMPONENT FOR LOGIN
+
 "use client";
 
 import { setUser } from "@/lib/redux/slices/authSlice";

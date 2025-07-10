@@ -1,3 +1,4 @@
+// CLIENT COMPONENT FOR REGISTER
 "use client";
 
 import RegisterForm from "@/components/RegisterForm";
@@ -21,7 +22,7 @@ const RegisterPage = () => {
   return (
     <>
       <div className="max-w-xl border rounded mx-auto flex items-center justify-center mt-2">
-        <RegisterForm onSubmit={handleRegister} />
+        <RegisterForm onSubmit={handleRegister} />  {/* USING REGISTER FORM  */}
       </div>
     </>
   );

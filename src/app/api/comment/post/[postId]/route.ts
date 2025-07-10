@@ -1,6 +1,6 @@
 // GET ALL COMMNENTS BY POST ID
 
-import prisma from "@/lib/prism";
+import { getCommentsByPostId } from "@/lib/services/commentServices/getCommentsByPostId";
 import { verifyToken } from "@/utils/token-manager";
 import { NextResponse } from "next/server";
 
@@ -14,11 +14,8 @@ export async function GET(
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
     const { postId } = await params;
-    const comments = await prisma.comment.findMany({
-      where: { postId },
-      include: { author: true },
-      orderBy: { createdAt: "desc" },
-    });
+    const comments = await getCommentsByPostId(postId);
+
     return NextResponse.json({ comments }, { status: 200 });
   } catch (error) {
     return NextResponse.json(

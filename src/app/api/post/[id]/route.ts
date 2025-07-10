@@ -1,5 +1,6 @@
-import cloudinary from "@/lib/cloudinary";
-import prisma from "@/lib/prism";
+import { deletePost } from "@/lib/services/postServices/deletePost";
+import { getPostById } from "@/lib/services/postServices/getPostById";
+import { updatePost } from "@/lib/services/postServices/updatePost";
 import { verifyToken } from "@/utils/token-manager";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -13,21 +14,13 @@ export async function GET(
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
     const { id } = await params;
-    const foundPost = await prisma.post.findUnique({
-      where: { id },
-      include: {
-        author: {
-          select: { id: true, name: true, username: true, image: true },
-        },
-      },
-    });
+    const foundPost = await getPostById(id);
 
     if (!foundPost)
       return NextResponse.json({ message: "Post not found" }, { status: 404 });
 
     return NextResponse.json({ foundPost }, { status: 200 });
   } catch (error) {
-    console.error("GET SINGLE POST ERROR:", error);
     return NextResponse.json(
       { message: "Something went wrong", error },
       { status: 500 }
@@ -45,44 +38,19 @@ export async function PUT(
 
   const formData = await req.formData();
 
+  const { id } = await params;
   const content = formData.get("content")?.toString() || "";
   const file = formData.get("media") as File | null;
 
-  let mediaUrl: string | null = null;
-  let mediaType: string | null = null;
-
-  if (file) {
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-
-    const uploaded = await new Promise<any>((resolve, reject) => {
-      const uploadStream = cloudinary.uploader.upload_stream(
-        { resource_type: "auto" },
-        (error, result) => {
-          if (error) return reject(error);
-          resolve(result);
-        }
-      );
-      uploadStream.end(buffer);
-    });
-
-    mediaUrl = uploaded.secure_url;
-    mediaType = uploaded.resource_type;
-  }
-
-  const post = await prisma.post.findUnique({ where: { id: await params.id } });
-  if (!post || post.authorId !== session.userId) {
-    return NextResponse.json({ message: "Forbidden" }, { status: 403 });
-  }
-
-  const updatedPost = await prisma.post.update({
-    where: { id: await params.id },
-    data: {
-      content,
-      mediaUrl: mediaUrl || post.mediaUrl,
-      mediaType: mediaType || post.mediaType,
-    },
+  const updatedPost = await updatePost({
+    id,
+    content,
+    file,
+    userId: session.userId,
   });
+
+  if (!updatedPost)
+    return NextResponse.json({ message: "Forbidden" }, { status: 403 });
 
   return NextResponse.json(
     { message: "Post updated", updatedPost },
@@ -95,17 +63,17 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   const session = await verifyToken();
-  if (!session || !session.userId)
+  if (!session || !session?.userId)
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
-  const post = await prisma.post.findUnique({ where: { id: await params.id } });
-  if (!post)
+  const { id } = await params;
+  const result = await deletePost(id, session?.userId);
+
+  if (result.notFound)
     return NextResponse.json({ message: "Post not found" }, { status: 404 });
 
-  if (post.authorId !== session.userId)
+  if (result.forbidden)
     return NextResponse.json({ message: "Forbidden" }, { status: 403 });
-
-  await prisma.post.delete({ where: { id: params.id } });
 
   return NextResponse.json(
     { message: "Post deleted successfully" },

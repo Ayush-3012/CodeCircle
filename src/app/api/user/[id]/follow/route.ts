@@ -1,6 +1,6 @@
 import { verifyToken } from "@/utils/token-manager";
-import prisma from "@/lib/prism";
 import { NextResponse } from "next/server";
+import { toggleFollow } from "@/lib/services/userServices/toggleFollow";
 
 export async function POST(
   _req: Request,
@@ -14,40 +14,19 @@ export async function POST(
     const currentUserId = session?.userId;
     const { id: targetUserId } = await params;
 
-    if (currentUserId === targetUserId) {
+    const result = await toggleFollow(currentUserId, targetUserId);
+
+    if (result.selfFollow) {
       return NextResponse.json(
         { message: "You cannot follow yourself" },
         { status: 400 }
       );
     }
 
-    const existingFollow = await prisma.follow.findMany({
-      where: {
-        followerId: currentUserId,
-        followingId: targetUserId,
-      },
-    });
-
-    if (existingFollow.length > 0) {
-      // unfollow
-      await prisma.follow.deleteMany({
-        where: {
-          followerId: currentUserId,
-          followingId: targetUserId,
-        },
-      });
-
-      return NextResponse.json({ message: "Unfollowed" }, { status: 200 });
-    } else {
-      // follow
-      await prisma.follow.create({
-        data: {
-          followerId: currentUserId,
-          followingId: targetUserId,
-        },
-      });
-      return NextResponse.json({ message: "Followed" }, { status: 200 });
-    }
+    return NextResponse.json(
+      { message: result.followed ? "Followed" : "Unfollowed" },
+      { status: 200 }
+    );
   } catch (error) {
     console.log(error);
     return NextResponse.json({ error }, { status: 501 });
