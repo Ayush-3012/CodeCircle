@@ -2,23 +2,19 @@
 
 import PostCard from "@/components/PostCard";
 import PostForm from "@/components/PostForm";
-import { getAllPosts } from "@/services/postService";
-import { getCurrentUser } from "@/utils/getCurrentUser";
+import { getCurrentUser } from "@/lib/services/authSerivces/getCurrentUser";
+import { getAllPosts } from "@/lib/services/postServices/getAllPosts";
 import { verifyToken } from "@/utils/token-manager";
-import { redirect } from "next/dist/server/api-utils";
-import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 export default async function FeedPage() {
   const session = await verifyToken();
-  if (!session || !session.userId) {
-    return <p>Please log in to see the feed.</p>;
-  }
-  // const cookieStore = cookies();
-  // const token = (await cookieStore).get("auth_token")?.value;
-  let posts = [];
+  if (!session || !session.userId) redirect("/auth/login");
+
+  let posts: any[] = [];
+
   try {
-    const res = await getAllPosts();
-    posts = res?.allPosts || [];
+    posts = await getAllPosts();
   } catch (err) {
     console.error("Failed to fetch posts:", err);
   }
@@ -38,7 +34,7 @@ export default async function FeedPage() {
               id={post.id}
               content={post.content}
               media={post.mediaUrl}
-              likes={post.likes}
+              initialLikes={post.likes}
               createdAt={post.createdAt}
               author={{
                 id: post.author.id,
@@ -46,7 +42,7 @@ export default async function FeedPage() {
                 username: post.author.username,
                 image: post.author.image,
               }}
-              currentUserId={user?.userId || ""}
+              currentUserId={user?.id || ""}
               showCommentCount={true}
             />
           ))

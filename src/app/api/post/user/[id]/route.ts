@@ -1,4 +1,4 @@
-import prisma from "@/lib/prism";
+import { getAllPostsByUser } from "@/lib/services/postServices/getAllPostsByUser";
 import { verifyToken } from "@/utils/token-manager";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -12,11 +12,7 @@ export async function GET(
 
   const { id } = await params;
 
-  const posts = await prisma.post.findMany({
-    where: { authorId: id },
-    orderBy: { createdAt: "desc" },
-    include: { author: true },
-  });
+  const posts = await getAllPostsByUser(id);
 
   return NextResponse.json({ posts });
 }

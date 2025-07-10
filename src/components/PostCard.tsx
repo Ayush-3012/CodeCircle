@@ -1,27 +1,28 @@
 "use client";
 
-import { deletePost, toggleLikePost } from "@/services/postService";
+import { deletePost } from "@/services/postService";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import PostForm from "./PostForm";
 import Link from "next/link";
-import CommentSection from "./CommentSection";
+import PostInteraction from "./PostInteraction";
+import { defaultUserImage } from "@/utils/defautUserImage";
 
 type PostCardProps = {
   id: string;
   content: string;
   createdAt: string;
   media: string | null;
-  likes: string[];
+  initialLikes: string[];
   author: {
     id: string;
     name: string;
     username: string;
-    image: string;
+    image: string | null;
   };
   currentUserId: string;
-  showCommentCount?: boolean;
+  showCommentCount: boolean;
 };
 
 const PostCard = ({
@@ -29,15 +30,13 @@ const PostCard = ({
   content,
   createdAt,
   media,
-  likes: initialLikes,
+  initialLikes,
   author,
   currentUserId,
   showCommentCount,
 }: PostCardProps) => {
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
-  const [likes, setLikes] = useState<string[]>(initialLikes);
-  const hasLiked = likes.includes(currentUserId);
 
   const handleDelete = async () => {
     if (confirm("Are you sure you want to delete this post?")) {
@@ -46,28 +45,15 @@ const PostCard = ({
     }
   };
 
-  const handleLike = async () => {
-    try {
-      const res = await toggleLikePost(id);
-      if (res?.updatedPost?.likes) {
-        setLikes(res.updatedPost.likes);
-      }
-    } catch (err) {
-      console.error("Like toggle failed", err);
-    }
-  };
-
   return (
     <>
       <div className="border rounded p-4 shadow-sm bg-white dark:bg-gray-900">
+        {/* POSTED BY - AUTHOR DETAILS */}
         <Link href={`/profile/${author.id}`}>
           <div className="flex items-center gap-3 mb-2">
             <Image
-              src={
-                author.image ||
-                "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740"
-              }
-              alt={author.name}
+              src={author?.image || defaultUserImage}
+              alt={author?.name}
               width={50}
               height={50}
               className="w-10 h-10 rounded-full object-cover"
@@ -81,10 +67,11 @@ const PostCard = ({
           </div>
         </Link>
 
+        {/* POST ITSELF EDITING OR VIEWING */}
         {isEditing ? (
           <PostForm
             initialContent={content}
-            initialMediaUrl={media || ""}
+            initialMediaUrl={media || defaultUserImage}
             isEditing={true}
             postId={id}
             onSuccess={() => setIsEditing(false)}
@@ -101,30 +88,23 @@ const PostCard = ({
                   height={200}
                   width={200}
                   alt="media"
-                  className="bg-black mt-2 w-auto h-auto rounded-lg"
+                  className="bg-black w-auto h-auto mt-2 rounded-lg"
                 />
               )}
-              <p className="text-xs text-gray-500 self-start ml-4 mt-2">
-                {new Date(createdAt).toLocaleString()}
-              </p>
             </Link>
-            <div className="flex items-center gap-4 mt-2 self-start ml-4">
-              <button
-                onClick={handleLike}
-                className={`${
-                  hasLiked ? "text-pink-400" : "text-white"
-                } hover:text-pink-600 cursor-pointer text-sm`}
-              >
-                {hasLiked ? "❤️ Unlike" : "🤍 Like"}
-              </button>
-              <span className="text-sm text-gray-500">
-                {likes.length} Likes
-              </span>
-              {showCommentCount && (
-                <CommentSection postId={id} fromFeed={true} />
-              )}
-            </div>
+            <p className="text-xs text-gray-500 self-start ml-4 mt-2">
+              {new Date(createdAt).toLocaleString()}
+            </p>
 
+            {/* POST LIKES OR COMMENT COUNT */}
+            <PostInteraction
+              initialLikes={initialLikes}
+              currentUserId={currentUserId}
+              postId={id}
+              showCommentCount={showCommentCount}
+            />
+
+            {/* POST INTERACTION -> EDIT OR DELETE */}
             {currentUserId === author.id && (
               <div className="flex gap-4 mt-2 self-start ml-4">
                 <button

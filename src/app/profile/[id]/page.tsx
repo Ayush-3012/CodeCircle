@@ -1,10 +1,11 @@
-import FollowButton from "@/components/FollowButton";
-import { getFollowerList, getFollowingList } from "@/services/followService";
-import { getPostsByUser, getUserProfile } from "@/services/userService";
+import FollowSection from "@/components/FollowSection";
+import { getAllPostsByUser } from "@/lib/services/postServices/getAllPostsByUser";
+import { getUserProfile } from "@/lib/services/userServices/getUserProfile";
+import { defaultUserImage } from "@/utils/defautUserImage";
 import { verifyToken } from "@/utils/token-manager";
-import { cookies } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { FaCode, FaGithub, FaLinkedin } from "react-icons/fa";
 
 export default async function ProfilePage({
@@ -12,97 +13,71 @@ export default async function ProfilePage({
 }: {
   params: { id: string };
 }) {
-  const cookieStore = cookies();
-  const token = (await cookieStore).get("auth_token")?.value;
   const session = await verifyToken();
-  const loggedInUserId = session?.userId;
+  if (!session || !session.userId) redirect("/auth/login");
+
   const { id } = await params;
+  const currentUserId = session?.userId;
 
-  const { foundUser } = await getUserProfile(id, token);
-  const postData = await getPostsByUser(foundUser?.id, token);
-  const posts = postData?.posts;
+  const [user, userPosts] = await Promise.all([
+    getUserProfile(id),
+    getAllPostsByUser(id),
+  ]);
 
-  const followersData = await getFollowerList(foundUser?.id, token);
-  const followingData = await getFollowingList(foundUser?.id, token);
-
-  const isFollowed = followersData?.followers?.some(
-    (follower: any) => follower?.follower?.id === loggedInUserId
-  );
+  const userId = user?.id || id;
 
   return (
-    <div className="max-w-7xl mx-auto mt-8 px-4 space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="max-w-7xl mx-auto mt-8 px-4 space-y-6 ">
+      <div className="flex items-center justify-between ">
         <div className="flex items-center gap-4">
           <Image
-            src={
-              foundUser?.image ||
-              "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740"
-            }
-            alt={foundUser?.name}
+            src={user?.image || defaultUserImage}
+            alt={user?.name || "User Image"}
             width={100}
             height={100}
             className="w-25 h-25 rounded-full object-cover"
           />
           <div>
-            <h2 className="text-2xl font-semibold">{foundUser?.name}</h2>
-            <p className="text-gray-400">@{foundUser?.username}</p>
+            <h2 className="text-2xl font-semibold">{user?.name}</h2>
+            <p className="text-gray-400">@{user?.username}</p>
           </div>
         </div>
 
-        <div className="flex gap-6 mt-2 text-gray-300 text-xl">
-          <Link
-            href={`/profile/${foundUser?.id}/followList?type=followers`}
-            className="hover:underline"
-          >
-            Followers: {followersData?.followers?.length}
-          </Link>
-          <span>|</span>
-          <Link
-            href={`/profile/${foundUser?.id}/followList?type=following`}
-            className="hover:underline"
-          >
-            Following: {followingData?.following?.length}
-          </Link>
-        </div>
+        <FollowSection currentUserId={currentUserId} targetUserId={userId} />
 
         <div className="flex gap-4 items-center justify-center">
-          {foundUser.githubUrl && (
-            <Link href={foundUser?.githubUrl} target="_blank">
+          {user?.githubUrl && (
+            <Link href={user.githubUrl} target="_blank">
               <FaGithub className="text-4xl text-fuchsia-400 hover:text-emerald-400" />
             </Link>
           )}
-          {foundUser.linkedInUrl && (
-            <Link href={foundUser?.linkedInUrl} target="_blank">
+          {user?.linkedInUrl && (
+            <Link href={user.linkedInUrl} target="_blank">
               <FaLinkedin className="text-4xl text-fuchsia-400 hover:text-emerald-400" />
             </Link>
           )}
-          {foundUser.portfolioUrl && (
-            <Link href={foundUser?.portfolioUrl} target="_blank">
+          {user?.portfolioUrl && (
+            <Link href={user.portfolioUrl} target="_blank">
               <FaCode className="text-4xl text-fuchsia-400 hover:text-emerald-400" />
             </Link>
           )}
         </div>
       </div>
 
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center p-2">
         <div className="text-gray-200">
-          <p>Total Posts: {posts?.length}</p>
+          <p>Total Posts: {userPosts?.length}</p>
         </div>
         <div>
-          <p className="text-lg font-serif">{foundUser?.bio}</p>
+          <p className="text-lg font-serif">{user?.bio}</p>
         </div>
-        {loggedInUserId === foundUser?.id ? (
+        {currentUserId === userId && (
           <Link
-            href={`/edit-profile/`}
+            href={`/edit-profile`}
             className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500 transition"
           >
             Edit Profile
           </Link>
-        ) : (
-          <FollowButton
-            isFollowedInitially={isFollowed}
-            targetUserId={foundUser?.id}
-          />
         )}
       </div>
 
@@ -110,7 +85,7 @@ export default async function ProfilePage({
 
       <h3 className="text-xl text-white font-semibold mb-2">Your Posts</h3>
       <div className="grid max-md:grid-cols-2 grid-cols-4 max-lg:grid-cols-3 max-sm:grid-cols-1 max-sm:mx-4 w-full gap-8">
-        {posts?.map((post: any) => (
+        {userPosts?.map((post: any) => (
           <Link
             href={`/post/${post.id}`}
             key={post.id}

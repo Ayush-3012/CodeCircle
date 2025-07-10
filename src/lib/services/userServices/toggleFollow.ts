@@ -13,7 +13,7 @@ export async function toggleFollow(
     },
   });
 
-  if (existingFollow) {
+  if (existingFollow.length > 0) {
     await prisma.follow.deleteMany({
       where: {
         followerId: currentUserId,

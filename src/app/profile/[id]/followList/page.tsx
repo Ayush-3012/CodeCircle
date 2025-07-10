@@ -1,4 +1,8 @@
-import FollowModal from "@/components/FollowModal";
+import FollowListClient from "@/components/FollowListClient";
+import { getFollowers } from "@/lib/services/userServices/getFollowers";
+import { getFollowings } from "@/lib/services/userServices/getFollowings";
+import { verifyToken } from "@/utils/token-manager";
+import { redirect } from "next/navigation";
 
 interface FollowListPageProps {
   params: { id: string };
@@ -9,12 +13,23 @@ export default async function FollowListPage({
   params,
   searchParams,
 }: FollowListPageProps) {
+  const session = await verifyToken();
+  if (!session || !session.userId) redirect("/auth/login");
+
   const { id } = await params;
   const { type } = await searchParams;
 
+  const list =
+    type === "followers" ? await getFollowers(id) : await getFollowings(id);
+
   return (
     <div className="p-4">
-      <FollowModal userId={id} type={type} />
+      <h2 className="text-2xl font-semibold mb-4 capitalize">{type} :</h2>
+      <FollowListClient
+        list={list}
+        type={type}
+        currentUserId={session.userId}
+      />
     </div>
   );
 }

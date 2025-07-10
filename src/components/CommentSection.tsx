@@ -2,13 +2,25 @@
 
 import {
   addCommentToPost,
-  editComment,
+  updateComment,
   getCommentsByPost,
   deleteComment,
 } from "@/services/commentService";
+import { defaultUserImage } from "@/utils/defautUserImage";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+
+type Comment = {
+  id: string;
+  content: string;
+  createdAt: string;
+  authorId: string;
+  author: {
+    name: string;
+    image?: string;
+  };
+};
 
 const CommentSection = ({
   postId,
@@ -17,9 +29,9 @@ const CommentSection = ({
   postId: string;
   fromFeed: boolean;
 }) => {
-  const { user } = useSelector((state) => state.auth);
+  const { user } = useSelector((state: any) => state.auth);
 
-  const [comments, setComments] = useState<any[]>([]);
+  const [comments, setComments] = useState<Comment[]>([]);
   const [commentText, setCommentText] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editText, setEditText] = useState("");
@@ -31,14 +43,14 @@ const CommentSection = ({
 
   const handleSubmit = async () => {
     if (!commentText.trim()) return;
-    await addCommentToPost({ postId, content: commentText });
+    await addCommentToPost(postId, commentText);
     setCommentText("");
     fetchComments();
   };
 
   const handleEditSubmit = async (id: string) => {
     if (!editText.trim()) return;
-    await editComment({ id, content: editText });
+    await updateComment(id, editText);
     setEditingId(null);
     fetchComments();
   };
@@ -62,7 +74,7 @@ const CommentSection = ({
     <>
       <div className="p-4 border-t mt-4">
         <h3 className="font-semibold mb-2 text-white">
-          {comments?.length} Comments
+          Comments: {comments?.length}
         </h3>
 
         <div className="flex gap-2 mb-4">
@@ -74,7 +86,12 @@ const CommentSection = ({
           />
           <button
             onClick={handleSubmit}
-            className="bg-blue-600 cursor-pointer hover:bg-blue-400 text-white px-4 py-1 rounded"
+            disabled={!commentText.trim()}
+            className={`bg-blue-600 text-white px-4 py-1 rounded ${
+              !commentText.trim()
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:bg-blue-400 cursor-pointer"
+            }`}
           >
             Post
           </button>
@@ -89,10 +106,7 @@ const CommentSection = ({
               <div className="flex justify-between items-center">
                 <div className="flex gap-1 justify-between items-center">
                   <Image
-                    src={
-                      c?.author?.image ||
-                      "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740"
-                    }
+                    src={c?.author?.image || defaultUserImage}
                     alt={c?.author?.name}
                     width={200}
                     height={200}
