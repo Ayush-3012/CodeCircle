@@ -46,7 +46,7 @@ const RegisterForm = ({
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 bg-black p-6 rounded shadow-md w-full max-w-md"
+      className="space-y-4 bg-black px-6 py-4 rounded shadow-md w-full max-w-md"
     >
       <h2 className="text-xl font-semibold mb-4">
         {isEdit ? "Edit Profile" : "Register"}

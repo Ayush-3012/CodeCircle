@@ -10,7 +10,7 @@ interface Props {
   type: "followers" | "following";
 }
 
-const FollowModel = ({ userId, type }: Props) => {
+const FollowModal = ({ userId, type }: Props) => {
   const [list, setList] = useState<any[]>([]);
 
   useEffect(() => {
@@ -32,7 +32,7 @@ const FollowModel = ({ userId, type }: Props) => {
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold mb-4 capitalize">{type}</h2>
+      <h2 className="text-2xl font-semibold mb-4 capitalize">{type} : </h2>
       <div className="space-y-4">
         {list?.map((entry: any) => {
           const user =
@@ -45,7 +45,10 @@ const FollowModel = ({ userId, type }: Props) => {
               className="flex items-center gap-4 p-2 bg-gray-600 hover:bg-gray-800 rounded"
             >
               <Image
-                src={user?.image || "/default.png"}
+                src={
+                  user?.image ||
+                  "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740"
+                }
                 alt={user?.name}
                 width={200}
                 height={200}
@@ -63,4 +66,4 @@ const FollowModel = ({ userId, type }: Props) => {
   );
 };
 
-export default FollowModel;
+export default FollowModal;

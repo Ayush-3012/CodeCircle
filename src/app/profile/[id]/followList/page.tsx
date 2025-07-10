@@ -1,4 +1,4 @@
-import FollowModel from "@/components/FollowModal";
+import FollowModal from "@/components/FollowModal";
 
 interface FollowListPageProps {
   params: { id: string };
@@ -14,7 +14,7 @@ export default async function FollowListPage({
 
   return (
     <div className="p-4">
-      <FollowModel userId={id} type={type} />
+      <FollowModal userId={id} type={type} />
     </div>
   );
 }

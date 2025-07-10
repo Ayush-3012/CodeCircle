@@ -26,7 +26,7 @@ export default async function ProfilePage({
   const followingData = await getFollowingList(foundUser?.id, token);
 
   const isFollowed = followersData?.followers?.some(
-    (follower: any) => follower?.id === loggedInUserId
+    (follower: any) => follower?.follower?.id === loggedInUserId
   );
 
   return (
@@ -34,7 +34,10 @@ export default async function ProfilePage({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Image
-            src={foundUser?.image}
+            src={
+              foundUser?.image ||
+              "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740"
+            }
             alt={foundUser?.name}
             width={100}
             height={100}

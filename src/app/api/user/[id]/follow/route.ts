@@ -30,8 +30,11 @@ export async function POST(
 
     if (existingFollow.length > 0) {
       // unfollow
-      await prisma.follow.delete({
-        where: { id: targetUserId },
+      await prisma.follow.deleteMany({
+        where: {
+          followerId: currentUserId,
+          followingId: targetUserId,
+        },
       });
 
       return NextResponse.json({ message: "Unfollowed" }, { status: 200 });

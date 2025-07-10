@@ -20,7 +20,7 @@ const RegisterPage = () => {
 
   return (
     <>
-      <div className="max-w-4xl mx-auto mt-10 p-4 border rounded">
+      <div className="max-w-xl border rounded mx-auto flex items-center justify-center mt-2">
         <RegisterForm onSubmit={handleRegister} />
       </div>
     </>

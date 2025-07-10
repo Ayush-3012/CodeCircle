@@ -6,9 +6,11 @@ import { useState } from "react";
 const FollowButton = ({
   isFollowedInitially,
   targetUserId,
+  onFollowChange,
 }: {
   isFollowedInitially: boolean;
   targetUserId: string;
+  onFollowChange?: (isNowFollowed: boolean) => void;
 }) => {
   const [isFollowed, setIsFollowed] = useState(isFollowedInitially);
   const [loading, setLoading] = useState(false);
@@ -17,7 +19,10 @@ const FollowButton = ({
     try {
       setLoading(true);
       const res = await toggleFollow(targetUserId);
-      setIsFollowed(res.followed);
+      if (res.message === "Followed") setIsFollowed(true);
+      else if (res.message === "Unfollowed") setIsFollowed(false);
+
+      onFollowChange?.(followed);
     } catch (err) {
       console.error("Follow action failed", err);
     } finally {

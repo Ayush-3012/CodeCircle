@@ -24,10 +24,7 @@ const LoginPage = () => {
         router.push("/feed");
       }
     } catch (error: any) {
-      console.error(
-        "❌ Error:",
-        error?.response?.data?.message || error?.message
-      );
+      console.error(error);
     } finally {
       setLoading(false);
     }

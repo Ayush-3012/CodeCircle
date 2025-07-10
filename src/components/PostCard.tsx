@@ -60,21 +60,26 @@ const PostCard = ({
   return (
     <>
       <div className="border rounded p-4 shadow-sm bg-white dark:bg-gray-900">
-        <div className="flex items-center gap-3 mb-2">
-          <Image
-            src={author.image}
-            alt={author.name}
-            width={50}
-            height={50}
-            className="w-10 h-10 rounded-full"
-          />
-          <div>
-            <p className="font-semibold text-gray-800 dark:text-white">
-              {author.name}
-            </p>
-            <p className="text-sm text-gray-500">@{author.username}</p>
+        <Link href={`/profile/${author.id}`}>
+          <div className="flex items-center gap-3 mb-2">
+            <Image
+              src={
+                author.image ||
+                "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740"
+              }
+              alt={author.name}
+              width={50}
+              height={50}
+              className="w-10 h-10 rounded-full object-cover"
+            />
+            <div>
+              <p className="font-semibold text-gray-800 dark:text-white">
+                {author.name}
+              </p>
+              <p className="text-sm text-gray-500">@{author.username}</p>
+            </div>
           </div>
-        </div>
+        </Link>
 
         {isEditing ? (
           <PostForm

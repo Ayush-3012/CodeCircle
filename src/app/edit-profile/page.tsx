@@ -53,7 +53,7 @@ const EditProfilePage = () => {
   if (!initialData) return <p className="text-center text-white">Loading...</p>;
 
   return (
-    <div className="max-w-xl mx-auto p-6 mt-10">
+    <div className="max-w-xl border rounded mx-auto p-10 mt-10">
       <RegisterForm
         initialData={initialData}
         onSubmit={handleUpdate}
