@@ -6,8 +6,9 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import PostForm from "./PostForm";
 import Link from "next/link";
-import PostInteraction from "./PostInteraction";
+import PostInteraction from "../post-component/PostInteraction";
 import { defaultUserImage } from "@/utils/defautUserImage";
+import toast from "react-hot-toast";
 
 type PostCardProps = {
   id: string;
@@ -41,6 +42,7 @@ const PostCard = ({
   const handleDelete = async () => {
     if (confirm("Are you sure you want to delete this post?")) {
       await deletePost(id);
+      toast.success("Post Deleted");
       router.refresh();
     }
   };

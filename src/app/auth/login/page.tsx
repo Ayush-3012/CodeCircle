@@ -6,6 +6,7 @@ import { setUser } from "@/lib/redux/slices/authSlice";
 import { loginUser } from "@/services/authService";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 
 const LoginPage = () => {
@@ -21,12 +22,14 @@ const LoginPage = () => {
     setLoading(true);
     try {
       const res = await loginUser({ email, password });
-      if (res.userId) {
-        dispatch(setUser(res.userId));
+      if (res) {
+        dispatch(setUser(res?.userId));
+        toast.success(res?.message);
         router.push("/feed");
       }
     } catch (error: any) {
       console.error(error);
+      toast.error("Something went wrong");
     } finally {
       setLoading(false);
     }

@@ -1,7 +1,7 @@
 //  SERVER COMPONENT - FEED
 
-import PostCard from "@/components/PostCard";
-import PostForm from "@/components/PostForm";
+import PostCard from "@/components/post-component/PostCard";
+import PostForm from "@/components/post-component/PostForm";
 import { getCurrentUser } from "@/lib/services/authSerivces/getCurrentUser";
 import { getAllPosts } from "@/lib/services/postServices/getAllPosts";
 import { verifyToken } from "@/utils/token-manager";

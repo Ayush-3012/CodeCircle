@@ -9,6 +9,7 @@ import {
 import { defaultUserImage } from "@/utils/defautUserImage";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 
 type Comment = {
@@ -41,9 +42,11 @@ const CommentSection = ({
     setComments(data.comments);
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     if (!commentText.trim()) return;
     await addCommentToPost(postId, commentText);
+    toast.success("Comment Added");
     setCommentText("");
     fetchComments();
   };
@@ -51,12 +54,16 @@ const CommentSection = ({
   const handleEditSubmit = async (id: string) => {
     if (!editText.trim()) return;
     await updateComment(id, editText);
+    toast.success("Comment Updated");
     setEditingId(null);
     fetchComments();
   };
 
   const handleDelete = async (id: string) => {
-    await deleteComment(id);
+    if (confirm("Are you sure you want to delete this comment?")) {
+      await deleteComment(id);
+      toast.success("Comment Deleted");
+    }
     fetchComments();
   };
 
@@ -77,7 +84,7 @@ const CommentSection = ({
           Comments: {comments?.length}
         </h3>
 
-        <div className="flex gap-2 mb-4">
+        <form onSubmit={handleSubmit} className="flex gap-2 mb-4">
           <input
             value={commentText}
             onChange={(e) => setCommentText(e.target.value)}
@@ -85,7 +92,7 @@ const CommentSection = ({
             className="border px-3 py-1 rounded w-full bg-black text-white"
           />
           <button
-            onClick={handleSubmit}
+            type="submit"
             disabled={!commentText.trim()}
             className={`bg-blue-600 text-white px-4 py-1 rounded ${
               !commentText.trim()
@@ -95,7 +102,7 @@ const CommentSection = ({
           >
             Post
           </button>
-        </div>
+        </form>
 
         <div className="space-y-3">
           {comments.map((c) => (

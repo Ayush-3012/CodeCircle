@@ -5,11 +5,15 @@ import { useState } from "react";
 
 const FollowButton = ({
   isFollowedInitially,
-  targetUserId,
+  userId,
+  profileId,
+  currentUserId,
   onToggle,
 }: {
   isFollowedInitially: boolean;
-  targetUserId: string;
+  userId: string;
+  profileId: string;
+  currentUserId: string;
   onToggle?: () => void;
 }) => {
   const [isFollowed, setIsFollowed] = useState(isFollowedInitially);
@@ -18,7 +22,7 @@ const FollowButton = ({
   const handleToggle = async () => {
     try {
       setLoading(true);
-      const res = await toggleFollow(targetUserId);
+      const res = await toggleFollow(userId);
       if (res.message === "Followed") setIsFollowed(true);
       else if (res.message === "Unfollowed") setIsFollowed(false);
       onToggle?.();

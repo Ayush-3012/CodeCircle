@@ -1,6 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 import CommentSection from "@/components/CommentSection";
-import PostCard from "@/components/PostCard";
+import PostCard from "@/components/post-component/PostCard";
 import { verifyToken } from "@/utils/token-manager";
 import { getPostById } from "@/lib/services/postServices/getPostById";
 import { getCurrentUser } from "@/lib/services/authSerivces/getCurrentUser";

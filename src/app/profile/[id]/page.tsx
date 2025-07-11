@@ -1,4 +1,4 @@
-import FollowSection from "@/components/FollowSection";
+import FollowSection from "@/components/follow-component/FollowSection";
 import { getAllPostsByUser } from "@/lib/services/postServices/getAllPostsByUser";
 import { getUserProfile } from "@/lib/services/userServices/getUserProfile";
 import { defaultUserImage } from "@/utils/defautUserImage";
@@ -17,47 +17,46 @@ export default async function ProfilePage({
   if (!session || !session.userId) redirect("/auth/login");
 
   const { id } = await params;
-  const currentUserId = session?.userId;
 
-  const [user, userPosts] = await Promise.all([
+  const [profile, profilePosts] = await Promise.all([
     getUserProfile(id),
     getAllPostsByUser(id),
   ]);
 
-  const userId = user?.id || id;
-
+  const currentUserId = session?.userId;
+  const profileId = profile?.id || id;
   return (
     <div className="max-w-7xl mx-auto mt-8 px-4 space-y-6 ">
       <div className="flex items-center justify-between ">
         <div className="flex items-center gap-4">
           <Image
-            src={user?.image || defaultUserImage}
-            alt={user?.name || "User Image"}
+            src={profile?.image || defaultUserImage}
+            alt={profile?.name || "User Image"}
             width={100}
             height={100}
             className="w-25 h-25 rounded-full object-cover"
           />
           <div>
-            <h2 className="text-2xl font-semibold">{user?.name}</h2>
-            <p className="text-gray-400">@{user?.username}</p>
+            <h2 className="text-2xl font-semibold">{profile?.name}</h2>
+            <p className="text-gray-400">@{profile?.username}</p>
           </div>
         </div>
 
-        <FollowSection currentUserId={currentUserId} targetUserId={userId} />
+        <FollowSection currentUserId={currentUserId} profileId={profileId} />
 
         <div className="flex gap-4 items-center justify-center">
-          {user?.githubUrl && (
-            <Link href={user.githubUrl} target="_blank">
+          {profile?.githubUrl && (
+            <Link href={profile.githubUrl} target="_blank">
               <FaGithub className="text-4xl text-fuchsia-400 hover:text-emerald-400" />
             </Link>
           )}
-          {user?.linkedInUrl && (
-            <Link href={user.linkedInUrl} target="_blank">
+          {profile?.linkedInUrl && (
+            <Link href={profile.linkedInUrl} target="_blank">
               <FaLinkedin className="text-4xl text-fuchsia-400 hover:text-emerald-400" />
             </Link>
           )}
-          {user?.portfolioUrl && (
-            <Link href={user.portfolioUrl} target="_blank">
+          {profile?.portfolioUrl && (
+            <Link href={profile.portfolioUrl} target="_blank">
               <FaCode className="text-4xl text-fuchsia-400 hover:text-emerald-400" />
             </Link>
           )}
@@ -66,12 +65,12 @@ export default async function ProfilePage({
 
       <div className="flex justify-between items-center p-2">
         <div className="text-gray-200">
-          <p>Total Posts: {userPosts?.length}</p>
+          <p>Total Posts: {profilePosts?.length}</p>
         </div>
         <div>
-          <p className="text-lg font-serif">{user?.bio}</p>
+          <p className="text-lg font-serif">{profile?.bio}</p>
         </div>
-        {currentUserId === userId && (
+        {currentUserId === profileId && (
           <Link
             href={`/edit-profile`}
             className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500 transition"
@@ -85,7 +84,7 @@ export default async function ProfilePage({
 
       <h3 className="text-xl text-white font-semibold mb-2">Your Posts</h3>
       <div className="grid max-md:grid-cols-2 grid-cols-4 max-lg:grid-cols-3 max-sm:grid-cols-1 max-sm:mx-4 w-full gap-8">
-        {userPosts?.map((post: any) => (
+        {profilePosts?.map((post: any) => (
           <Link
             href={`/post/${post.id}`}
             key={post.id}

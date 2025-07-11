@@ -6,11 +6,11 @@ import { useEffect, useState } from "react";
 import FollowButton from "./FollowButton";
 
 type FollowSectionProps = {
-  targetUserId: string;
   currentUserId: string;
+  profileId: string;
 };
 
-const FollowSection = ({ targetUserId, currentUserId }: FollowSectionProps) => {
+const FollowSection = ({ currentUserId, profileId }: FollowSectionProps) => {
   const [followerCount, setFollowerCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
   const [isFollowed, setIsFollowed] = useState<boolean | null>(null);
@@ -19,7 +19,7 @@ const FollowSection = ({ targetUserId, currentUserId }: FollowSectionProps) => {
     let ignore = false;
 
     const fetchFollowData = async () => {
-      const followerData = await getFollowerList(targetUserId);
+      const followerData = await getFollowerList(profileId);
       if (!ignore) {
         setFollowerCount(followerData?.followers?.length || 0);
 
@@ -28,7 +28,7 @@ const FollowSection = ({ targetUserId, currentUserId }: FollowSectionProps) => {
         );
         setIsFollowed(found);
 
-        const followingData = await getFollowingList(targetUserId);
+        const followingData = await getFollowingList(profileId);
         setFollowingCount(followingData?.following?.length || 0);
       }
     };
@@ -38,7 +38,7 @@ const FollowSection = ({ targetUserId, currentUserId }: FollowSectionProps) => {
     return () => {
       ignore = true;
     };
-  }, [currentUserId, targetUserId]);
+  }, [currentUserId, profileId]);
 
   const handleToggleFollow = () => {
     setIsFollowed((prev) => {
@@ -55,24 +55,26 @@ const FollowSection = ({ targetUserId, currentUserId }: FollowSectionProps) => {
       <div className="flex items-center gap-2 justify-center flex-col">
         <div className="flex items-center gap-6 justify-center text-xl mt-2 text-gray-300">
           <Link
-            href={`/profile/${targetUserId}/followList?type=followers`}
+            href={`/profile/${profileId}/followList?type=followers`}
             className="hover:underline text-gray-300 text-xl"
           >
             Followers: {followerCount}
           </Link>
           <span>|</span>
           <Link
-            href={`/profile/${targetUserId}/followList?type=following`}
+            href={`/profile/${profileId}/followList?type=following`}
             className="hover:underline"
           >
             Following: {followingCount}
           </Link>
         </div>
 
-        {targetUserId !== currentUserId && (
+        {profileId !== currentUserId && (
           <FollowButton
             isFollowedInitially={isFollowed}
-            targetUserId={targetUserId}
+            userId={profileId}
+            profileId={profileId}
+            currentUserId={currentUserId}
             onToggle={handleToggleFollow}
           />
         )}

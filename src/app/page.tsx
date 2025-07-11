@@ -1,22 +1,33 @@
-// app/page.tsx
+// app/page.tsx // CLIENT COMPONENT FOR HOME PAGE
 "use client";
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { isUserLoggedIn } from "@/services/authService";
+import toast from "react-hot-toast";
 
 export default function Home() {
   const router = useRouter();
   useEffect(() => {
+    let ignore = false;
     const checkAuth = async () => {
       const res = await isUserLoggedIn();
-
-      if (res.userId) {
-        router.push("/feed");
+      if (!ignore) {
+        if (res?.user?.id) {
+          router.push("/feed");
+          // toast.success(res.message);
+        } 
+        // else {
+        //   toast.error(res.message);
+        // }
       }
     };
     checkAuth();
+
+    return () => {
+      ignore = true;
+    };
   }, [router]);
 
   return (

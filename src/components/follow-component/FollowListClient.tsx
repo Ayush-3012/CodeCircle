@@ -5,16 +5,19 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import FollowButton from "./FollowButton";
+import RemoveFollowerButton from "./RemoveFollowerButton";
 
 type FollowListClientProps = {
   list: any[];
   type: "followers" | "following";
+  profileId: string;
   currentUserId: string;
 };
 
 const FollowListClient = ({
   list,
   type,
+  profileId,
   currentUserId,
 }: FollowListClientProps) => {
   const [users, setUsers] = useState(list);
@@ -61,14 +64,24 @@ const FollowListClient = ({
               {type === "following" && user.id !== currentUserId && (
                 <FollowButton
                   isFollowedInitially={true}
-                  targetUserId={user.id}
-                  onToggle={() => handleUnfollow(user.id)}
+                  userId={user?.id}
+                  profileId={profileId}
+                  currentUserId={currentUserId}
+                  onToggle={() => handleUnfollow(user?.id)}
                 />
               )}
-              {/* Optional: Only for followers list - if you want to remove them */}
-              {/* {type === "followers" && (
-                <RemoveFollowerButton targetUserId={user.id} />
-              )} */}
+
+              {type === "followers" && profileId === currentUserId && (
+                <RemoveFollowerButton
+                  currentUserId={currentUserId}
+                  followerId={user.id}
+                  onRemoved={() =>
+                    setUsers((prev) =>
+                      prev.filter((e: any) => e.follower?.id !== user.id)
+                    )
+                  }
+                />
+              )}
             </div>
           );
         })}

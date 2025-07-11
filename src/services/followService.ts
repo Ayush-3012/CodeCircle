@@ -29,3 +29,13 @@ export const getFollowingList = async (userId: string) => {
     throw error;
   }
 };
+
+export const removeFollower = async (userId: string, followerId: string) => {
+  try {
+    const res = await axios.delete(`/user/${userId}/followers/${followerId}`);
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};

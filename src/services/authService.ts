@@ -27,7 +27,7 @@ export const isUserLoggedIn = async () => {
     const res = await axios.get("/auth/me");
     return res.data;
   } catch (error) {
-    throw error;
+    return error;
   }
 };
 
