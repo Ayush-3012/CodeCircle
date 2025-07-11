@@ -65,8 +65,8 @@ const FollowListClient = ({
                 <FollowButton
                   isFollowedInitially={true}
                   userId={user?.id}
-                  profileId={profileId}
-                  currentUserId={currentUserId}
+                  // profileId={profileId}
+                  // currentUserId={currentUserId}
                   onToggle={() => handleUnfollow(user?.id)}
                 />
               )}

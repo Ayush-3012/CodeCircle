@@ -73,8 +73,8 @@ const FollowSection = ({ currentUserId, profileId }: FollowSectionProps) => {
           <FollowButton
             isFollowedInitially={isFollowed}
             userId={profileId}
-            profileId={profileId}
-            currentUserId={currentUserId}
+            // profileId={profileId}
+            // currentUserId={currentUserId}
             onToggle={handleToggleFollow}
           />
         )}

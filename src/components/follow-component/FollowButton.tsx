@@ -6,14 +6,14 @@ import { useState } from "react";
 const FollowButton = ({
   isFollowedInitially,
   userId,
-  profileId,
-  currentUserId,
+  // profileId,
+  // currentUserId,
   onToggle,
 }: {
   isFollowedInitially: boolean;
   userId: string;
-  profileId: string;
-  currentUserId: string;
+  // profileId: string;
+  // currentUserId: string;
   onToggle?: () => void;
 }) => {
   const [isFollowed, setIsFollowed] = useState(isFollowedInitially);
