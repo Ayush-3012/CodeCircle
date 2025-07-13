@@ -4,6 +4,7 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
+// -------------- GENERATOR & DATASOURCE -----------------
 generator client {
   provider = "prisma-client-js"
   output   = "../generated/prisma"
@@ -14,6 +15,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// --------------------- MODELS --------------------------
 model User {
   id       String  @id @default(auto()) @map("_id") @db.ObjectId
   name     String
@@ -27,15 +29,17 @@ model User {
   linkedInUrl  String?
   portfolioUrl String?
 
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
 
   following Follow[] @relation("following")
   followers Follow[] @relation("followers")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime? @updatedAt
-
   posts    Post[]
   comments Comment[]
+
+  participants Participant[]
+  messages     Message[]
 }
 
 model Post {
@@ -46,12 +50,11 @@ model Post {
   authorId  String   @db.ObjectId
   likes     String[] @db.ObjectId
 
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
 
+  author   User      @relation(fields: [authorId], references: [id])
   comments Comment[]
-
-  author User @relation(fields: [authorId], references: [id])
 }
 
 model Comment {
@@ -60,7 +63,7 @@ model Comment {
   postId   String @db.ObjectId
   authorId String @db.ObjectId
 
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
 
   post   Post @relation(fields: [postId], references: [id])
@@ -72,9 +75,39 @@ model Follow {
   followerId  String @db.ObjectId
   followingId String @db.ObjectId
 
-  follower    User   @relation("followers", fields: [followerId], references: [id])
-  following   User   @relation("following", fields: [followingId], references: [id])
+  follower  User @relation("followers", fields: [followerId], references: [id])
+  following User @relation("following", fields: [followingId], references: [id])
 
-  createdAT DateTime @default(now())
+  createdAT DateTime  @default(now())
   updatedAt DateTime? @updatedAt
+}
+
+model Conversation {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+
+  participants Participant[]
+  messages     Message[]
+}
+
+model Participant {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId         String   @db.ObjectId
+  conversationId String   @db.ObjectId
+  joinedAt       DateTime @default(now())
+
+  user         User         @relation(fields: [userId], references: [id])
+  conversation Conversation @relation(fields: [conversationId], references: [id])
+}
+
+model Message {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  content        String
+  senderId       String   @db.ObjectId
+  conversationId String   @db.ObjectId
+  createdAt      DateTime @default(now())
+
+  sender       User         @relation(fields: [senderId], references: [id])
+  conversation Conversation @relation(fields: [conversationId], references: [id])
 }

@@ -24,6 +24,9 @@ const Navbar = () => {
               <Link href="/feed" className="hover:text-blue-500 transition">
                 Feed
               </Link>
+              <Link href="/chat" className="hover:text-blue-500 transition">
+                Chat
+              </Link>
               <Link
                 href={`/profile/${user}`}
                 className="hover:text-blue-500 transition"
