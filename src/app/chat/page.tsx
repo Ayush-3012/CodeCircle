@@ -15,7 +15,7 @@ export default async function ChatRoot() {
 
   return (
     <div className="flex h-full items-center justify-center text-gray-500">
-      <div className="flex flex-1 rounded-lg justify-center items-center text-4xl py-10 font-serif text-yellow-400 bg-gray-600">
+      <div className="flex flex-1 rounded-lg justify-center items-center text-4xl py-10 font-serif text-blue-400 bg-gray-600">
         No Active Conversation
       </div>
     </div>
