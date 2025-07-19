@@ -9,7 +9,7 @@ export default async function ChatRoot() {
 
   const convos = await getUserConversations(session?.userId);
 
-  if (convos.length) {
+  if (convos?.length) {
     redirect(`/chat/${convos[0].id}`);
   }
 

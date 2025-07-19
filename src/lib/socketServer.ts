@@ -26,7 +26,15 @@ export const initSocket = (server: HTTPServer) => {
       const newMessage = { senderId, content, createdAt: new Date() };
       // console.log("📤 Broadcasting message with:", senderId, content);
       socket.to(conversationId).emit("message", newMessage);
-      io.to(conversationId).emit("message", { senderId, content });
+      // io.to(conversationId).emit("message", { senderId, content });
+    });
+
+    socket.on("messageUpdated", ({ conversationId, updatedMessage }: any) => {
+      socket.to(conversationId).emit("messageUpdated", updatedMessage);
+    });
+
+    socket.on("messageDeleted", ({ conversationId, messageId }: any) => {
+      socket.to(conversationId).emit("messageDeleted", messageId);
     });
 
     /* disconnect */

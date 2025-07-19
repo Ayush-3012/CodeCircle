@@ -1,3 +1,4 @@
+import SendMessageButton from "@/components/chat-component/SendMessageButton";
 import FollowSection from "@/components/follow-component/FollowSection";
 import { getAllPostsByUser } from "@/lib/services/postServices/getAllPostsByUser";
 import { getUserProfile } from "@/lib/services/userServices/getUserProfile";
@@ -67,6 +68,9 @@ export default async function ProfilePage({
         <div className="text-gray-200">
           <p>Total Posts: {profilePosts?.length}</p>
         </div>
+        {currentUserId !== profileId && (
+          <SendMessageButton targetUserId={profileId} />
+        )}
         <div>
           <p className="text-lg font-serif">{profile?.bio}</p>
         </div>

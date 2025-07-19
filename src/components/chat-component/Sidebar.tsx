@@ -19,7 +19,7 @@ export default function Sidebar({
         const other = c.participants
           .map((p: any) => p.user)
           .find((u: any) => u.id !== currentUserId);
-        const last = c.messages[0];
+        const last = c.messages.at(-1);
         const active = pathname === `/chat/${c.id}`;
 
         return (

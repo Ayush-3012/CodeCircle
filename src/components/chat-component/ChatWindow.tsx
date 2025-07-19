@@ -1,33 +1,57 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import MessageInput from "./MessageInput";
 import socket from "@/lib/socket";
-import { sendMessage } from "@/services/chatService";
+import {
+  deleteMessage,
+  sendMessage,
+  updateMessage,
+} from "@/services/chatService";
+import MessageBubble from "./MessageBubble";
 
 const ChatWindow = ({ conversationId, initial, currentUserId }: any) => {
   const [messages, setMessages] = useState(initial);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!socket || !conversationId) return;
+
+    if (scrollRef.current) {
+      scrollRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+
     if (conversationId) socket.emit("join", conversationId);
 
     const listenMessage = (newMsg: any) => {
-    setMessages((prev) => [...prev, newMsg]);
+      if (newMsg.senderId === currentUserId) return;
+      setMessages((prev: string) => [...prev, newMsg]);
+    };
+
+    const listenEdit = (updatedMsg: any) => {
+      setMessages((prev: any) =>
+        prev.map((msg: any) =>
+          msg.id === updatedMsg.id
+            ? { ...msg, content: updatedMsg.content }
+            : msg
+        )
+      );
+    };
+
+    const listenDelete = (deletedMsgId: string) => {
+      setMessages((prev) => prev.filter((msg) => msg.id !== deletedMsgId));
     };
 
     socket.on("message", listenMessage);
-  }, [conversationId]);
+    socket.on("messageUpdated", listenEdit);
+    socket.on("messageDeleted", listenDelete);
 
-  const formatTimestamp = (timestamp: any) => {
-    const date = new Date(timestamp);
-    let hours = date.getHours();
-    hours = hours ? hours : 12;
-
-    return `${hours}:${date.getMinutes() < 10 ? "0" : ""}${date.getMinutes()} ${
-      hours >= 12 ? "PM" : "AM"
-    }`;
-  };
+    return () => {
+      socket.off("message", listenMessage);
+      socket.off("messageUpdated", listenEdit);
+      socket.off("messageDeleted", listenDelete);
+    };
+  }, [conversationId, currentUserId]);
 
   const handleSend = async (content: string) => {
     const newMessage = await sendMessage(conversationId, content);
@@ -42,35 +66,39 @@ const ChatWindow = ({ conversationId, initial, currentUserId }: any) => {
 
     setMessages((prev) => [...prev, newMessage]);
   };
+
+  const handleDeleteMessage = async (messageId: string) => {
+    await deleteMessage(conversationId, messageId);
+    setMessages((prev) => prev.filter((m) => m.id !== messageId));
+  };
+
+  const handleEditMessage = async (messageId: string, newContent: string) => {
+    const updatedMessage: any = await updateMessage(
+      conversationId,
+      messageId,
+      newContent
+    );
+    setMessages((prev: any) =>
+      prev.map((msg: any) =>
+        msg.id === messageId ? { ...msg, content: updatedMessage.content } : msg
+      )
+    );
+  };
+
   return (
     <>
       <div className="flex flex-col h-full">
         <div className=" p-4 space-y-2 overflow-y-auto h-[600px]">
-          {messages?.map((item: any) => (
-            <div
-              key={item.id}
-              className={`mb-1 flex ${
-                item.senderId === currentUserId
-                  ? "justify-end"
-                  : "justify-start"
-              }`}
-            >
-              <div
-                className={`max-w-[75%] px-4 py-0.5 max-md:px-2 max-sm:px-1 flex flex-col rounded-md max-sm:rounded-sm ${
-                  item.senderId === currentUserId
-                    ? "bg-slate-600 text-blue-400"
-                    : "bg-slate-700 text-green-300"
-                }`}
-              >
-                <p className="self-start flex text-lg max-lg:text-sm max-md:text-xs flex-wrap">
-                  {item.content}
-                </p>
-                <span className="text-xs text-slate-200 self-end">
-                  {formatTimestamp(item.createdAt)}
-                </span>
-              </div>
-            </div>
+          {messages?.map((msg: any) => (
+            <MessageBubble
+              key={msg.id}
+              message={msg}
+              currentUserId={currentUserId}
+              onEdit={handleEditMessage}
+              onDelete={handleDeleteMessage}
+            />
           ))}
+          <div ref={scrollRef} />
         </div>
         <MessageInput onSend={handleSend} />
       </div>
