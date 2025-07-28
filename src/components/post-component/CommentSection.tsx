@@ -1,27 +1,10 @@
 "use client";
 
-import {
-  addCommentToPost,
-  updateComment,
-  getCommentsByPost,
-  deleteComment,
-} from "@/services/commentService";
+import { useComment } from "@/lib/hooks/useComment";
+import { RootState } from "@/lib/redux/store";
 import { defaultUserImage } from "@/utils/defautUserImage";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
-
-type Comment = {
-  id: string;
-  content: string;
-  createdAt: string;
-  authorId: string;
-  author: {
-    name: string;
-    image?: string;
-  };
-};
 
 const CommentSection = ({
   postId,
@@ -30,46 +13,20 @@ const CommentSection = ({
   postId: string;
   fromFeed: boolean;
 }) => {
-  const { user } = useSelector((state: any) => state.auth);
+  const { user } = useSelector((state: RootState) => state.auth);
 
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [commentText, setCommentText] = useState("");
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [editText, setEditText] = useState("");
-
-  const fetchComments = async () => {
-    const data = await getCommentsByPost(postId);
-    setComments(data.comments);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!commentText.trim()) return;
-    await addCommentToPost(postId, commentText);
-    toast.success("Comment Added");
-    setCommentText("");
-    fetchComments();
-  };
-
-  const handleEditSubmit = async (id: string) => {
-    if (!editText.trim()) return;
-    await updateComment(id, editText);
-    toast.success("Comment Updated");
-    setEditingId(null);
-    fetchComments();
-  };
-
-  const handleDelete = async (id: string) => {
-    if (confirm("Are you sure you want to delete this comment?")) {
-      await deleteComment(id);
-      toast.success("Comment Deleted");
-    }
-    fetchComments();
-  };
-
-  useEffect(() => {
-    fetchComments();
-  }, []);
+  const {
+    comments,
+    commentText,
+    setCommentText,
+    handleAdd,
+    handleUpdate,
+    handleDelete,
+    editingId,
+    setEditingId,
+    editText,
+    setEditText,
+  } = useComment(postId);
 
   if (fromFeed) {
     return (
@@ -84,7 +41,7 @@ const CommentSection = ({
           Comments: {comments?.length}
         </h3>
 
-        <form onSubmit={handleSubmit} className="flex gap-2 mb-4">
+        <form onSubmit={handleAdd} className="flex gap-2 mb-4">
           <input
             value={commentText}
             onChange={(e) => setCommentText(e.target.value)}
@@ -132,7 +89,7 @@ const CommentSection = ({
                         />
                         <div className="flex gap-2 mt-1">
                           <button
-                            onClick={() => handleEditSubmit(c.id)}
+                            onClick={() => handleUpdate(c.id)}
                             className="text-green-400 cursor-pointer hover:text-green-600 text-sm"
                           >
                             Save
@@ -167,7 +124,14 @@ const CommentSection = ({
                         Edit
                       </button>
                       <button
-                        onClick={() => handleDelete(c.id)}
+                        onClick={() => {
+                          if (
+                            confirm(
+                              "Are you sure you want to delete this comment?"
+                            )
+                          )
+                            handleDelete(c.id);
+                        }}
                         className="text-red-500 cursor-pointer hover:text-red-700 text-xs"
                       >
                         Delete

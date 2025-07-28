@@ -1,22 +1,19 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // CLIENT COMPONENT FOR REGISTER
 "use client";
 
 import RegisterForm from "@/components/RegisterForm";
-import { registerUser } from "@/services/authService";
 import { RegisterFormData } from "@/utils/types/users";
-import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { useAuth } from "@/lib/hooks/useAuth";
 
 const RegisterPage = () => {
-  const router = useRouter();
+  const auth = useAuth();
 
   const handleRegister = async (formData: RegisterFormData) => {
     try {
-      const res = await registerUser(formData);
-      toast.success(res.message);
-      router.push("/auth/login");
-    } catch (error: any) {
-      console.log(error);
+      await auth?.register(formData);
+    } catch (error) {
       toast.error("Something went wrong");
     }
   };
@@ -24,7 +21,7 @@ const RegisterPage = () => {
   return (
     <>
       <div className="max-w-xl border rounded mx-auto flex items-center justify-center mt-2">
-        <RegisterForm onSubmit={handleRegister} /> {/* USING REGISTER FORM  */}
+        <RegisterForm onSubmit={handleRegister} />
       </div>
     </>
   );

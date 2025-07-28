@@ -1,5 +1,5 @@
-import { deleteMessage } from "@/lib/services/chatServices/deleteMessage";
-import { updateMessage } from "@/lib/services/chatServices/updateMessage";
+import { deleteMessage } from "@/lib/backend/services/chatServices/deleteMessage";
+import { updateMessage } from "@/lib/backend/services/chatServices/updateMessage";
 import { verifyToken } from "@/utils/token-manager";
 import { NextRequest, NextResponse } from "next/server";
 

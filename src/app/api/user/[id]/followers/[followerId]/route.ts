@@ -1,4 +1,4 @@
-import { removeFollower } from "@/lib/services/userServices/removeFollower";
+import { removeFollower } from "@/lib/backend/services/userServices/removeFollower";
 import { verifyToken } from "@/utils/token-manager";
 import { NextResponse } from "next/server";
 

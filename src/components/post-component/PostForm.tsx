@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { createPost, updatePost } from "@/services/postService";
+import { usePost } from "@/lib/hooks/usePost";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 type PostFormProps = {
   initialContent?: string;
@@ -23,32 +24,29 @@ const PostForm = ({
   const [content, setContent] = useState(initialContent);
   const [media, setMedia] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
+  const postHook = usePost();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!content.trim() && !media) return;
-
     setLoading(true);
+    try {
+      if (!content.trim() && !media) return;
 
-    const formData = new FormData();
-    formData.append("content", content);
-    if (media) formData.append("media", media);
+      const formData = new FormData();
+      formData.append("content", content);
+      if (media) formData.append("media", media);
 
-    const res = isEditing
-      ? await updatePost(postId!, formData)
-      : await createPost(formData);
+      if (isEditing) await postHook.update(postId!, formData);
+      else await postHook.create(formData);
 
-    setLoading(false);
-
-    if (res?.newPost || res?.updatedPost) {
+      setLoading(false);
       setContent("");
       setMedia(null);
       onSuccess?.();
-      router.refresh();
-    } else {
-      alert("Post failed");
-      console.log(res);
+    } catch (error: any) {
+      toast.error("Something went wrong");
+    } finally {
+      setLoading(false);
     }
   };
 

@@ -2,8 +2,7 @@
 
 import PostCard from "@/components/post-component/PostCard";
 import PostForm from "@/components/post-component/PostForm";
-import { getCurrentUser } from "@/lib/services/authSerivces/getCurrentUser";
-import { getAllPosts } from "@/lib/services/postServices/getAllPosts";
+import { getAllPosts } from "@/lib/backend/services/postServices/getAllPosts";
 import { verifyToken } from "@/utils/token-manager";
 import { redirect } from "next/navigation";
 
@@ -11,14 +10,13 @@ export default async function FeedPage() {
   const session = await verifyToken();
   if (!session || !session.userId) redirect("/auth/login");
 
-  let posts: any[] = [];
+  let posts: unknown[] = [];
 
   try {
     posts = await getAllPosts();
   } catch (err) {
     console.error("Failed to fetch posts:", err);
   }
-  const user = await getCurrentUser();
 
   return (
     <>
@@ -42,8 +40,9 @@ export default async function FeedPage() {
                 username: post.author.username,
                 image: post.author.image,
               }}
-              currentUserId={user?.id || ""}
+              currentUserId={session?.userId || ""}
               showCommentCount={true}
+              fromPostPage={false}
             />
           ))
         )}

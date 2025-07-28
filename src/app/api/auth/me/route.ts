@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/services/authSerivces/getCurrentUser";
+import { getCurrentUser } from "@/lib/backend/services/authSerivces/getCurrentUser";
 import { verifyToken } from "@/utils/token-manager";
 
 export async function GET() {

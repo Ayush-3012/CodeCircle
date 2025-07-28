@@ -1,54 +1,22 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // CLIENT COMPONENT TO EDIT PROFILE
 "use client";
 
-import { useEffect, useState } from "react";
-import { getUserProfile, updateUserProfile } from "@/services/userService";
-import { useRouter } from "next/navigation";
 import RegisterForm from "@/components/RegisterForm";
 import { RegisterFormData } from "@/utils/types/users";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
+import { useUser } from "@/lib/hooks/useUser";
+import { RootState } from "@/lib/redux/store";
 
 const EditProfilePage = () => {
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const [initialData, setInitialData] = useState<RegisterFormData | null>(null);
-
-  const user = useSelector((state: any) => state.auth.user);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await getUserProfile(user);
-        if (res?.foundUser) {
-          const user = res.foundUser;
-          setInitialData({
-            name: user.name || "",
-            username: user.username || "",
-            email: user.email || "",
-            password: "",
-            image: user.image || "",
-            bio: user.bio || "",
-            githubUrl: user.githubUrl || "",
-            linkedInUrl: user.linkedInUrl || "",
-            portfolioUrl: user.portfolioUrl || "",
-          });
-        }
-      } catch (err) {
-        console.error("Error loading profile", err);
-      }
-    };
-    fetchData();
-  }, []);
+  const user: any = useSelector((state: RootState) => state.auth.user);
+  const { initialData, update, loading, setLoading } = useUser(user);
 
   const handleUpdate = async (data: RegisterFormData) => {
     try {
-      setLoading(true);
-      const res = await updateUserProfile(data);
-      router.push(`/profile/${user}`);
-      toast.success(res.message);
-    } catch (err) {
-      console.error("Error updating profile", err);
+      await update(data);
+    } catch (err: any) {
       toast.error("Something went wrong");
     } finally {
       setLoading(false);

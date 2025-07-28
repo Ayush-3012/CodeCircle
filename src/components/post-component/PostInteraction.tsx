@@ -1,9 +1,7 @@
 "use client";
 
-import { toggleLikePost } from "@/services/postService";
-import CommentSection from "../CommentSection";
-import { useState } from "react";
-import toast from "react-hot-toast";
+import { usePostLike } from "@/lib/hooks/usePostLike";
+import CommentSection from "./CommentSection";
 
 type PostInteractionArgs = {
   initialLikes: string[];
@@ -18,18 +16,11 @@ const PostInteraction = ({
   postId,
   showCommentCount,
 }: PostInteractionArgs) => {
-  const [likes, setLikes] = useState<string[]>(initialLikes);
-  const hasLiked = likes.includes(currentUserId);
-
-  const handleLike = async () => {
-    try {
-      const res = await toggleLikePost(postId);
-      if (res?.updatedPost?.likes) setLikes(res.updatedPost.likes);
-      toast.success(res.message);
-    } catch (err) {
-      console.error("Like toggle failed", err);
-    }
-  };
+  const { likes, hasLiked, handleLike } = usePostLike(
+    initialLikes,
+    postId,
+    currentUserId
+  );
 
   return (
     <>

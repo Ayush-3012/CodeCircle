@@ -1,6 +1,6 @@
 import { verifyToken } from "@/utils/token-manager";
 import { NextResponse } from "next/server";
-import { createComment } from "@/lib/services/commentServices/createComment";
+import { createComment } from "@/lib/backend/services/commentServices/createComment";
 
 export async function POST(req: Request) {
   try {
@@ -11,7 +11,10 @@ export async function POST(req: Request) {
     const { postId, content } = await req.json();
     const comment = await createComment(postId, content, session?.userId);
 
-    return NextResponse.json({ comment }, { status: 201 });
+    return NextResponse.json(
+      { message: "Comment Added", comment },
+      { status: 201 }
+    );
   } catch (error) {
     return NextResponse.json({ error }, { status: 501 });
   }

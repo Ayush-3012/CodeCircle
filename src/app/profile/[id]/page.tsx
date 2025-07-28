@@ -1,7 +1,7 @@
 import SendMessageButton from "@/components/chat-component/SendMessageButton";
 import FollowSection from "@/components/follow-component/FollowSection";
-import { getAllPostsByUser } from "@/lib/services/postServices/getAllPostsByUser";
-import { getUserProfile } from "@/lib/services/userServices/getUserProfile";
+import { getAllPostsByUser } from "@/lib/backend/services/postServices/getAllPostsByUser";
+import { getUserProfile } from "@/lib/backend/services/userServices/getUserProfile";
 import { defaultUserImage } from "@/utils/defautUserImage";
 import { verifyToken } from "@/utils/token-manager";
 import Image from "next/image";

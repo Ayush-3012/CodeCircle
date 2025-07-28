@@ -1,4 +1,4 @@
-import { createPost } from "@/lib/services/postServices/createPost";
+import { createPost } from "@/lib/backend/services/postServices/createPost";
 import { verifyToken } from "@/utils/token-manager";
 import { NextRequest, NextResponse } from "next/server";
 

@@ -7,7 +7,7 @@ import {
   deleteMessage,
   sendMessage,
   updateMessage,
-} from "@/services/chatService";
+} from "../../lib/client/services/chatService";
 import MessageBubble from "./MessageBubble";
 
 const ChatWindow = ({ conversationId, initial, currentUserId }: any) => {

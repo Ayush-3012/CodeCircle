@@ -1,7 +1,7 @@
 import { verifyToken } from "@/utils/token-manager";
 import { NextResponse } from "next/server";
-import { updateComment } from "@/lib/services/commentServices/updateComment";
-import { deleteComment } from "@/lib/services/commentServices/deleteComment";
+import { updateComment } from "@/lib/backend/services/commentServices/updateComment";
+import { deleteComment } from "@/lib/backend/services/commentServices/deleteComment";
 
 export async function PUT(
   req: Request,
@@ -29,7 +29,13 @@ export async function PUT(
         { status: 403 }
       );
 
-    return NextResponse.json(result.updatedComment, { status: 200 });
+    return NextResponse.json(
+      {
+        message: "Comment Updated Successfully",
+        updatedComment: result.updatedComment,
+      },
+      { status: 200 }
+    );
   } catch (error) {
     return NextResponse.json(
       { message: "Something went wrong", error },

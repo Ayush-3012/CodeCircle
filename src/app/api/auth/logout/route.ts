@@ -14,7 +14,7 @@ export async function POST() {
       expires: new Date(0),
     });
 
-    return NextResponse.redirect("http://localhost:3000/");
+    return NextResponse.json({ message: "User Logged Out" }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
       { message: "Logout failed", error },

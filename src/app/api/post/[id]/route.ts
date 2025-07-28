@@ -1,6 +1,6 @@
-import { deletePost } from "@/lib/services/postServices/deletePost";
-import { getPostById } from "@/lib/services/postServices/getPostById";
-import { updatePost } from "@/lib/services/postServices/updatePost";
+import { deletePost } from "@/lib/backend/services/postServices/deletePost";
+import { getPostById } from "@/lib/backend/services/postServices/getPostById";
+import { updatePost } from "@/lib/backend/services/postServices/updatePost";
 import { verifyToken } from "@/utils/token-manager";
 import { NextRequest, NextResponse } from "next/server";
 

@@ -1,6 +1,6 @@
 import FollowListClient from "@/components/follow-component/FollowListClient";
-import { getFollowers } from "@/lib/services/userServices/getFollowers";
-import { getFollowings } from "@/lib/services/userServices/getFollowings";
+import { getFollowers } from "@/lib/backend/services/userServices/getFollowers";
+import { getFollowings } from "@/lib/backend/services/userServices/getFollowings";
 import { verifyToken } from "@/utils/token-manager";
 import { redirect } from "next/navigation";
 
@@ -28,7 +28,12 @@ export default async function FollowListPage({
   return (
     <div className="p-4">
       <h2 className="text-2xl font-semibold mb-4 capitalize">{type} :</h2>
-      <FollowListClient list={list} type={type} profileId={profileId} currentUserId={currentUserId} />
+      <FollowListClient
+        list={list}
+        type={type}
+        profileId={profileId}
+        currentUserId={currentUserId}
+      />
     </div>
   );
 }

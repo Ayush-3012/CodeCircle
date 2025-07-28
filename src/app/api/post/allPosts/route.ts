@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { verifyToken } from "@/utils/token-manager";
-import { getAllPosts } from "@/lib/services/postServices/getAllPosts";
+import { getAllPosts } from "@/lib/backend/services/postServices/getAllPosts";
 
 export async function GET() {
   try {

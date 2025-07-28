@@ -1,5 +1,5 @@
-import { createOrGetConversation } from "@/lib/services/chatServices/createOrGetConversation";
-import { getUserConversations } from "@/lib/services/chatServices/getUserConversations";
+import { createOrGetConversation } from "@/lib/backend/services/chatServices/createOrGetConversation";
+import { getUserConversations } from "@/lib/backend/services/chatServices/getUserConversations";
 import { verifyToken } from "@/utils/token-manager";
 import { NextRequest, NextResponse } from "next/server";
 

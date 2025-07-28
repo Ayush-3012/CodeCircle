@@ -1,6 +1,6 @@
 import { verifyToken } from "@/utils/token-manager";
 import { NextResponse } from "next/server";
-import { getFollowers } from "@/lib/services/userServices/getFollowers";
+import { getFollowers } from "@/lib/backend/services/userServices/getFollowers";
 
 export async function GET(
   _req: Request,

@@ -1,4 +1,4 @@
-import { likeOrUnlikePost } from "@/lib/services/postServices/likeOrUnlikePost";
+import { likeOrUnlikePost } from "@/lib/backend/services/postServices/likeOrUnlikePost";
 import { verifyToken } from "@/utils/token-manager";
 import { NextRequest, NextResponse } from "next/server";
 

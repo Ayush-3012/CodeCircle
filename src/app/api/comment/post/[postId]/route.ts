@@ -1,6 +1,6 @@
 // GET ALL COMMNENTS BY POST ID
 
-import { getCommentsByPostId } from "@/lib/services/commentServices/getCommentsByPostId";
+import { getCommentsByPostId } from "@/lib/backend/services/commentServices/getCommentsByPostId";
 import { verifyToken } from "@/utils/token-manager";
 import { NextResponse } from "next/server";
 

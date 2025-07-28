@@ -1,34 +1,25 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // CLIENT COMPONENT FOR LOGIN
 
 "use client";
 
-import { setUser } from "@/lib/redux/slices/authSlice";
-import { loginUser } from "@/services/authService";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { useDispatch } from "react-redux";
+import { useAuth } from "@/lib/hooks/useAuth";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const router = useRouter();
-  const dispatch = useDispatch();
+  const auth = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await loginUser({ email, password });
-      if (res) {
-        dispatch(setUser(res?.userId));
-        toast.success(res?.message);
-        router.push("/feed");
-      }
-    } catch (error: any) {
-      console.error(error);
+      await auth?.login({ email, password });
+    } catch (error) {
       toast.error("Something went wrong");
     } finally {
       setLoading(false);

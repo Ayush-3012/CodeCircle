@@ -1,9 +1,9 @@
 import { notFound, redirect } from "next/navigation";
-import CommentSection from "@/components/CommentSection";
+import CommentSection from "@/components/post-component/CommentSection";
 import PostCard from "@/components/post-component/PostCard";
 import { verifyToken } from "@/utils/token-manager";
-import { getPostById } from "@/lib/services/postServices/getPostById";
-import { getCurrentUser } from "@/lib/services/authSerivces/getCurrentUser";
+import { getPostById } from "@/lib/backend/services/postServices/getPostById";
+import { getCurrentUser } from "@/lib/backend/services/authSerivces/getCurrentUser";
 
 export default async function PostPage({
   params,
@@ -15,7 +15,6 @@ export default async function PostPage({
 
   const { postId } = await params;
   const postData = await getPostById(postId);
-  const user = await getCurrentUser();
 
   if (!postData) return notFound();
 
@@ -34,8 +33,9 @@ export default async function PostPage({
             username: postData?.author?.username,
             image: postData?.author?.image,
           }}
-          currentUserId={user?.id || ""}
+          currentUserId={session?.id || ""}
           showCommentCount={false}
+          fromPostPage={true}
         />
         <CommentSection postId={postId} fromFeed={false} />
       </div>

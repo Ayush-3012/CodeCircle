@@ -1,6 +1,6 @@
 "use client";
 
-import { createOrGetConversation } from "@/services/chatService";
+import { createOrGetConversation } from "../../lib/client/services/chatService";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 

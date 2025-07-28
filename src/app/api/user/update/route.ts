@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { verifyToken } from "@/utils/token-manager";
-import { updateUserProfile } from "@/lib/services/userServices/updateUserProfile";
+import { updateUserProfile } from "@/lib/backend/services/userServices/updateUserProfile";
 
 export async function PUT(req: Request) {
   try {

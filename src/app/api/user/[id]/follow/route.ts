@@ -1,6 +1,6 @@
 import { verifyToken } from "@/utils/token-manager";
 import { NextResponse } from "next/server";
-import { toggleFollow } from "@/lib/services/userServices/toggleFollow";
+import { toggleFollow } from "@/lib/backend/services/userServices/toggleFollow";
 
 export async function POST(
   _req: Request,

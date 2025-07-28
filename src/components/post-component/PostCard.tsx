@@ -1,14 +1,12 @@
 "use client";
 
-import { deletePost } from "@/services/postService";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import PostForm from "./PostForm";
 import Link from "next/link";
 import PostInteraction from "../post-component/PostInteraction";
 import { defaultUserImage } from "@/utils/defautUserImage";
-import toast from "react-hot-toast";
+import { usePost } from "@/lib/hooks/usePost";
 
 type PostCardProps = {
   id: string;
@@ -24,6 +22,7 @@ type PostCardProps = {
   };
   currentUserId: string;
   showCommentCount: boolean;
+  fromPostPage?: boolean;
 };
 
 const PostCard = ({
@@ -35,17 +34,30 @@ const PostCard = ({
   author,
   currentUserId,
   showCommentCount,
+  fromPostPage,
 }: PostCardProps) => {
-  const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
+  const postHook = usePost();
 
   const handleDelete = async () => {
-    if (confirm("Are you sure you want to delete this post?")) {
-      await deletePost(id);
-      toast.success("Post Deleted");
-      router.refresh();
-    }
+    if (confirm("Are you sure you want to delete this post?"))
+      await postHook.remove(id);
   };
+
+  const contentBlock = (
+    <>
+      <p className="text-gray-800 dark:text-gray-200 text-xl mb-2">{content}</p>
+      {media && (
+        <Image
+          src={media}
+          height={200}
+          width={200}
+          alt="media"
+          className="bg-black w-auto h-auto mt-2 rounded-lg"
+        />
+      )}
+    </>
+  );
 
   return (
     <>
@@ -80,20 +92,11 @@ const PostCard = ({
           />
         ) : (
           <div className="flex flex-col items-center justify-center">
-            <Link href={`/post/${id}`}>
-              <p className="text-gray-800 dark:text-gray-200 text-xl mb-2">
-                {content}
-              </p>
-              {media && (
-                <Image
-                  src={media}
-                  height={200}
-                  width={200}
-                  alt="media"
-                  className="bg-black w-auto h-auto mt-2 rounded-lg"
-                />
-              )}
-            </Link>
+            {fromPostPage ? (
+              <div>{contentBlock}</div>
+            ) : (
+              <Link href={`/post/${id}`}>{contentBlock}</Link>
+            )}
             <p className="text-xs text-gray-500 self-start ml-4 mt-2">
               {new Date(createdAt).toLocaleString()}
             </p>

@@ -1,5 +1,5 @@
 import ChatWindow from "@/components/chat-component/ChatWindow";
-import { getMessages } from "@/lib/services/chatServices/getMessages";
+import { getMessages } from "@/lib/backend/services/chatServices/getMessages";
 import { verifyToken } from "@/utils/token-manager";
 
 export default async function ChatPage({ params }: { params: { id: string } }) {

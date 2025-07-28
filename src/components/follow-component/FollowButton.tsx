@@ -1,6 +1,6 @@
 "use client";
 
-import { toggleFollow } from "@/services/followService";
+import { toggleFollow } from "../../lib/client/services/followService";
 import { useState } from "react";
 
 const FollowButton = ({

@@ -1,5 +1,5 @@
 // app/chat/page.tsx
-import { getUserConversations } from "@/lib/services/chatServices/getUserConversations";
+import { getUserConversations } from "@/lib/backend/services/chatServices/getUserConversations";
 import { verifyToken } from "@/utils/token-manager";
 import { redirect } from "next/navigation";
 

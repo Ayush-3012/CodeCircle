@@ -1,15 +1,13 @@
 "use client";
 
-import { removeUser } from "@/lib/redux/slices/authSlice";
-import { logoutUser } from "@/services/authService";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
+import { useAuth } from "@/lib/hooks/useAuth";
+import { RootState } from "@/lib/redux/store";
 
 const Navbar = () => {
-  const user = useSelector((state: any) => state.auth.user);
-  const dispatch = useDispatch();
-  const router = useRouter();
+  const user = useSelector((state: RootState) => state.auth.user);
+  const auth = useAuth();
 
   return (
     <>
@@ -35,11 +33,7 @@ const Navbar = () => {
               </Link>
               <button
                 className="hover:text-blue-500 transition cursor-pointer"
-                onClick={async () => {
-                  await logoutUser();
-                  dispatch(removeUser());
-                  router.push("/");
-                }}
+                onClick={async () => await auth?.logout()}
               >
                 Logout
               </button>

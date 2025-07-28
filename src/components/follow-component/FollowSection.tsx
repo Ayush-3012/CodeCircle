@@ -1,6 +1,9 @@
 "use client";
 
-import { getFollowerList, getFollowingList } from "@/services/followService";
+import {
+  getFollowerList,
+  getFollowingList,
+} from "../../lib/client/services/followService";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import FollowButton from "./FollowButton";

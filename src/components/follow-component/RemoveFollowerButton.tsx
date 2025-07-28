@@ -1,6 +1,6 @@
 "use clieint";
 
-import { removeFollower } from "@/services/followService";
+import { removeFollower } from "../../lib/client/services/followService";
 import { useState } from "react";
 import toast from "react-hot-toast";
 

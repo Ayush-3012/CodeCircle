@@ -1,7 +1,7 @@
 // app/chat/layout.tsx  (server component)
 import { ReactNode } from "react";
 import Sidebar from "@/components/chat-component/Sidebar";
-import { getUserConversations } from "@/lib/services/chatServices/getUserConversations";
+import { getUserConversations } from "@/lib/backend/services/chatServices/getUserConversations";
 import { verifyToken } from "@/utils/token-manager";
 
 export default async function ChatLayout({

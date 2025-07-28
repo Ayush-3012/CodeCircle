@@ -1,4 +1,4 @@
-import { getAllPostsByUser } from "@/lib/services/postServices/getAllPostsByUser";
+import { getAllPostsByUser } from "@/lib/backend/services/postServices/getAllPostsByUser";
 import { verifyToken } from "@/utils/token-manager";
 import { NextRequest, NextResponse } from "next/server";
 
