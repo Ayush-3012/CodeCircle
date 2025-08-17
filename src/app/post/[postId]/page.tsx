@@ -3,7 +3,6 @@ import CommentSection from "@/components/post-component/CommentSection";
 import PostCard from "@/components/post-component/PostCard";
 import { verifyToken } from "@/utils/token-manager";
 import { getPostById } from "@/lib/backend/services/postServices/getPostById";
-import { getCurrentUser } from "@/lib/backend/services/authSerivces/getCurrentUser";
 
 export default async function PostPage({
   params,

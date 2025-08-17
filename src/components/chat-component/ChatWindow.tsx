@@ -64,6 +64,11 @@ const ChatWindow = ({ conversationId, initial, currentUserId }: any) => {
       content: newMessage.content,
     });
 
+    socket.emit("localMessage", {
+      ...newMessage,
+      conversationId,
+    });
+
     setMessages((prev) => [...prev, newMessage]);
   };
 
@@ -91,7 +96,7 @@ const ChatWindow = ({ conversationId, initial, currentUserId }: any) => {
         <div className=" p-4 space-y-2 overflow-y-auto h-[600px]">
           {messages?.map((msg: any) => (
             <MessageBubble
-              key={msg.id}
+              key={msg.createdAt}
               message={msg}
               currentUserId={currentUserId}
               onEdit={handleEditMessage}

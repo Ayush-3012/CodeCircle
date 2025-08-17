@@ -6,6 +6,7 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useAuth } from "@/lib/hooks/useAuth";
+import { motion } from "framer-motion";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -28,13 +29,19 @@ const LoginPage = () => {
 
   return (
     <>
-      <div className="max-w-md mx-auto mt-10 p-4 border rounded">
-        <h1 className="text-xl font-bold mb-4">Login</h1>
-        <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="flex items-center justify-center min-h-screen px-4">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-4 p-6 rounded-2xl w-full max-w-md custom-font shadow-[0_0_10px]"
+        >
+          <h1 className="text-2xl font-bold mb-6 underline text-primary text-center">
+            Login
+          </h1>
+
           <input
             type="email"
             placeholder="Email"
-            className="w-full p-2 border rounded"
+            className="w-full px-4 py-3 rounded-md bg-nav text-primary placeholder:text-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -42,18 +49,20 @@ const LoginPage = () => {
           <input
             type="password"
             placeholder="Password"
-            className="w-full p-2 border rounded"
+            className="w-full px-4 py-3 rounded-md bg-nav text-primary placeholder:text-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
 
-          <button
+          <motion.button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded"
             disabled={loading}
+            className="w-full py-3 rounded-md border cursor-pointer font-semibold hover-gradient disabled:opacity-50"
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.4, type: "spring" }}
           >
             {loading ? "Logging in..." : "Login"}
-          </button>
+          </motion.button>
         </form>
       </div>
     </>

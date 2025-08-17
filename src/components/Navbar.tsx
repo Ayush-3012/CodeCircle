@@ -11,50 +11,61 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className="flex justify-between p-4 border-b">
-        <Link href="/" className="text-xl font-bold hover:text-blue-400">
+      <nav className="flex flex-col gap-4 text-lg font-medium custom-font">
+        <Link
+          href="/"
+          className="text-2xl font-extrabold mb-6 hover:text-sky-400 transition-colors"
+        >
           CodeCircle
         </Link>
 
-        <div className=" flex gap-2 items-center justify-center">
-          {user ? (
-            <>
-              <Link href="/feed" className="hover:text-blue-500 transition">
-                Feed
-              </Link>
-              <Link href="/chat" className="hover:text-blue-500 transition">
-                Chat
-              </Link>
-              <Link
-                href={`/profile/${user}`}
-                className="hover:text-blue-500 transition"
-              >
-                Profile
-              </Link>
-              <button
-                className="hover:text-blue-500 transition cursor-pointer"
-                onClick={async () => await auth?.logout()}
-              >
-                Logout
-              </button>
-            </>
-          ) : (
-            <>
-              <Link
-                href="/auth/login"
-                className="hover:text-blue-500 transition"
-              >
-                Login
-              </Link>
-              <Link
-                href="/auth/register"
-                className="hover:text-blue-500 transition"
-              >
-                Register
-              </Link>
-            </>
-          )}
-        </div>
+        {user ? (
+          <>
+            <Link
+              href="/feed"
+              className="hover:text-sky-400 cursor-pointer transition-colors px-2 py-1 rounded-md"
+            >
+              📰 Feed
+            </Link>
+            <Link
+              href="/chat"
+              className="hover:text-sky-400 cursor-pointer transition-colors px-2 py-1 rounded-md"
+            >
+              💬 Chat
+            </Link>
+            <Link
+              href={`/profile/${user}`}
+              className="hover:text-sky-400 cursor-pointer transition-colors px-2 py-1 rounded-md"
+            >
+              👤 Profile
+            </Link>
+            <button
+              className="mt-4 text-left transition-colors px-2 py-1 rounded-md"
+              onClick={async () => await auth?.logout()}
+            >
+              🚪 Logout
+            </button>
+          </>
+        ) : (
+          <>
+            <Link
+              href="/auth/login"
+              className="hover:text-sky-400 cursor-pointer transition-colors px-2 py-1 rounded-md"
+            >
+              🔑 Login
+            </Link>
+            <Link
+              href="/auth/register"
+              className="hover:text-sky-400 cursor-pointer transition-colors px-2 py-1 rounded-md"
+            >
+              ✨ Register
+            </Link>
+          </>
+        )}
+
+        <span className="text-sm text-secondary mt-6 md:hidden">
+          Sidebar hidden on mobile
+        </span>
       </nav>
     </>
   );

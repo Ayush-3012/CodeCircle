@@ -15,7 +15,7 @@ export const usePostLike = (
   const handleLike = async () => {
     try {
       const res: any = await toggleLikePost(postId);
-      if (res?.updatedPost?.likes) setLikes(res.updatedPost.likes);
+      setLikes(res?.data?.updatedPost?.likes);
       toast.success(res.data.message);
     } catch (error: any) {
       toast.error(error.response.data.message);

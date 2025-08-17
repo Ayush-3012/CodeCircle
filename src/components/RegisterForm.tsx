@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { RegisterFormData } from "@/utils/types/users";
+import { motion } from "framer-motion";
 
 type RegisterFormProps = {
   initialData?: RegisterFormData;
@@ -16,7 +17,6 @@ const RegisterForm = ({
   isEdit = false,
   loading = false,
 }: RegisterFormProps) => {
-  
   const [formData, setFormData] = useState<RegisterFormData>(
     initialData || {
       name: "",
@@ -45,26 +45,28 @@ const RegisterForm = ({
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 bg-black px-6 py-4 rounded shadow-md w-full max-w-md"
+      className="space-y-2 p rounded-2xl w-full max-w-xl custom-font"
     >
-      <h2 className="text-xl font-semibold mb-4">
+      <h2 className="text-2xl font-bold mb-6 underline text-primary text-center">
         {isEdit ? "Edit Profile" : "Register"}
       </h2>
 
+      {/* Inputs */}
       <input
         name="name"
         value={formData.name}
         onChange={handleChange}
         placeholder="Name"
-        className="border w-full px-4 py-2"
+        className="w-full px-4 py-3 rounded-md bg-nav  text-primary placeholder:text-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
       />
+
       {!isEdit && (
         <input
           name="username"
           value={formData.username}
           onChange={handleChange}
           placeholder="Username"
-          className="border w-full px-4 py-2"
+          className="w-full px-4 py-3 rounded-md bg-nav  text-primary placeholder:text-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
       )}
 
@@ -76,7 +78,7 @@ const RegisterForm = ({
             value={formData.email}
             onChange={handleChange}
             placeholder="Email"
-            className="border w-full px-4 py-2"
+            className="w-full px-4 py-3 rounded-md bg-nav  text-primary placeholder:text-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
           <input
             name="password"
@@ -84,7 +86,7 @@ const RegisterForm = ({
             value={formData.password}
             onChange={handleChange}
             placeholder="Password"
-            className="border w-full px-4 py-2"
+            className="w-full px-4 py-3 rounded-md bg-nav  text-primary placeholder:text-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
         </>
       )}
@@ -95,7 +97,7 @@ const RegisterForm = ({
         onChange={handleChange}
         placeholder="Bio"
         rows={2}
-        className="border w-full px-4 py-2"
+        className="w-full px-4 py-3 rounded-md bg-nav  text-primary placeholder:text-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
       />
 
       <input
@@ -103,34 +105,37 @@ const RegisterForm = ({
         value={formData.image}
         onChange={handleChange}
         placeholder="Image URL"
-        className="border w-full px-4 py-2"
+        className="w-full px-4 py-3 rounded-md bg-nav  text-primary placeholder:text-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
       />
       <input
         name="githubUrl"
         value={formData.githubUrl}
         onChange={handleChange}
         placeholder="GitHub URL"
-        className="border w-full px-4 py-2"
+        className="w-full px-4 py-3 rounded-md bg-nav  text-primary placeholder:text-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
       />
       <input
         name="linkedInUrl"
         value={formData.linkedInUrl}
         onChange={handleChange}
         placeholder="LinkedIn URL"
-        className="border w-full px-4 py-2"
+        className="w-full px-4 py-3 rounded-md bg-nav  text-primary placeholder:text-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
       />
       <input
         name="portfolioUrl"
         value={formData.portfolioUrl}
         onChange={handleChange}
         placeholder="Portfolio URL"
-        className="border w-full px-4 py-2"
+        className="w-full px-4 py-3 rounded-md bg-nav text-primary placeholder:text-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
       />
 
-      <button
+      {/* Button */}
+      <motion.button
         type="submit"
         disabled={loading}
-        className="bg-blue-600 text-white px-4 py-2 rounded w-full"
+        className="w-full py-3 rounded-md border cursor-pointer font-semibold hover-gradient"
+        whileHover={{ scale: 1.1 }}
+        transition={{ duration: 0.6, bounce: 0.6, type: "spring" }}
       >
         {loading
           ? isEdit
@@ -139,7 +144,7 @@ const RegisterForm = ({
           : isEdit
           ? "Update Profile"
           : "Register"}
-      </button>
+      </motion.button>
     </form>
   );
 };

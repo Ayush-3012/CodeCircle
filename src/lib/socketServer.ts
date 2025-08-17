@@ -1,4 +1,4 @@
-//lib/socketServer.ts
+//src/lib/socketServer.ts
 
 import { Server } from "socket.io";
 import type { Server as HTTPServer } from "http";
@@ -9,7 +9,10 @@ export const initSocket = (server: HTTPServer) => {
   if (io) return io;
   io = new Server(server, {
     path: "/api/socket/io",
-    cors: { origin: "*" },
+    cors: {
+      origin: "http://localhost:3000", // frontend ka origin
+      methods: ["GET", "POST"],
+    },
   });
 
   io.on("connection", (socket: any) => {
@@ -23,9 +26,15 @@ export const initSocket = (server: HTTPServer) => {
 
     socket.on("message", ({ conversationId, senderId, content }: any) => {
       // console.log("📥 Received on server payload:", payload);
-      const newMessage = { senderId, content, createdAt: new Date() };
+      const newMessage = {
+        conversationId,
+        senderId,
+        content,
+        createdAt: new Date(),
+      };
       // console.log("📤 Broadcasting message with:", senderId, content);
-      socket.to(conversationId).emit("message", newMessage);
+      // socket.to(conversationId).emit("message", newMessage);
+      io.to(conversationId).emit("message", newMessage);
       // io.to(conversationId).emit("message", { senderId, content });
     });
 

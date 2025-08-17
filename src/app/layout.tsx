@@ -2,6 +2,13 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import AppProvider from "@/lib/redux/Provider";
+import { Rubik } from "next/font/google";
+
+const rubik = Rubik({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-rubik",
+});
 
 export const metadata: Metadata = {
   title: "DevConnect",
@@ -14,11 +21,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${rubik.variable} custom-font`}>
       <body suppressHydrationWarning>
         <AppProvider>
-          <Navbar />
-          <div>{children}</div>
+          <div className="flex min-h-screen">
+            {/* Sidebar */}
+            <aside className="w-64 hidden md:flex text-primary flex-col bg-nav border-r p-4">
+              <Navbar />
+            </aside>
+
+            {/* Main Content */}
+            <main className="flex-1 overflow-y-auto bg-app text-primary">
+              {children}
+            </main>
+          </div>
         </AppProvider>
       </body>
     </html>

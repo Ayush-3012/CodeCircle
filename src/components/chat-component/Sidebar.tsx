@@ -4,6 +4,8 @@ import { defaultUserImage } from "@/utils/defautUserImage";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import socket from "@/lib/socket";
+import { useEffect, useState } from "react";
 
 export default function Sidebar({
   initial,
@@ -13,9 +15,33 @@ export default function Sidebar({
   currentUserId: string | undefined;
 }) {
   const pathname = usePathname();
+  const [conversations, setConversations] = useState(initial);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    const updateConv = (newMsg: any) => {
+      setConversations((prev) =>
+        prev.map((conv) =>
+          conv.id === newMsg.conversationId
+            ? { ...conv, messages: [...conv.messages, newMsg] }
+            : conv
+        )
+      );
+    };
+
+    socket.on("message", updateConv);
+    socket.on("localMessage", updateConv);
+
+    return () => {
+      socket.off("message", updateConv);
+      socket.off("localMessage", updateConv);
+    };
+  }, []);
+
   return (
     <aside className="w-72 border-r overflow-y-auto">
-      {initial.map((c) => {
+      {conversations.map((c) => {
         const other = c.participants
           .map((p: any) => p.user)
           .find((u: any) => u.id !== currentUserId);

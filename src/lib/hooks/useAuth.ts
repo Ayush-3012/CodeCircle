@@ -24,10 +24,13 @@ export const useAuth = () => {
           const res = await isUserLoggedIn();
           dispatch(setUser(res.data.user.id));
           router.push("/feed");
-          toast.success("User LoggedIn, Redirecting to Feed");
+          toast.success("User LoggedIn, Redirecting to Feed", {
+            id: "auth-success",
+          });
         } catch (error: any) {
-          console.log(error);
-          //   toast.error(`${error.response.data.message}, Please Login`);
+          toast.error(`${error.response.data.message}, Please Login`, {
+            id: "auth-error",
+          });
         }
       }
     };

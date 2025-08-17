@@ -1,26 +1,61 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --nav-bg: linear-gradient(
+    to right,
+    #000000,
+    #161415,
+    #232023,
+    #312e32,
+    #3e3c42
+  );
+
+  --color-bg: linear-gradient(
+    to right top,
+    #0d0409,
+    #181418,
+    #222024,
+    #2c2b30,
+    #36373c,
+    #3b3e43,
+    #404449,
+    #454b50,
+    #464e52,
+    #475254,
+    #495556,
+    #4c5857
+  );
+
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #a1a1aa;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer utilities {
+  .custom-font {
+    font-family: var(--font-rubik), system-ui, sans-serif;
   }
-}
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  .bg-app {
+    background: var(--color-bg);
+  }
+
+  .bg-nav {
+    background: var(--nav-bg);
+  }
+
+  .bg-btn {
+    background: var(--btn-bg);
+  }
+
+  .text-primary {
+    color: var(--color-text-primary);
+  }
+
+  .text-secondary {
+    color: var(--color-text-secondary);
+  }
+
+  .hover-gradient:hover {
+    background: linear-gradient(to bottom right, #6366f1, #10b981);
+  }
 }
