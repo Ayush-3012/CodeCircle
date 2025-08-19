@@ -24,7 +24,7 @@ const PostInteraction = ({
 
   return (
     <>
-      <div className="flex items-center gap-4 mt-2 self-start ml-4">
+      <div className="flex items-center gap-4 mt-2 self-start">
         <button
           onClick={handleLike}
           className={`${

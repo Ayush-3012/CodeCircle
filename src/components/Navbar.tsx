@@ -23,42 +23,54 @@ const Navbar = () => {
           <>
             <Link
               href="/feed"
-              className="hover:text-sky-400 cursor-pointer transition-colors px-2 py-1 rounded-md"
+              className="group shadow-emerald-400 shadow-[0_0_5px] cursor-pointer px-2 py-1 rounded-md"
             >
-              📰 Feed
+              <p className="group-hover:text-sky-400 group-hover:-translate-y-1.5 transition-all">
+                📰 Feed
+              </p>
             </Link>
             <Link
               href="/chat"
-              className="hover:text-sky-400 cursor-pointer transition-colors px-2 py-1 rounded-md"
+              className="group shadow-emerald-400 shadow-[0_0_5px] cursor-pointer px-2 py-1 rounded-md"
             >
-              💬 Chat
+              <p className="group-hover:text-sky-400 group-hover:-translate-y-1.5 transition-all">
+                💬 Chat
+              </p>
             </Link>
             <Link
               href={`/profile/${user}`}
-              className="hover:text-sky-400 cursor-pointer transition-colors px-2 py-1 rounded-md"
+              className="group shadow-emerald-400 shadow-[0_0_5px] cursor-pointer px-2 py-1 rounded-md"
             >
-              👤 Profile
+              <p className="group-hover:text-sky-400 group-hover:-translate-y-1.5 transition-all">
+                👤 Profile
+              </p>
             </Link>
             <button
-              className="mt-4 text-left transition-colors px-2 py-1 rounded-md"
+              className="group mt-4 text-left shadow-rose-400 shadow-[0_0_5px] cursor-pointer px-2 py-1 rounded-md"
               onClick={async () => await auth?.logout()}
             >
-              🚪 Logout
+              <p className="group-hover:text-rose-400 group-hover:-translate-y-1.5 transition-all">
+                🚪 Logout
+              </p>
             </button>
           </>
         ) : (
           <>
             <Link
               href="/auth/login"
-              className="hover:text-sky-400 cursor-pointer transition-colors px-2 py-1 rounded-md"
+              className="group shadow-emerald-400 shadow-[0_0_5px] cursor-pointer px-2 py-1 rounded-md"
             >
-              🔑 Login
+              <p className="group-hover:text-sky-400 group-hover:-translate-y-1.5 transition-all">
+                🔑 Login
+              </p>
             </Link>
             <Link
               href="/auth/register"
-              className="hover:text-sky-400 cursor-pointer transition-colors px-2 py-1 rounded-md"
+              className="group shadow-emerald-400 shadow-[0_0_5px] cursor-pointer px-2 py-1 rounded-md"
             >
-              ✨ Register
+              <p className="group-hover:text-sky-400 group-hover:-translate-y-1.5 transition-all">
+                ✨ Register
+              </p>
             </Link>
           </>
         )}

@@ -20,11 +20,11 @@ export default async function FeedPage() {
 
   return (
     <>
-      <div className="max-w-2xl mx-auto mt-10 space-y-4">
+      <div className="max-w-3xl mx-auto mt-10 space-y-4">
         <PostForm />
         <hr />
         {posts?.length === 0 ? (
-          <p className="text-gray-500">No posts found.</p>
+          <p className="text-secondary">No posts found.</p>
         ) : (
           posts?.map((post: any) => (
             <PostCard

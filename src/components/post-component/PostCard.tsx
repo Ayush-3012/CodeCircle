@@ -45,41 +45,44 @@ const PostCard = ({
   };
 
   const contentBlock = (
-    <>
-      <p className="text-gray-800 dark:text-gray-200 text-xl mb-2">{content}</p>
+    <div className="shadow-[0_0_5px] shadow-emerald-400 rounded p-2">
+      <p className="text-primary text-center text-xl mb-2">{content}</p>
       {media && (
         <Image
           src={media}
-          height={200}
-          width={200}
+          height={300}
+          width={400}
           alt="media"
-          className="bg-black w-auto h-auto mt-2 rounded-lg"
+          className="w-auto h-auto mt-2"
         />
       )}
-    </>
+    </div>
   );
 
   return (
     <>
-      <div className="border rounded p-4 shadow-sm bg-white dark:bg-gray-900">
+      <div className="shadow-[0_0_5px] shadow-emerald-400 rounded-2xl bg-nav p-4 ">
         {/* POSTED BY - AUTHOR DETAILS */}
-        <Link href={`/profile/${author.id}`}>
-          <div className="flex items-center gap-3 mb-2">
-            <Image
-              src={author?.image || defaultUserImage}
-              alt={author?.name}
-              width={50}
-              height={50}
-              className="w-10 h-10 rounded-full object-cover"
-            />
-            <div>
-              <p className="font-semibold text-gray-800 dark:text-white">
-                {author.name}
-              </p>
-              <p className="text-sm text-gray-500">@{author.username}</p>
+        <div className="flex items-center justify-between mb-3">
+          <Link href={`/profile/${author.id}`}>
+            <div className="flex items-center gap-3">
+              <Image
+                src={author?.image || defaultUserImage}
+                alt={author?.name}
+                width={50}
+                height={50}
+                className="w-10 h-10 rounded-full object-cover border"
+              />
+              <div>
+                <p className="font-semibold text-primary">{author.name}</p>
+                <p className="text-sm text-secondary">@{author.username}</p>
+              </div>
             </div>
-          </div>
-        </Link>
+          </Link>
+          <p className="text-xs text-secondary mt-2 text-right">
+            {new Date(createdAt).toLocaleString()}
+          </p>
+        </div>
 
         {/* POST ITSELF EDITING OR VIEWING */}
         {isEditing ? (
@@ -97,9 +100,6 @@ const PostCard = ({
             ) : (
               <Link href={`/post/${id}`}>{contentBlock}</Link>
             )}
-            <p className="text-xs text-gray-500 self-start ml-4 mt-2">
-              {new Date(createdAt).toLocaleString()}
-            </p>
 
             {/* POST LIKES OR COMMENT COUNT */}
             <PostInteraction
@@ -111,7 +111,7 @@ const PostCard = ({
 
             {/* POST INTERACTION -> EDIT OR DELETE */}
             {currentUserId === author.id && (
-              <div className="flex gap-4 mt-2 self-start ml-4">
+              <div className="flex gap-4 mt-3 self-start">
                 <button
                   onClick={handleDelete}
                   className="text-red-500 cursor-pointer hover:underline"
