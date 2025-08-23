@@ -30,9 +30,12 @@ const LoginPage = () => {
   return (
     <>
       <div className="flex items-center justify-center min-h-screen px-4">
-        <form
+        <motion.form
           onSubmit={handleSubmit}
           className="space-y-4 p-6 rounded-2xl w-full max-w-md custom-font shadow-[0_0_10px]"
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 1, type: "spring", bounce: 0.6 }}
         >
           <h1 className="text-2xl font-bold mb-6 underline text-primary text-center">
             Login
@@ -63,7 +66,7 @@ const LoginPage = () => {
           >
             {loading ? "Logging in..." : "Login"}
           </motion.button>
-        </form>
+        </motion.form>
       </div>
     </>
   );

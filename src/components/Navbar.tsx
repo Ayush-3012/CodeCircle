@@ -14,7 +14,7 @@ const Navbar = () => {
       <nav className="flex flex-col gap-4 text-lg font-medium custom-font">
         <Link
           href="/"
-          className="text-2xl font-extrabold mb-6 hover:text-sky-400 transition-colors"
+          className="text-2xl font-extrabold mb-6 hover:text-emerald-400 transition-colors"
         >
           CodeCircle
         </Link>
@@ -25,7 +25,7 @@ const Navbar = () => {
               href="/feed"
               className="group shadow-emerald-400 shadow-[0_0_5px] cursor-pointer px-2 py-1 rounded-md"
             >
-              <p className="group-hover:text-sky-400 group-hover:-translate-y-1.5 transition-all">
+              <p className="group-hover:text-emerald-400 group-hover:-translate-y-1.5 transition-all">
                 📰 Feed
               </p>
             </Link>
@@ -33,7 +33,7 @@ const Navbar = () => {
               href="/chat"
               className="group shadow-emerald-400 shadow-[0_0_5px] cursor-pointer px-2 py-1 rounded-md"
             >
-              <p className="group-hover:text-sky-400 group-hover:-translate-y-1.5 transition-all">
+              <p className="group-hover:text-emerald-400 group-hover:-translate-y-1.5 transition-all">
                 💬 Chat
               </p>
             </Link>
@@ -41,7 +41,7 @@ const Navbar = () => {
               href={`/profile/${user}`}
               className="group shadow-emerald-400 shadow-[0_0_5px] cursor-pointer px-2 py-1 rounded-md"
             >
-              <p className="group-hover:text-sky-400 group-hover:-translate-y-1.5 transition-all">
+              <p className="group-hover:text-emerald-400 group-hover:-translate-y-1.5 transition-all">
                 👤 Profile
               </p>
             </Link>
@@ -60,7 +60,7 @@ const Navbar = () => {
               href="/auth/login"
               className="group shadow-emerald-400 shadow-[0_0_5px] cursor-pointer px-2 py-1 rounded-md"
             >
-              <p className="group-hover:text-sky-400 group-hover:-translate-y-1.5 transition-all">
+              <p className="group-hover:text-emerald-400 group-hover:-translate-y-1.5 transition-all">
                 🔑 Login
               </p>
             </Link>
@@ -68,7 +68,7 @@ const Navbar = () => {
               href="/auth/register"
               className="group shadow-emerald-400 shadow-[0_0_5px] cursor-pointer px-2 py-1 rounded-md"
             >
-              <p className="group-hover:text-sky-400 group-hover:-translate-y-1.5 transition-all">
+              <p className="group-hover:text-emerald-400 group-hover:-translate-y-1.5 transition-all">
                 ✨ Register
               </p>
             </Link>

@@ -26,6 +26,9 @@ const CommentSection = ({
     setEditingId,
     editText,
     setEditText,
+    adding,
+    updatingId,
+    deletingId,
   } = useComment(postId);
 
   if (fromFeed) {
@@ -50,14 +53,14 @@ const CommentSection = ({
           />
           <button
             type="submit"
-            disabled={!commentText.trim()}
+            disabled={!commentText.trim() || adding}
             className={`bg-blue-600 text-white px-4 py-1 rounded ${
-              !commentText.trim()
+              !commentText.trim() || adding
                 ? "opacity-50 cursor-not-allowed"
                 : "hover:bg-blue-400 cursor-pointer"
             }`}
           >
-            Post
+            {adding ? "Commenting..." : "Comment"}
           </button>
         </form>
 
@@ -92,7 +95,7 @@ const CommentSection = ({
                             onClick={() => handleUpdate(c.id)}
                             className="text-green-400 cursor-pointer hover:text-green-600 text-sm"
                           >
-                            Save
+                            {updatingId === c.id ? "Saving..." : "Save"}
                           </button>
                           <button
                             onClick={() => {
@@ -132,9 +135,14 @@ const CommentSection = ({
                           )
                             handleDelete(c.id);
                         }}
-                        className="text-red-500 cursor-pointer hover:text-red-700 text-xs"
+                        disabled={deletingId === c.id}
+                        className={`text-red-500 text-xs ${
+                          deletingId === c.id
+                            ? "opacity-50 cursor-not-allowed"
+                            : "hover:text-red-700 cursor-pointer"
+                        }`}
                       >
-                        Delete
+                        {deletingId === c.id ? "Deleting..." : "Delete"}
                       </button>
                     </div>
                   )}

@@ -26,6 +26,11 @@ export const useComment = (postId: string) => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editText, setEditText] = useState("");
 
+  // separate loading states
+  const [adding, setAdding] = useState(false);
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
   useEffect(() => {
     fetchAllComments();
   }, []);
@@ -35,43 +40,52 @@ export const useComment = (postId: string) => {
       const res = await getCommentsByPost(postId);
       setComments(res.data.comments);
     } catch (error: any) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Failed to fetch comments");
     }
   };
 
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!commentText.trim()) return;
     try {
-      if (!commentText.trim()) return;
+      setAdding(true);
       const res = await addCommentToPost(postId, commentText);
       toast.success(res.data.message);
       setCommentText("");
       fetchAllComments();
     } catch (error: any) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Failed to add comment");
+    } finally {
+      setAdding(false);
     }
   };
 
   const handleUpdate = async (id: string) => {
+    if (!editText.trim()) return;
     try {
-      if (!editText.trim()) return;
-
+      setUpdatingId(id);
       const res = await updateComment(id, editText);
       toast.success(res.data.message);
       setEditingId(null);
+      setEditText("");
       fetchAllComments();
     } catch (error: any) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Failed to update comment");
+    } finally {
+      setUpdatingId(null);
     }
   };
 
   const handleDelete = async (id: string) => {
     try {
+      setDeletingId(id);
       const res = await deleteComment(id);
       toast.success(res.data.message);
       fetchAllComments();
     } catch (error: any) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Failed to delete comment");
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -87,5 +101,10 @@ export const useComment = (postId: string) => {
     editText,
     setEditText,
     fetchAllComments,
+
+    // loading states
+    adding,
+    updatingId,
+    deletingId,
   };
 };

@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 import PostForm from "./PostForm";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import PostInteraction from "../post-component/PostInteraction";
 import { defaultUserImage } from "@/utils/defautUserImage";
 import { usePost } from "@/lib/hooks/usePost";
@@ -61,7 +62,13 @@ const PostCard = ({
 
   return (
     <>
-      <div className="shadow-[0_0_5px] shadow-emerald-400 rounded-2xl bg-nav p-4 ">
+      <motion.div
+        className="shadow-[0_0_5px] shadow-emerald-400 rounded-2xl bg-nav p-4 "
+        initial={{ x: 200, opacity: 0 }}
+        whileInView={{ x: 0, opacity: 1 }}
+        viewport={{ once: false, amount: 0.2 }}
+        transition={{ duration: 0.5, type: "spring", bounce: 0.5 }}
+      >
         {/* POSTED BY - AUTHOR DETAILS */}
         <div className="flex items-center justify-between mb-3">
           <Link href={`/profile/${author.id}`}>
@@ -90,6 +97,7 @@ const PostCard = ({
             initialContent={content}
             initialMediaUrl={media || defaultUserImage}
             isEditing={true}
+            setIsEditing={setIsEditing}
             postId={id}
             onSuccess={() => setIsEditing(false)}
           />
@@ -128,7 +136,7 @@ const PostCard = ({
             )}
           </div>
         )}
-      </div>
+      </motion.div>
     </>
   );
 };

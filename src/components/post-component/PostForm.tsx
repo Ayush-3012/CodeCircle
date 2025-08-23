@@ -12,6 +12,7 @@ type PostFormProps = {
   initialContent?: string;
   initialMediaUrl?: string;
   isEditing?: boolean;
+  setIsEditing?: (value: boolean) => void;
   postId?: string;
   onSuccess?: () => void;
 };
@@ -20,6 +21,7 @@ const PostForm = ({
   initialContent = "",
   initialMediaUrl = "",
   isEditing = false,
+  setIsEditing,
   postId,
   onSuccess,
 }: PostFormProps) => {
@@ -52,60 +54,67 @@ const PostForm = ({
   };
 
   return (
-    <>
-      <form
-        onSubmit={handleSubmit}
-        className="flex space-x-3 relative rounded-2xl shadow-[0_0_5px] shadow-emerald-400 bg-nav custom-font"
-      >
+    <form
+      onSubmit={handleSubmit}
+      className={`flex flex-col space-y-3 px-6 py-4 rounded-2xl shadow-[0_0_5px] 
+        ${isEditing ? "shadow-blue-400" : "shadow-emerald-400"} 
+        bg-nav custom-font`}
+    >
+      <div className="flex gap-2 items-center justify-center">
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
           placeholder="What's on your mind?"
-          className="w-full px-4 py-3 text-xl placeholder:text-secondary focus:outline-none "
+          className="w-full px-4 py-3 text-lg rounded-md placeholder:text-secondary focus:outline-none text-primary bg-transparent border border-emerald-600"
           rows={3}
         />
 
-        {isEditing && initialMediaUrl && !media && (
-          <div className="relative w-40 h-40 border rounded overflow-hidden mx-auto">
+        {/* IMAGE PREVIEW */}
+        {(media || (isEditing && initialMediaUrl)) && (
+          <div className="relative w-32 h-full overflow-hidden rounded-md border border-emerald-500">
             <Image
-              src={initialMediaUrl}
-              alt="Current media"
-              fill
-              className="object-cover"
+              src={media ? URL.createObjectURL(media) : initialMediaUrl!}
+              alt="Uploaded media"
+              width={600}
+              height={400}
+              className="object-contain mx-auto"
             />
           </div>
         )}
+      </div>
 
-        <div className="flex justify-center gap-4 flex-col h-full items-center absolute right-2 bottom-0">
-          <div className="flex items-center gap-2">
-            <input
-              id="fileInput"
-              type="file"
-              accept="image/*,video/*"
-              onChange={(e) => setMedia(e.target.files?.[0] || null)}
-              className="hidden"
-            />
-            <label
-              htmlFor="fileInput"
-              className="p-2 shadow-[0_0_5px] cursor-pointer rounded-full text-secondary hover:bg-emerald-600 hover:text-white transition"
-            >
-              <FaFileUpload className="text-xl" />
-            </label>
-            {media && (
-              <span className="text-sm text-secondary">
-                {media.name.length > 15
-                  ? media.name.slice(0, 15) + "..."
-                  : media.name}
-              </span>
-            )}
-          </div>
+      {/* ACTIONS */}
+      <div className="flex justify-between  items-center">
+        {/* Upload Button */}
+        <div className="flex items-center gap-2">
+          <input
+            id="fileInput"
+            type="file"
+            accept="image/*,video/*"
+            onChange={(e) => setMedia(e.target.files?.[0] || null)}
+            className="hidden"
+          />
+          <label
+            htmlFor="fileInput"
+            className="p-2 shadow-[0_0_5px] cursor-pointer rounded-full text-secondary hover:bg-emerald-600 hover:text-white transition"
+          >
+            <FaFileUpload className="text-xl" />
+          </label>
+          {media && (
+            <span className="text-sm text-secondary">
+              {media.name.length > 15
+                ? media.name.slice(0, 15) + "..."
+                : media.name}
+            </span>
+          )}
+        </div>
 
-          {/* Post Button */}
+        <div className="flex gap-2">
           <motion.button
             type="submit"
             disabled={loading}
             whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.4, type: "spring", bounce: 0.6 }}
+            transition={{ duration: 0.3, type: "spring", bounce: 0.4 }}
             className="px-6 py-2 rounded-md border cursor-pointer font-semibold hover-gradient text-primary"
           >
             {loading
@@ -116,9 +125,25 @@ const PostForm = ({
               ? "Update"
               : "Post"}
           </motion.button>
+
+          {(isEditing || media || content.trim()) && (
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.3, type: "spring", bounce: 0.4 }}
+              className="px-6 py-2 rounded-md border cursor-pointer font-semibold hover:bg-rose-500 hover:text-white text-primary"
+              onClick={(e) => {
+                e.preventDefault();
+                setContent("");
+                setMedia(null);
+                if (isEditing) setIsEditing?.(false);
+              }}
+            >
+              Cancel
+            </motion.button>
+          )}
         </div>
-      </form>
-    </>
+      </div>
+    </form>
   );
 };
 

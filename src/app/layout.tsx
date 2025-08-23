@@ -24,7 +24,7 @@ export default function RootLayout({
     <html lang="en" className={`${rubik.variable} custom-font`}>
       <body suppressHydrationWarning>
         <AppProvider>
-          <div className="flex min-h-screen">
+          <div className="flex min-h-screen h-screen">
             {/* Sidebar */}
             <aside className="w-64 hidden md:flex text-primary flex-col bg-nav border-r p-4">
               <Navbar />
