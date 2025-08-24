@@ -55,33 +55,31 @@ const FollowSection = ({ currentUserId, profileId }: FollowSectionProps) => {
 
   return (
     <>
-      <div className="flex items-center gap-2 justify-center flex-col">
-        <div className="flex items-center gap-6 justify-center text-xl mt-2 text-gray-300">
-          <Link
-            href={`/profile/${profileId}/followList?type=followers`}
-            className="hover:underline text-gray-300 text-xl"
-          >
-            Followers: {followerCount}
-          </Link>
-          <span>|</span>
-          <Link
-            href={`/profile/${profileId}/followList?type=following`}
-            className="hover:underline"
-          >
-            Following: {followingCount}
-          </Link>
-        </div>
-
-        {profileId !== currentUserId && (
-          <FollowButton
-            isFollowedInitially={isFollowed}
-            userId={profileId}
-            // profileId={profileId}
-            // currentUserId={currentUserId}
-            onToggle={handleToggleFollow}
-          />
-        )}
+      <div className="flex text-center items-center justify-center gap-6 text-primary">
+        <Link
+          href={`/profile/${profileId}/followList?type=followers`}
+          className="hover:underline"
+        >
+          <p className="text-2xl font-bold">{followerCount}</p>
+          <p className="text-sm">Followers</p>
+        </Link>
+        <span className="text-5xl">|</span>
+        <Link
+          href={`/profile/${profileId}/followList?type=following`}
+          className="hover:underline"
+        >
+          <p className="text-2xl font-bold ">{followingCount}</p>
+          <p className="text-sm">Following</p>
+        </Link>
       </div>
+
+      {profileId !== currentUserId && (
+        <FollowButton
+          isFollowedInitially={isFollowed}
+          userId={profileId}
+          onToggle={handleToggleFollow}
+        />
+      )}
     </>
   );
 };

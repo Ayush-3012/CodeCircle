@@ -1,36 +1,39 @@
-// "use client";
+"use client";
 
-// import { createOrGetConversation } from "../../lib/client/services/chatService";
-// import { useRouter } from "next/navigation";
-// import { useState } from "react";
+import Loader from "@/partials/Loader";
+import { createOrGetConversation } from "../../lib/client/services/chatService";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
-// const SendMessageButton = ({ targetUserId }: { targetUserId: string }) => {
-//   const router = useRouter();
-//   const [loading, setLoading] = useState(false);
+const SendMessageButton = ({ targetUserId }: { targetUserId: string }) => {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
-//   const handleClick = async () => {
-//     try {
-//       setLoading(true);
-//       const conversation = await createOrGetConversation(targetUserId);
-//       if (conversation?.id) {
-//         router.push(`/chat/${conversation.id}`);
-//       }
-//     } catch (error) {
-//       console.error("Could not start chat", error);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
+  const handleClick = async () => {
+    try {
+      setLoading(true);
+      const conversation = await createOrGetConversation(targetUserId);
+      if (conversation?.id) {
+        router.push(`/chat/${conversation.id}`);
+      }
+    } catch (error) {
+      console.error("Could not start chat", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-//   return (
-//     <button
-//       onClick={handleClick}
-//       disabled={loading}
-//       className="bg-emerald-600 cursor-pointer text-white px-4 py-2 rounded hover:bg-emerald-500 transition"
-//     >
-//       {loading ? "Starting..." : "Send Message"}
-//     </button>
-//   );
-// };
+  if(loading) return <Loader />
 
-// export default SendMessageButton;
+  return (
+    <button
+      onClick={handleClick}
+      disabled={loading}
+      className="px-4 py-2 rounded-md border hover:scale-110 transition-all duration-150 cursor-pointer font-semibold hover:bg-emerald-600 disabled:opacity-50"
+    >
+      {loading ? "Starting..." : "Send Message"}
+    </button>
+  );
+};
+
+export default SendMessageButton;

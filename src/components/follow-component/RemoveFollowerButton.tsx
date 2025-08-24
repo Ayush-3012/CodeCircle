@@ -2,6 +2,7 @@
 
 import { removeFollower } from "../../lib/client/services/followService";
 import { useState } from "react";
+import {motion} from "framer-motion";
 import toast from "react-hot-toast";
 
 type RemoveFollowerButtonProps = {
@@ -34,13 +35,17 @@ const RemoveFollowerButton = ({
 
   return (
     <>
-      <button
+      <motion.button
         onClick={handleRemove}
         disabled={loading}
-        className="bg-red-600 hover:bg-red-500 text-white text-sm px-3 py-1 rounded"
+        className={`px-5 py-2.5 rounded-md font-medium shadow-[0_0_5px] bg-gray-600 text-primary active:scale-95 shadow-black
+        ${loading ? "cursor-not-allowed opacity-70" : "cursor-pointer"}
+        active:scale-95`}
+        whileHover={{ scaleX: 1.12 }}
+        transition={{ duration: 0.6, type: "spring", bounce: 0.6 }}
       >
         {loading ? "Removing…" : "Remove"}
-      </button>
+      </motion.button>
     </>
   );
 };

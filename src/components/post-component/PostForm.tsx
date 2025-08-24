@@ -7,6 +7,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import { FaFileUpload } from "react-icons/fa";
+import Loader from "@/partials/Loader";
 
 type PostFormProps = {
   initialContent?: string;
@@ -26,22 +27,30 @@ const PostForm = ({
   onSuccess,
 }: PostFormProps) => {
   const [content, setContent] = useState(initialContent);
-  const [media, setMedia] = useState<File | null>(null);
+  const [media, setMedia] = useState<File | null>(null); // new media (only if user selects)
   const [loading, setLoading] = useState(false);
   const postHook = usePost();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!content.trim() && !media && !initialMediaUrl) return;
+
     setLoading(true);
     try {
-      if (!content.trim() && !media) return;
-
       const formData = new FormData();
       formData.append("content", content);
-      if (media) formData.append("media", media);
 
-      if (isEditing) await postHook.update(postId!, formData);
-      else await postHook.create(formData);
+      // 🟢 agar naya file select kiya hai to usko bhej
+      if (media) {
+        formData.append("media", media);
+      }
+
+      if (isEditing) {
+        await postHook.update(postId!, formData);
+        setIsEditing?.(false);
+      } else {
+        await postHook.create(formData);
+      }
 
       setContent("");
       setMedia(null);
@@ -52,6 +61,8 @@ const PostForm = ({
       setLoading(false);
     }
   };
+
+  if(loading) return <Loader />
 
   return (
     <form
@@ -73,7 +84,11 @@ const PostForm = ({
         {(media || (isEditing && initialMediaUrl)) && (
           <div className="relative w-32 h-full overflow-hidden rounded-md border border-emerald-500">
             <Image
-              src={media ? URL.createObjectURL(media) : initialMediaUrl!}
+              src={
+                media
+                  ? URL.createObjectURL(media) // agar naya file select kiya hai
+                  : initialMediaUrl! // warna purana image/video
+              }
               alt="Uploaded media"
               width={600}
               height={400}
@@ -84,18 +99,22 @@ const PostForm = ({
       </div>
 
       {/* ACTIONS */}
-      <div className="flex justify-between  items-center">
+      <div className="flex justify-between items-center">
         {/* Upload Button */}
         <div className="flex items-center gap-2">
           <input
-            id="fileInput"
+            id={`fileInput-${isEditing ? postId : "create"}`}
             type="file"
             accept="image/*,video/*"
-            onChange={(e) => setMedia(e.target.files?.[0] || null)}
+            onChange={(e) => {
+              const file = e.target.files?.[0] || null;
+              setMedia(file);
+              e.target.value = "";
+            }}
             className="hidden"
           />
           <label
-            htmlFor="fileInput"
+            htmlFor={`fileInput-${isEditing ? postId : "create"}`}
             className="p-2 shadow-[0_0_5px] cursor-pointer rounded-full text-secondary hover:bg-emerald-600 hover:text-white transition"
           >
             <FaFileUpload className="text-xl" />
@@ -133,7 +152,7 @@ const PostForm = ({
               className="px-6 py-2 rounded-md border cursor-pointer font-semibold hover:bg-rose-500 hover:text-white text-primary"
               onClick={(e) => {
                 e.preventDefault();
-                setContent("");
+                setContent(initialContent);
                 setMedia(null);
                 if (isEditing) setIsEditing?.(false);
               }}

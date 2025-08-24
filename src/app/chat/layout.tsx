@@ -13,9 +13,12 @@ export default async function ChatLayout({
   const conversations = await getUserConversations(session?.userId);
 
   return (
-    <div className="flex h-full">
+    <div className="flex h-screen bg-app text-primary">
       <Sidebar initial={conversations} currentUserId={session?.userId} />
-      <div className="flex-1">{children}</div>
+
+      <div className="flex-1 flex flex-col border-l border-gray-700">
+        {children}
+      </div>
     </div>
   );
 }

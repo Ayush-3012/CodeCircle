@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 //src/lib/socketServer.ts
 
 import { Server } from "socket.io";
@@ -5,37 +6,47 @@ import type { Server as HTTPServer } from "http";
 
 let io: Server | null = null;
 
+const onlineUsers = new Map<string, string>();
+
 export const initSocket = (server: HTTPServer) => {
   if (io) return io;
   io = new Server(server, {
     path: "/api/socket/io",
     cors: {
-      origin: "http://localhost:3000", // frontend ka origin
+      origin: "http://localhost:3000",
       methods: ["GET", "POST"],
     },
   });
 
   io.on("connection", (socket: any) => {
-    // console.log("🔌 New WS connection:", socket.id);
+    console.log("⚡ User connected", socket.id);
 
-    /* join‑room */
+    socket.on("userOnline", (userId: string) => {
+      onlineUsers.set(userId, socket.id);
+      io.emit("onlineUsers", Array.from(onlineUsers.keys()));
+    });
+
+    socket.on("disconnect", () => {
+      for (let [userId, sId] of onlineUsers) {
+        if (sId === socket.id) {
+          onlineUsers.delete(userId);
+        }
+      }
+      io.emit("onlineUsers", Array.from(onlineUsers.keys())); 
+    });
+
     socket.on("join", (conversationId: string) => {
-      // console.log("joined the conversation id ", conversationId);
       socket.join(conversationId);
     });
 
     socket.on("message", ({ conversationId, senderId, content }: any) => {
-      // console.log("📥 Received on server payload:", payload);
       const newMessage = {
         conversationId,
         senderId,
         content,
         createdAt: new Date(),
       };
-      // console.log("📤 Broadcasting message with:", senderId, content);
-      // socket.to(conversationId).emit("message", newMessage);
       io.to(conversationId).emit("message", newMessage);
-      // io.to(conversationId).emit("message", { senderId, content });
     });
 
     socket.on("messageUpdated", ({ conversationId, updatedMessage }: any) => {
@@ -44,11 +55,6 @@ export const initSocket = (server: HTTPServer) => {
 
     socket.on("messageDeleted", ({ conversationId, messageId }: any) => {
       socket.to(conversationId).emit("messageDeleted", messageId);
-    });
-
-    /* disconnect */
-    socket.on("disconnect", () => {
-      // console.log("❌", socket.id, "disconnected");
     });
   });
 

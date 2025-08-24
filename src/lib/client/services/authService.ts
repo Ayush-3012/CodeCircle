@@ -2,7 +2,11 @@ import axios from "@/lib/axios";
 import { RegisterFormData } from "@/utils/types/users";
 
 export const registerUser = async (formData: RegisterFormData) => {
-  const res = await axios.post(`/auth/register`, formData);
+  const res = await axios.post(`/auth/register`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
   return res;
 };
 

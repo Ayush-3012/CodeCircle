@@ -26,85 +26,115 @@ export default async function ProfilePage({
 
   const currentUserId = session?.userId;
   const profileId = profile?.id || id;
+
   return (
-    <div className="max-w-7xl mx-auto mt-8 px-4 space-y-6 ">
-      <div className="flex items-center justify-between ">
-        <div className="flex items-center gap-4">
-          <Image
-            src={profile?.image || defaultUserImage}
-            alt={profile?.name || "User Image"}
-            width={100}
-            height={100}
-            className="w-25 h-25 rounded-full object-cover"
-          />
-          <div>
-            <h2 className="text-2xl font-semibold">{profile?.name}</h2>
-            <p className="text-gray-400">@{profile?.username}</p>
+    <div className="max-w-7xl mx-auto mt-10 px-4 space-y-2">
+      <div className="relative bg-gradient-to-br from-indigo-500 to-emerald-500 rounded-2xl p-8 shadow-xl border border-gray-700">
+        <div className="flex flex-col md:flex-row items-center md:items-center justify-between gap-8">
+          {/* Left: Avatar + info */}
+          <div className="flex items-center gap-6">
+            <Image
+              src={profile?.image || defaultUserImage}
+              alt={profile?.name || "User Image"}
+              width={140}
+              height={140}
+              className="rounded-full w-36 h-36 object-cover border-4 border-white/40 shadow-lg"
+            />
+            <div>
+              <h2 className="text-3xl font-bold text-white">{profile?.name}</h2>
+              <p className="text-gray-200">@{profile?.username}</p>
+              <p className="text-gray-100 italic mt-2 max-w-md">
+                {profile?.bio}
+              </p>
+            </div>
           </div>
-        </div>
 
-        <FollowSection currentUserId={currentUserId} profileId={profileId} />
+          {/* Right: Buttons + Links */}
+          <div className="flex flex-col items-center md:items-end gap-4">
+            <div className="flex gap-4">
+              {profile?.githubUrl && (
+                <Link href={profile.githubUrl} target="_blank">
+                  <FaGithub className="text-3xl text-white/90 hover:text-white hover:scale-110 transition" />
+                </Link>
+              )}
+              {profile?.linkedInUrl && (
+                <Link href={profile.linkedInUrl} target="_blank">
+                  <FaLinkedin className="text-3xl text-white/90 hover:text-white hover:scale-110 transition" />
+                </Link>
+              )}
+              {profile?.portfolioUrl && (
+                <Link href={profile.portfolioUrl} target="_blank">
+                  <FaCode className="text-3xl text-white/90 hover:text-white hover:scale-110 transition" />
+                </Link>
+              )}
+            </div>
 
-        <div className="flex gap-4 items-center justify-center">
-          {profile?.githubUrl && (
-            <Link href={profile.githubUrl} target="_blank">
-              <FaGithub className="text-4xl text-fuchsia-400 hover:text-emerald-400" />
-            </Link>
-          )}
-          {profile?.linkedInUrl && (
-            <Link href={profile.linkedInUrl} target="_blank">
-              <FaLinkedin className="text-4xl text-fuchsia-400 hover:text-emerald-400" />
-            </Link>
-          )}
-          {profile?.portfolioUrl && (
-            <Link href={profile.portfolioUrl} target="_blank">
-              <FaCode className="text-4xl text-fuchsia-400 hover:text-emerald-400" />
-            </Link>
-          )}
+            <div>
+              {currentUserId !== profileId ? (
+                <SendMessageButton targetUserId={profileId} />
+              ) : (
+                <Link
+                  href={`/edit-profile`}
+                  className="px-4 py-2 rounded-md border border-white/40 text-white hover:scale-105 hover:bg-fuchsia-600 transition-all duration-150 cursor-pointer font-semibold"
+                >
+                  Edit Profile
+                </Link>
+              )}
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="flex justify-between items-center p-2">
-        <div className="text-gray-200">
-          <p>Total Posts: {profilePosts?.length}</p>
-        </div>
-        {currentUserId !== profileId && (
-          <SendMessageButton targetUserId={profileId} />
-        )}
+      <div className="flex justify-around bg-gradient-to-r from-indigo-700 via-purple-400 to-pink-500 border border-gray-700 rounded-xl p-4 text-center shadow">
         <div>
-          <p className="text-lg font-serif">{profile?.bio}</p>
+          <p className="text-2xl font-bold text-white">
+            {profilePosts?.length}
+          </p>
+          <p className="text-gray-200 text-sm">Posts</p>
         </div>
-        {currentUserId === profileId && (
-          <Link
-            href={`/edit-profile`}
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500 transition"
-          >
-            Edit Profile
-          </Link>
-        )}
+
+        <FollowSection currentUserId={currentUserId} profileId={profileId} />
       </div>
 
       <hr />
 
-      <h3 className="text-xl text-white font-semibold mb-2">Your Posts</h3>
-      <div className="grid max-md:grid-cols-2 grid-cols-4 max-lg:grid-cols-3 max-sm:grid-cols-1 max-sm:mx-4 w-full gap-8">
-        {profilePosts?.map((post: any) => (
-          <Link
-            href={`/post/${post.id}`}
-            key={post.id}
-            className="h-52 text-center group flex items-center justify-center hover:scale-105 cursor-pointer relative transition-all rounded-xl overflow-hidden duration-300"
-          >
-            <div
-              className="absolute inset-0 bg-cover bg-center transition-all duration-300 group-hover:scale-110 group-hover:opacity-30 "
-              style={{
-                backgroundImage: `url(${post.mediaUrl})`,
-              }}
-            ></div>
-            <p className="text-xl font-bold text-white relative z-10 duration-200">
-              {post.content}
-            </p>
-          </Link>
-        ))}
+      <div className="mb-8">
+        {profilePosts?.length === 0 ? (
+          <h3 className="text-primary font-bold mb-4 text-2xl text-center">No posts found.</h3>
+        ) : (
+          <>
+            <h3 className="text-xl text-primary font-semibold mb-4">Posts</h3>
+            <div className="grid max-md:grid-cols-2 grid-cols-4 max-lg:grid-cols-3 max-sm:grid-cols-1 gap-6">
+              {profilePosts?.map((post: any) => (
+                <Link
+                  href={`/post/${post.id}`}
+                  key={post.id}
+                  className="h-72 border text-center group flex items-center justify-center hover:scale-105 cursor-pointer relative transition-all rounded-xl overflow-hidden duration-300"
+                >
+                  {post.mediaUrl ? (
+                    <>
+                      <div
+                        className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
+                        style={{
+                          backgroundImage: `url(${post.mediaUrl})`,
+                        }}
+                      />
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center p-3">
+                        <p className="text-lg font-semibold text-white">
+                          {post.content}
+                        </p>
+                      </div>
+                    </>
+                  ) : (
+                    <p className="text-lg font-semibold text-primary text-center transition-transform duration-500 group-hover:scale-110">
+                      {post.content}
+                    </p>
+                  )}
+                </Link>
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

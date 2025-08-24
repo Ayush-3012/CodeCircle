@@ -4,10 +4,12 @@ import Link from "next/link";
 import { useSelector } from "react-redux";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { RootState } from "@/lib/redux/store";
+import { useState } from "react";
 
 const Navbar = () => {
   const user = useSelector((state: RootState) => state.auth.user);
   const auth = useAuth();
+  const [loading, setLoading] = useState(false);
 
   return (
     <>
@@ -47,10 +49,19 @@ const Navbar = () => {
             </Link>
             <button
               className="group mt-4 text-left shadow-rose-400 shadow-[0_0_5px] cursor-pointer px-2 py-1 rounded-md"
-              onClick={async () => await auth?.logout()}
+              onClick={async () => {
+                try {
+                  setLoading(true);
+                  await auth?.logout();
+                } catch (error) {
+                  console.error("Logout failed:", error);
+                } finally {
+                  setLoading(false);
+                }
+              }}
             >
               <p className="group-hover:text-rose-400 group-hover:-translate-y-1.5 transition-all">
-                🚪 Logout
+                {loading ? "🚪 Logging out..." : "🚪 Logout"}
               </p>
             </button>
           </>

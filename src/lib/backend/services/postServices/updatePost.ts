@@ -8,15 +8,11 @@ type UpdatePostArgs = {
   userId: string;
 };
 
-export async function updatePost({
-  id,
-  content,
-  file,
-  userId,
-}: UpdatePostArgs) {
+export async function updatePost({ id, content, file, userId }: UpdatePostArgs) {
   let mediaUrl: string | null = null;
   let mediaType: string | null = null;
 
+  // File upload
   if (file) {
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
@@ -36,18 +32,18 @@ export async function updatePost({
     mediaType = uploaded.resource_type;
   }
 
+  // Find post
   const post = await prisma.post.findUnique({ where: { id } });
+  if (!post) throw new Error("Post not found");
+  if (post.authorId !== userId) throw new Error("Unauthorized");
 
-  if (!post || post.authorId !== userId) return null;
-
-  const updatedPost = await prisma.post.update({
+  // Update
+  return await prisma.post.update({
     where: { id },
     data: {
       content,
-      mediaUrl: mediaUrl || post.mediaUrl,
-      mediaType: mediaType || post.mediaType,
+      mediaUrl: mediaUrl ?? post.mediaUrl,
+      mediaType: mediaType ?? post.mediaType,
     },
   });
-
-  return updatedPost;
 }

@@ -8,11 +8,11 @@ import { useAuth } from "@/lib/hooks/useAuth";
 import Link from "next/link";
 
 const RegisterPage = () => {
-  const auth = useAuth();
+  const { register } = useAuth();
 
   const handleRegister = async (formData: RegisterFormData) => {
     try {
-      await auth?.register(formData);
+      await register(formData);
     } catch (error) {
       console.log(error);
       toast.error("Something went wrong");

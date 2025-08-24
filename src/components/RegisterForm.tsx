@@ -1,8 +1,11 @@
+/* eslint-disable prefer-const */
 "use client";
 
 import { useState } from "react";
 import { RegisterFormData } from "@/utils/types/users";
 import { motion } from "framer-motion";
+import Image from "next/image";
+import Loader from "@/partials/Loader";
 
 type RegisterFormProps = {
   initialData?: RegisterFormData;
@@ -31,6 +34,8 @@ const RegisterForm = ({
     }
   );
 
+  const [imageFile, setImageFile] = useState<File | null>(null);
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -39,8 +44,22 @@ const RegisterForm = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await onSubmit(formData);
+
+    let submitData: any = new FormData();
+
+    for (const key in formData) {
+      if (key === "image") continue;
+      submitData.append(key, formData[key as keyof RegisterFormData] || "");
+    }
+
+    if (imageFile) {
+      submitData.append("image", imageFile);
+    }
+
+    await onSubmit(submitData);
   };
+
+  if (loading) return <Loader />;
 
   return (
     <form
@@ -57,7 +76,7 @@ const RegisterForm = ({
         value={formData.name}
         onChange={handleChange}
         placeholder="Name"
-        className="w-full px-4 py-3 rounded-md bg-nav  text-primary placeholder:text-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        className="w-full px-4 py-3 rounded-md bg-nav text-primary placeholder:text-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
       />
 
       {!isEdit && (
@@ -66,7 +85,7 @@ const RegisterForm = ({
           value={formData.username}
           onChange={handleChange}
           placeholder="Username"
-          className="w-full px-4 py-3 rounded-md bg-nav  text-primary placeholder:text-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="w-full px-4 py-3 rounded-md bg-nav text-primary placeholder:text-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
       )}
 
@@ -78,7 +97,7 @@ const RegisterForm = ({
             value={formData.email}
             onChange={handleChange}
             placeholder="Email"
-            className="w-full px-4 py-3 rounded-md bg-nav  text-primary placeholder:text-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full px-4 py-3 rounded-md bg-nav text-primary placeholder:text-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
           <input
             name="password"
@@ -86,7 +105,7 @@ const RegisterForm = ({
             value={formData.password}
             onChange={handleChange}
             placeholder="Password"
-            className="w-full px-4 py-3 rounded-md bg-nav  text-primary placeholder:text-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full px-4 py-3 rounded-md bg-nav text-primary placeholder:text-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
         </>
       )}
@@ -97,29 +116,48 @@ const RegisterForm = ({
         onChange={handleChange}
         placeholder="Bio"
         rows={2}
-        className="w-full px-4 py-3 rounded-md bg-nav  text-primary placeholder:text-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        className="w-full px-4 py-3 rounded-md bg-nav text-primary placeholder:text-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
       />
 
-      <input
-        name="image"
-        value={formData.image}
-        onChange={handleChange}
-        placeholder="Image URL"
-        className="w-full px-4 py-3 rounded-md bg-nav  text-primary placeholder:text-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
-      />
+      {/* 🖼️ IMAGE UPLOAD */}
+      <div className="flex flex-col gap-2">
+        <label>Profile Image</label>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => {
+            const file = e.target.files?.[0] || null;
+            setImageFile(file);
+          }}
+          className="block w-full text-sm text-secondary file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-emerald-600 file:text-white hover:file:bg-emerald-700"
+        />
+
+        {/* Preview */}
+        {(imageFile || formData.image) && (
+          <div className="w-32 h-32 relative border border-emerald-600 rounded-md overflow-hidden">
+            <Image
+              src={imageFile ? URL.createObjectURL(imageFile) : formData.image}
+              alt="Profile preview"
+              fill
+              className="object-cover"
+            />
+          </div>
+        )}
+      </div>
+
       <input
         name="githubUrl"
         value={formData.githubUrl}
         onChange={handleChange}
         placeholder="GitHub URL"
-        className="w-full px-4 py-3 rounded-md bg-nav  text-primary placeholder:text-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        className="w-full px-4 py-3 rounded-md bg-nav text-primary placeholder:text-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
       />
       <input
         name="linkedInUrl"
         value={formData.linkedInUrl}
         onChange={handleChange}
         placeholder="LinkedIn URL"
-        className="w-full px-4 py-3 rounded-md bg-nav  text-primary placeholder:text-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        className="w-full px-4 py-3 rounded-md bg-nav text-primary placeholder:text-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
       />
       <input
         name="portfolioUrl"
@@ -128,7 +166,6 @@ const RegisterForm = ({
         placeholder="Portfolio URL"
         className="w-full px-4 py-3 rounded-md bg-nav text-primary placeholder:text-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
       />
-
       {/* Button */}
       <motion.button
         type="submit"

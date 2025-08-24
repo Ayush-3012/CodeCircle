@@ -7,6 +7,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { motion } from "framer-motion";
+import Loader from "@/partials/Loader";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -26,6 +27,8 @@ const LoginPage = () => {
       setLoading(false);
     }
   };
+
+  if (loading) return <Loader />;
 
   return (
     <>

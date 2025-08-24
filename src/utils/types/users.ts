@@ -3,7 +3,7 @@ export interface RegisterFormData {
   username: string;
   email?: string;
   password?: string;
-  image?: string;
+  image?: File | string;
   bio?: string;
   githubUrl?: string;
   linkedInUrl?: string;

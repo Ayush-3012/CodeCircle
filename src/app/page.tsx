@@ -4,9 +4,21 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useAuth } from "@/lib/hooks/useAuth";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { isUserLoggedIn } from "@/lib/client/services/authService";
 
 export default function Home() {
   useAuth();
+  const router = useRouter();
+  useEffect(() => {
+    const checkAuth = async () => {
+      if (await isUserLoggedIn()) {
+        router.replace("/feed");
+      }
+    };
+    checkAuth();
+  }, []);
 
   const MotionLink = motion(Link);
 

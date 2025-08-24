@@ -8,16 +8,30 @@ export async function PUT(req: Request) {
     if (!session || !session.userId)
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
-    const data = await req.json();
+    const formData = await req.formData();
 
-    const updatedUser = await updateUserProfile(session?.userId, data);
+    const name = formData.get("name") as string;
+    const bio = formData.get("bio") as string | null;
+    const githubUrl = formData.get("githubUrl") as string | null;
+    const linkedInUrl = formData.get("linkedInUrl") as string | null;
+    const portfolioUrl = formData.get("portfolioUrl") as string | null;
+    const imageFile = formData.get("image") as File | null;
+
+    const updatedUser = await updateUserProfile(session.userId, {
+      name,
+      bio,
+      githubUrl,
+      linkedInUrl,
+      portfolioUrl,
+      imageFile,
+    });
 
     return NextResponse.json(
       { message: "Profile updated successfully", updatedUser },
       { status: 200 }
     );
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return NextResponse.json(
       { message: "Something went wrong", error },
       { status: 500 }

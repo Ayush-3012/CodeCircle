@@ -43,45 +43,50 @@ const FollowListClient = ({
           return (
             <div
               key={user.id}
-              className="flex bg-gray-600 gap-2 hover:bg-gray-800 rounded items-center p-2 justify-between"
+              className="flex items-center justify-between gap-4 p-4 rounded-xl 
+                   bg-gradient-to-r from-cyan-800 hover-gradient via-purple-400/60 to-pink-400/60 
+                   border border-gray-700 shadow-md hover:shadow-lg 
+                   transition-all duration-300 hover:scale-[1.02]"
             >
               <Link href={`/profile/${user.id}`} className="flex-1">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-3">
                   <Image
                     src={user.image || defaultUserImage}
                     alt={user.name}
-                    width={200}
-                    height={200}
-                    className="rounded-full h-20 w-20 object-cover"
+                    width={64}
+                    height={64}
+                    className="rounded-full h-16 w-16 object-cover border-2 border-emerald-500"
                   />
                   <div>
-                    <p className="text-white text-lg">{user.name}</p>
-                    <p className="text-gray-200 text-base">@{user.username}</p>
+                    <p className="text-white font-semibold text-lg">
+                      {user.name}
+                    </p>
+                    <p className="text-gray-300 text-sm">@{user.username}</p>
                   </div>
                 </div>
               </Link>
 
-              {type === "following" && user.id !== currentUserId && (
-                <FollowButton
-                  isFollowedInitially={true}
-                  userId={user?.id}
-                  // profileId={profileId}
-                  // currentUserId={currentUserId}
-                  onToggle={() => handleUnfollow(user?.id)}
-                />
-              )}
+              <div className="flex gap-2">
+                {type === "following" && user.id !== currentUserId && (
+                  <FollowButton
+                    isFollowedInitially={true}
+                    userId={user?.id}
+                    onToggle={() => handleUnfollow(user?.id)}
+                  />
+                )}
 
-              {type === "followers" && profileId === currentUserId && (
-                <RemoveFollowerButton
-                  currentUserId={currentUserId}
-                  followerId={user.id}
-                  onRemoved={() =>
-                    setUsers((prev) =>
-                      prev.filter((e: any) => e.follower?.id !== user.id)
-                    )
-                  }
-                />
-              )}
+                {type === "followers" && profileId === currentUserId && (
+                  <RemoveFollowerButton
+                    currentUserId={currentUserId}
+                    followerId={user.id}
+                    onRemoved={() =>
+                      setUsers((prev) =>
+                        prev.filter((e: any) => e.follower?.id !== user.id)
+                      )
+                    }
+                  />
+                )}
+              </div>
             </div>
           );
         })}

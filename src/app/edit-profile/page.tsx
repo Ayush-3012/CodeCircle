@@ -6,8 +6,10 @@ import RegisterForm from "@/components/RegisterForm";
 import { RegisterFormData } from "@/utils/types/users";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
+import { motion } from "framer-motion";
 import { useUser } from "@/lib/hooks/useUser";
 import { RootState } from "@/lib/redux/store";
+import Loader from "@/partials/Loader";
 
 const EditProfilePage = () => {
   const user: any = useSelector((state: RootState) => state.auth.user);
@@ -23,17 +25,26 @@ const EditProfilePage = () => {
     }
   };
 
-  if (!initialData) return <p className="text-center text-white">Loading...</p>;
+  if (!initialData) return <Loader />;
 
   return (
-    <div className="max-w-xl border rounded mx-auto flex items-center justify-center mt-2">
-      <RegisterForm
-        initialData={initialData}
-        onSubmit={handleUpdate}
-        isEdit={true}
-        loading={loading}
-      />
-    </div>
+    <>
+      <div className="flex items-center justify-center min-h-screen custom-font">
+        <motion.div
+          className="w-full max-w-2xl flex items-center justify-center flex-col rounded-2xl shadow-[0_0_10px] my-8 p-4"
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 1, type: "spring", bounce: 0.6 }}
+        >
+          <RegisterForm
+            initialData={initialData}
+            onSubmit={handleUpdate}
+            isEdit={true}
+            loading={loading}
+          />
+        </motion.div>
+      </div>
+    </>
   );
 };
 

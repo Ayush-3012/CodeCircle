@@ -25,7 +25,7 @@ const ChatWindow = ({ conversationId, initial, currentUserId }: any) => {
 
     const listenMessage = (newMsg: any) => {
       if (newMsg.senderId === currentUserId) return;
-      setMessages((prev: string) => [...prev, newMsg]);
+      setMessages((prev: any) => [...prev, newMsg]);
     };
 
     const listenEdit = (updatedMsg: any) => {
@@ -39,7 +39,9 @@ const ChatWindow = ({ conversationId, initial, currentUserId }: any) => {
     };
 
     const listenDelete = (deletedMsgId: string) => {
-      setMessages((prev) => prev.filter((msg) => msg.id !== deletedMsgId));
+      setMessages((prev: any) =>
+        prev.filter((msg: any) => msg.id !== deletedMsgId)
+      );
     };
 
     socket.on("message", listenMessage);
@@ -55,7 +57,6 @@ const ChatWindow = ({ conversationId, initial, currentUserId }: any) => {
 
   const handleSend = async (content: string) => {
     const newMessage = await sendMessage(conversationId, content);
-
     if (!newMessage || !socket || !conversationId) return;
 
     socket.emit("message", {
@@ -64,17 +65,14 @@ const ChatWindow = ({ conversationId, initial, currentUserId }: any) => {
       content: newMessage.content,
     });
 
-    socket.emit("localMessage", {
-      ...newMessage,
-      conversationId,
-    });
+    socket.emit("localMessage", { ...newMessage, conversationId });
 
-    setMessages((prev) => [...prev, newMessage]);
+    setMessages((prev: any) => [...prev, newMessage]);
   };
 
   const handleDeleteMessage = async (messageId: string) => {
     await deleteMessage(conversationId, messageId);
-    setMessages((prev) => prev.filter((m) => m.id !== messageId));
+    setMessages((prev: any) => prev.filter((m: any) => m.id !== messageId));
   };
 
   const handleEditMessage = async (messageId: string, newContent: string) => {
@@ -91,23 +89,26 @@ const ChatWindow = ({ conversationId, initial, currentUserId }: any) => {
   };
 
   return (
-    <>
-      <div className="flex flex-col h-full">
-        <div className=" p-4 space-y-2 overflow-y-auto h-[600px]">
-          {messages?.map((msg: any) => (
-            <MessageBubble
-              key={msg.createdAt}
-              message={msg}
-              currentUserId={currentUserId}
-              onEdit={handleEditMessage}
-              onDelete={handleDeleteMessage}
-            />
-          ))}
-          <div ref={scrollRef} />
-        </div>
+    <div className="flex flex-col h-full bg-gradient-to-tr from-gray-600 via-slate-800 to-zinc-900 text-primary">
+      {/* Messages area */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-3">
+        {messages?.map((msg: any) => (
+          <MessageBubble
+            key={msg.createdAt}
+            message={msg}
+            currentUserId={currentUserId}
+            onEdit={handleEditMessage}
+            onDelete={handleDeleteMessage}
+          />
+        ))}
+        <div ref={scrollRef} />
+      </div>
+
+      {/* Input area */}
+      <div className="border-t border-gray-700 bg-gray-800 px-4 py-3">
         <MessageInput onSend={handleSend} />
       </div>
-    </>
+    </div>
   );
 };
 
