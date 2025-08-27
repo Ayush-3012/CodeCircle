@@ -3,7 +3,7 @@ import { defaultUserImage } from "@/utils/defautUserImage";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import socket from "@/lib/socket";
+import { socket } from "@/lib/socket";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/hooks/useAuth";
 
@@ -36,8 +36,10 @@ export default function Sidebar({
     socket.on("localMessage", updateConv);
 
     return () => {
-      socket.off("message", updateConv);
-      socket.off("localMessage", updateConv);
+      if (socket) {
+        socket.off("message", updateConv);
+        socket.off("localMessage", updateConv);
+      }
     };
   }, []);
 

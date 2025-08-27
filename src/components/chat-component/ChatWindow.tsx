@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import MessageInput from "./MessageInput";
-import socket from "@/lib/socket";
+import { socket } from "@/lib/socket";
 import {
   deleteMessage,
   sendMessage,
@@ -57,9 +57,11 @@ const ChatWindow = ({
     socket.on("messageDeleted", listenDelete);
 
     return () => {
-      socket.off("message", listenMessage);
-      socket.off("messageUpdated", listenEdit);
-      socket.off("messageDeleted", listenDelete);
+      if (socket) {
+        socket.off("message", listenMessage);
+        socket.off("messageUpdated", listenEdit);
+        socket.off("messageDeleted", listenDelete);
+      }
     };
   }, [conversationId, currentUserId]);
 
