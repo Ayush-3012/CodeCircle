@@ -32,7 +32,7 @@ export const useAuth = () => {
             setOnlineUsers(users);
           });
         } catch (error: any) {
-          toast.error(`${error.response.data.message}, Please Login`, {
+          toast.error(`${error?.response?.data?.message}, Please Login`, {
             id: "auth-error",
           });
         }

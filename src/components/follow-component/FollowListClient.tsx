@@ -9,6 +9,7 @@ import RemoveFollowerButton from "./RemoveFollowerButton";
 
 type FollowListClientProps = {
   list: any[];
+  myList: any[];
   type: "followers" | "following";
   profileId: string;
   currentUserId: string;
@@ -16,6 +17,7 @@ type FollowListClientProps = {
 
 const FollowListClient = ({
   list,
+  myList,
   type,
   profileId,
   currentUserId,
@@ -31,6 +33,10 @@ const FollowListClient = ({
     );
   };
 
+  const getIsFollowedInitially = (userId: string) => {
+    return myList.some((user) => user.followingId === userId);
+  };
+
   return (
     <>
       <div className="space-y-4">
@@ -43,9 +49,9 @@ const FollowListClient = ({
           return (
             <div
               key={user.id}
-              className="flex items-center justify-between gap-4 p-4 rounded-xl 
-                   bg-gradient-to-r from-cyan-800 hover-gradient via-purple-400/60 to-pink-400/60 
-                   border border-gray-700 shadow-md hover:shadow-lg 
+              className="flex items-center justify-between gap-4 p-4 rounded-xl
+                   bg-gradient-to-r from-cyan-800 hover-gradient via-purple-400/60 to-pink-400/60
+                   border border-gray-700 shadow-md hover:shadow-lg
                    transition-all duration-300 hover:scale-[1.02]"
             >
               <Link href={`/profile/${user.id}`} className="flex-1">
@@ -67,24 +73,38 @@ const FollowListClient = ({
               </Link>
 
               <div className="flex gap-2">
-                {type === "following" && user.id !== currentUserId && (
-                  <FollowButton
-                    isFollowedInitially={true}
-                    userId={user?.id}
-                    onToggle={() => handleUnfollow(user?.id)}
-                  />
-                )}
-
-                {type === "followers" && profileId === currentUserId && (
-                  <RemoveFollowerButton
-                    currentUserId={currentUserId}
-                    followerId={user.id}
-                    onRemoved={() =>
-                      setUsers((prev) =>
-                        prev.filter((e: any) => e.follower?.id !== user.id)
-                      )
-                    }
-                  />
+                {profileId === currentUserId ? (
+                  <>
+                    {/* Apna hi profile */}
+                    {type === "following" && (
+                      <FollowButton
+                        isFollowedInitially={true}
+                        userId={user.id}
+                        onToggle={() => handleUnfollow(user.id)}
+                      />
+                    )}
+                    {type === "followers" && (
+                      <RemoveFollowerButton
+                        currentUserId={currentUserId}
+                        followerId={user.id}
+                        onRemoved={() =>
+                          setUsers((prev) =>
+                            prev.filter((e: any) => e.follower?.id !== user.id)
+                          )
+                        }
+                      />
+                    )}
+                  </>
+                ) : (
+                  <>
+                    {/* Kisi aur ka profile → bas Follow/Unfollow */}
+                    {user.id !== currentUserId && (
+                      <FollowButton
+                        isFollowedInitially={getIsFollowedInitially(user?.id)}
+                        userId={user?.id}
+                      />
+                    )}
+                  </>
                 )}
               </div>
             </div>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import SendMessageButton from "@/components/chat-component/SendMessageButton";
 import FollowSection from "@/components/follow-component/FollowSection";
 import { getAllPostsByUser } from "@/lib/backend/services/postServices/getAllPostsByUser";
@@ -28,96 +29,107 @@ export default async function ProfilePage({
   const profileId = profile?.id || id;
 
   return (
-    <div className="max-w-7xl mx-auto mt-10 px-4 space-y-2">
-      <div className="relative bg-gradient-to-br from-indigo-500 to-emerald-500 rounded-2xl p-8 shadow-xl border border-gray-700">
-        <div className="flex flex-col md:flex-row items-center md:items-center justify-between gap-8">
-          {/* Left: Avatar + info */}
-          <div className="flex items-center gap-6">
+    <div className="max-w-7xl mx-auto mt-4 max-sm:px-3 px-6 space-y-6 max-md:space-y-4 max-sm:space-y-2">
+      {/* PROFILE HEADER */}
+      <div className="relative bg-gradient-to-r z-50 from-indigo-700 via-purple-400 to-pink-500 rounded-2xl max-sm:p-1.5 max-md:p-3 p-5 shadow-[0_0_10px] shadow-white">
+        <div className="flex max-md:flex-col items-center justify-between gap-4 max-md:gap-3 max-sm:gap-2 p-2">
+          <div className="flex max-md:justify-center max-sm:items-center max-sm:gap-2 max-md:gap-4 gap-6 w-full">
             <Image
               src={profile?.image || defaultUserImage}
               alt={profile?.name || "User Image"}
               width={140}
               height={140}
-              className="rounded-full w-36 h-36 object-cover border-4 border-white/40 shadow-lg"
+              className="rounded-full w-32 h-32 max-md:w-24 max-md:h-24 max-sm:w-16 max-sm:h-16 object-cover border-4 border-emerald-400"
             />
-            <div>
-              <h2 className="text-3xl font-bold text-white">{profile?.name}</h2>
-              <p className="text-gray-200">@{profile?.username}</p>
-              <p className="text-gray-100 italic mt-2 max-w-md">
+            <div className="text-center sm:text-left">
+              <h2 className="max-md:text-2xl text-3xl max-sm:text-xl font-bold text-primary">
+                {profile?.name}
+              </h2>
+              <p className="text-gray-200 max-md:text-base max-sm:text-sm text-xl">
+                @{profile?.username}
+              </p>
+              <p className="text-gray-100 italic mt-2 max-sm:mt-1 max-w-md">
                 {profile?.bio}
               </p>
             </div>
           </div>
 
-          {/* Right: Buttons + Links */}
-          <div className="flex flex-col items-center md:items-end gap-4">
-            <div className="flex gap-4">
+          {/* Right: Buttons + Social Links */}
+          <div className="flex flex-col items-center gap-6 max-md:w-full max-md:flex-row max-md:justify-around">
+            <div className="flex gap-4 justify-center sm:justify-end">
               {profile?.githubUrl && (
-                <Link href={profile.githubUrl} target="_blank">
-                  <FaGithub className="text-3xl text-white/90 hover:text-white hover:scale-110 transition" />
+                <Link
+                  href={profile.githubUrl}
+                  target="_blank"
+                  className="group"
+                >
+                  <FaGithub className="max-sm:text-2xl max-md:text-3xl text-4xl text-white/90 group-hover:text-white transition-all transform group-hover:scale-110" />
                 </Link>
               )}
               {profile?.linkedInUrl && (
-                <Link href={profile.linkedInUrl} target="_blank">
-                  <FaLinkedin className="text-3xl text-white/90 hover:text-white hover:scale-110 transition" />
+                <Link
+                  href={profile.linkedInUrl}
+                  target="_blank"
+                  className="group"
+                >
+                  <FaLinkedin className="max-sm:text-2xl max-md:text-3xl text-4xl text-white/90 group-hover:text-white transition-all transform group-hover:scale-110" />
                 </Link>
               )}
               {profile?.portfolioUrl && (
-                <Link href={profile.portfolioUrl} target="_blank">
-                  <FaCode className="text-3xl text-white/90 hover:text-white hover:scale-110 transition" />
+                <Link
+                  href={profile.portfolioUrl}
+                  target="_blank"
+                  className="group"
+                >
+                  <FaCode className="max-sm:text-2xl max-md:text-3xl text-4xl text-white/90 group-hover:text-white transition-all transform group-hover:scale-110" />
                 </Link>
               )}
             </div>
-
-            <div>
+            <div className="hover:scale-110 max-sm:px-3 max-sm:py-1.5 px-4 py-2 text-primary hover-gradient duration-150 font-semibold max-sm:text-sm transition-all rounded-md shadow-[0_0_5px] shadow-black  cursor-pointer">
               {currentUserId !== profileId ? (
                 <SendMessageButton targetUserId={profileId} />
               ) : (
-                <Link
-                  href={`/edit-profile`}
-                  className="px-4 py-2 rounded-md border border-white/40 text-white hover:scale-105 hover:bg-fuchsia-600 transition-all duration-150 cursor-pointer font-semibold"
-                >
-                  Edit Profile
-                </Link>
+                <Link href={`/edit-profile`}>Edit Profile</Link>
               )}
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="flex justify-around bg-gradient-to-r from-indigo-700 via-purple-400 to-pink-500 border border-gray-700 rounded-xl p-4 text-center shadow">
-        <div>
-          <p className="text-2xl font-bold text-white">
-            {profilePosts?.length}
-          </p>
-          <p className="text-gray-200 text-sm">Posts</p>
+        {/* Stats */}
+        <div className="flex flex-col sm:flex-row justify-around bg-gradient-to-br from-indigo-500 to-emerald-500 mt-3 max-md:mt-2 max-sm:mt-1 rounded-xl p-3 max-md:p-2 max-sm:p-1 text-center shadow-[0_0_5px] shadow-black gap-4">
+          <div className="max-sm:hidden">
+            <p className="max-md:text-xl text-2xl font-bold text-primary">
+              {profilePosts?.length}
+            </p>
+            <p className="text-primary text-base max-sm:text-sm">Posts</p>
+          </div>
+          <FollowSection currentUserId={currentUserId} profileId={profileId} />
         </div>
-
-        <FollowSection currentUserId={currentUserId} profileId={profileId} />
       </div>
 
-      <hr />
-
-      <div className="mb-8">
+      {/* POSTS */}
+      <div className="mb-8 border-t-2 ">
         {profilePosts?.length === 0 ? (
-          <h3 className="text-primary font-bold mb-4 text-2xl text-center">No posts found.</h3>
+          <h3 className="text-primary font-bold mb-4 text-xl sm:text-2xl text-center">
+            No posts found.
+          </h3>
         ) : (
           <>
-            <h3 className="text-xl text-primary font-semibold mb-4">Posts</h3>
-            <div className="grid max-md:grid-cols-2 grid-cols-4 max-lg:grid-cols-3 max-sm:grid-cols-1 gap-6">
+            <h3 className="text-lg sm:text-xl text-primary font-semibold mb-4">
+              Posts
+            </h3>
+            <div className="grid max-sm:grid-cols-1 max-md:grid-cols-2 max-lg:grid-cols-3 grid-cols-4 gap-6">
               {profilePosts?.map((post: any) => (
                 <Link
                   href={`/post/${post.id}`}
                   key={post.id}
-                  className="h-72 border text-center group flex items-center justify-center hover:scale-105 cursor-pointer relative transition-all rounded-xl overflow-hidden duration-300"
+                  className="relative overflow-hidden text-center rounded-xl group shadow-[0_0_5px] shadow-white hover:scale-105 transition-all duration-150 flex items-center justify-center aspect-square"
                 >
                   {post.mediaUrl ? (
                     <>
                       <div
                         className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
-                        style={{
-                          backgroundImage: `url(${post.mediaUrl})`,
-                        }}
+                        style={{ backgroundImage: `url(${post.mediaUrl})` }}
                       />
                       <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center p-3">
                         <p className="text-lg font-semibold text-white">
@@ -126,7 +138,7 @@ export default async function ProfilePage({
                       </div>
                     </>
                   ) : (
-                    <p className="text-lg font-semibold text-primary text-center transition-transform duration-500 group-hover:scale-110">
+                    <p className="max-sm:text-sm max-md:text-base text-lg font-semibold text-primary text-center p-2">
                       {post.content}
                     </p>
                   )}

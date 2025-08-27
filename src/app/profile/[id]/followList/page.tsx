@@ -25,15 +25,26 @@ export default async function FollowListPage({
       ? await getFollowers(profileId)
       : await getFollowings(profileId);
 
+  const myList = await getFollowings(currentUserId);
+
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-semibold mb-4 capitalize">{type} :</h2>
-      <FollowListClient
-        list={list}
-        type={type}
-        profileId={profileId}
-        currentUserId={currentUserId}
-      />
-    </div>
+    <>
+      {!list?.length ? (
+        <h2 className="text-2xl font-semibold m-4 capitalize">
+          No {type} found
+        </h2>
+      ) : (
+        <div className="p-4">
+          <h2 className="text-2xl font-semibold mb-4 capitalize">{type} :</h2>
+          <FollowListClient
+            list={list}
+            myList={myList}
+            type={type}
+            profileId={profileId}
+            currentUserId={currentUserId}
+          />
+        </div>
+      )}
+    </>
   );
 }

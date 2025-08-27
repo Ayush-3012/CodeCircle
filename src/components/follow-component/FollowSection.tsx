@@ -44,23 +44,21 @@ const FollowSection = ({ currentUserId, profileId }: FollowSectionProps) => {
   }, [currentUserId, profileId]);
 
   const handleToggleFollow = () => {
-    setIsFollowed((prev) => {
-      const newStatus = !prev;
-      setFollowerCount((count) => (newStatus ? count + 1 : count - 1));
-      return newStatus;
-    });
+    const newStatus = !isFollowed;
+    setIsFollowed(newStatus);
+    setFollowerCount((count) => (newStatus ? count + 1 : count - 1));
   };
 
   if (isFollowed === null) return null;
 
   return (
     <>
-      <div className="flex text-center items-center justify-center gap-6 text-primary">
+      <div className="flex text-center items-center justify-center gap-6 max-md:gap-4 max-sm:gap-2 text-primary">
         <Link
           href={`/profile/${profileId}/followList?type=followers`}
           className="hover:underline"
         >
-          <p className="text-2xl font-bold">{followerCount}</p>
+          <p className="text-2xl font-bold max-md:text-xl max-sm:text-lg">{followerCount}</p>
           <p className="text-sm">Followers</p>
         </Link>
         <span className="text-5xl">|</span>
@@ -68,7 +66,7 @@ const FollowSection = ({ currentUserId, profileId }: FollowSectionProps) => {
           href={`/profile/${profileId}/followList?type=following`}
           className="hover:underline"
         >
-          <p className="text-2xl font-bold ">{followingCount}</p>
+          <p className="text-2xl font-bold max-md:text-xl max-sm:text-lg">{followingCount}</p>
           <p className="text-sm">Following</p>
         </Link>
       </div>

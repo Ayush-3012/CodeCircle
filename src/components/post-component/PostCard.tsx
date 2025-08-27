@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import PostInteraction from "../post-component/PostInteraction";
 import { defaultUserImage } from "@/utils/defautUserImage";
 import { usePost } from "@/lib/hooks/usePost";
+import { MdDeleteOutline, MdEdit } from "react-icons/md";
 
 type PostCardProps = {
   id: string;
@@ -46,7 +47,7 @@ const PostCard = ({
   };
 
   const contentBlock = (
-    <div className="shadow-[0_0_5px] shadow-emerald-400 rounded p-2">
+    <div className="shadow-[0_0_5px] shadow-emerald-400 rounded p-2 text-center">
       <p className="text-primary text-center text-xl mb-2">{content}</p>
       {media && (
         <Image
@@ -54,7 +55,7 @@ const PostCard = ({
           height={300}
           width={400}
           alt="media"
-          className="w-auto h-auto mt-2"
+          className="w-full h-auto mt-2 rounded-lg object-cover max-w-full"
         />
       )}
     </div>
@@ -63,8 +64,8 @@ const PostCard = ({
   return (
     <>
       <motion.div
-        className="shadow-[0_0_5px] shadow-emerald-400 rounded-2xl bg-nav p-4 "
-        initial={{ x: 200, opacity: 0 }}
+        className="shadow-[0_0_5px] shadow-emerald-400 rounded-2xl bg-nav p-4 overflow-x-hidden"
+        initial={{ x: 50, opacity: 0 }}
         whileInView={{ x: 0, opacity: 1 }}
         viewport={{ once: false, amount: 0.2 }}
         transition={{ duration: 0.5, type: "spring", bounce: 0.5 }}
@@ -72,7 +73,7 @@ const PostCard = ({
         {/* POSTED BY - AUTHOR DETAILS */}
         <div className="flex items-center justify-between mb-3">
           <Link href={`/profile/${author.id}`}>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <Image
                 src={author?.image || defaultUserImage}
                 alt={author?.name}
@@ -80,15 +81,48 @@ const PostCard = ({
                 height={50}
                 className="w-10 h-10 rounded-full object-cover border"
               />
-              <div>
+              <div className="flex flex-col gap-0">
                 <p className="font-semibold text-primary">{author.name}</p>
                 <p className="text-sm text-secondary">@{author.username}</p>
               </div>
             </div>
           </Link>
-          <p className="text-xs text-secondary mt-2 text-right">
-            {new Date(createdAt).toLocaleString()}
+          <p className="text-xs text-secondary flex max-sm:flex-col max-sm:gap-0.5 gap-1 text-right">
+            <span>{new Date(createdAt).toLocaleDateString()}</span>
+            {new Date(createdAt).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: false,
+            })}
           </p>
+          {currentUserId === author.id && (
+            <div className="flex flex-wrap gap-2 max-sm:flex-col max-md:gap-1">
+              <button
+                onClick={() => setIsEditing((prev) => !prev)}
+                className="text-sky-400 cursor-pointer hover:underline"
+              >
+                {isEditing ? (
+                  "Cancel"
+                ) : (
+                  <>
+                    <span className="hidden md:inline">Edit</span>
+                    <span className="md:hidden text-2xl max-sm:text-xl">
+                      <MdEdit />
+                    </span>
+                  </>
+                )}
+              </button>
+              <button
+                onClick={handleDelete}
+                className="text-rose-400 cursor-pointer hover:underline"
+              >
+                <span className="hidden md:inline">Delete</span>
+                <span className="md:hidden text-2xl max-sm:text-xl">
+                  <MdDeleteOutline />
+                </span>
+              </button>
+            </div>
+          )}
         </div>
 
         {/* POST ITSELF EDITING OR VIEWING */}
@@ -104,7 +138,7 @@ const PostCard = ({
         ) : (
           <div className="flex flex-col items-center justify-center">
             {fromPostPage ? (
-              <div>{contentBlock}</div>
+              <>{contentBlock}</>
             ) : (
               <Link href={`/post/${id}`}>{contentBlock}</Link>
             )}
@@ -116,24 +150,6 @@ const PostCard = ({
               postId={id}
               showCommentCount={showCommentCount}
             />
-
-            {/* POST INTERACTION -> EDIT OR DELETE */}
-            {currentUserId === author.id && (
-              <div className="flex gap-4 mt-3 self-start">
-                <button
-                  onClick={handleDelete}
-                  className="text-red-500 cursor-pointer hover:underline"
-                >
-                  Delete
-                </button>
-                <button
-                  onClick={() => setIsEditing((prev) => !prev)}
-                  className="text-blue-500 cursor-pointer hover:underline"
-                >
-                  {isEditing ? "Cancel" : "Edit"}
-                </button>
-              </div>
-            )}
           </div>
         )}
       </motion.div>

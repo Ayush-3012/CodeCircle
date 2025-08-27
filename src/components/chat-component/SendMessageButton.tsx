@@ -29,7 +29,7 @@ const SendMessageButton = ({ targetUserId }: { targetUserId: string }) => {
     <button
       onClick={handleClick}
       disabled={loading}
-      className="px-4 py-2 rounded-md border hover:scale-110 transition-all duration-150 cursor-pointer font-semibold hover:bg-emerald-600 disabled:opacity-50"
+      className="cursor-pointer"
     >
       {loading ? "Starting..." : "Send Message"}
     </button>

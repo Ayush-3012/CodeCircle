@@ -8,7 +8,7 @@ import { redirect } from "next/navigation";
 
 export default async function FeedPage() {
   const session = await verifyToken();
-  if (!session || !session.userId) redirect("/auth/login");
+  if (!session || !session.userId) redirect("/");
 
   let posts: unknown[] = [];
 
@@ -20,7 +20,7 @@ export default async function FeedPage() {
 
   return (
     <>
-      <div className="max-w-3xl mx-auto mt-10 space-y-4">
+      <div className="w-full max-w-3xl mx-auto mt-6 sm:mt-10 space-y-4 px-3 sm:px-6 pb-20 md:pb-0 overflow-x-hidden">
         <PostForm />
         <hr />
         {posts?.length === 0 ? (

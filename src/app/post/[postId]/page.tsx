@@ -32,7 +32,7 @@ export default async function PostPage({
             username: postData?.author?.username,
             image: postData?.author?.image,
           }}
-          currentUserId={session?.id || ""}
+          currentUserId={session?.userId}
           showCommentCount={false}
           fromPostPage={true}
         />

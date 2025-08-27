@@ -2,6 +2,8 @@
 
 import { usePostLike } from "@/lib/hooks/usePostLike";
 import CommentSection from "./CommentSection";
+import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
+import { IoShareSocialSharp } from "react-icons/io5";
 
 type PostInteractionArgs = {
   initialLikes: string[];
@@ -9,7 +11,6 @@ type PostInteractionArgs = {
   postId: string;
   showCommentCount: boolean;
 };
-
 const PostInteraction = ({
   initialLikes,
   currentUserId,
@@ -24,17 +25,30 @@ const PostInteraction = ({
 
   return (
     <>
-      <div className="flex items-center gap-4 mt-2 self-start">
-        <button
-          onClick={handleLike}
-          className={`${
-            hasLiked ? "text-pink-400" : "text-white"
-          } hover:text-pink-600 cursor-pointer text-sm`}
-        >
-          {hasLiked ? "❤️ Unlike" : "🤍 Like"}
+      <div className="flex items-center w-full justify-between mt-2">
+        <div className="flex items-center self-start gap-4">
+          <button
+            onClick={handleLike}
+            className={`flex items-center gap-1 ${
+              hasLiked ? "text-pink-400" : "text-white"
+            } hover:text-pink-600 transition text-sm cursor-pointer`}
+          >
+            {hasLiked ? (
+              <AiFillHeart className="text-2xl" />
+            ) : (
+              <AiOutlineHeart className="text-2xl" />
+            )}
+            <span>{likes.length}</span>
+          </button>
+
+          {showCommentCount && (
+            <CommentSection postId={postId} fromFeed={true} />
+          )}
+        </div>
+
+        <button className="flex items-center gap-1 text-primary hover:text-sky-400 cursor-pointer">
+          <IoShareSocialSharp className="text-2xl" />
         </button>
-        <span className="text-sm text-gray-500">{likes.length} Likes</span>
-        {showCommentCount && <CommentSection postId={postId} fromFeed={true} />}
       </div>
     </>
   );

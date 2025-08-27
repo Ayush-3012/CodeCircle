@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { motion } from "framer-motion";
 import Loader from "@/partials/Loader";
+import Link from "next/link";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -32,10 +33,10 @@ const LoginPage = () => {
 
   return (
     <>
-      <div className="flex items-center justify-center min-h-screen px-4">
+      <div className="flex items-center flex-col justify-center custom-font min-h-screen px-4">
         <motion.form
           onSubmit={handleSubmit}
-          className="space-y-4 p-6 rounded-2xl w-full max-w-md custom-font shadow-[0_0_10px]"
+          className="space-y-4 p-6 rounded-2xl w-full max-w-md shadow-[0_0_10px]"
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ duration: 1, type: "spring", bounce: 0.6 }}
@@ -70,6 +71,15 @@ const LoginPage = () => {
             {loading ? "Logging in..." : "Login"}
           </motion.button>
         </motion.form>
+        <p className="text-secondary text-base text-center mt-4">
+          New User?{" "}
+          <Link
+            href="/auth/register"
+            className="hover:text-sky-400 hover:underline transition"
+          >
+            Register here
+          </Link>
+        </p>
       </div>
     </>
   );

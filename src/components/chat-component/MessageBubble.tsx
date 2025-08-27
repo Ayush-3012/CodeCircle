@@ -44,29 +44,29 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
 
   return (
     <motion.div
-      className={`mb-2 flex ${isOwn ? "justify-end" : "justify-start"}`}
+      className={`mb-2 flex max-sm:mb-1 ${isOwn ? "justify-end" : "justify-start"}`}
       initial={{ opacity: 0, y: 30, scale: 0.90 }}
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, amount: 0.2 }} 
       transition={{ duration: 0.4, ease: "easeOut", type: "spring" }}
     >
       <div
-        className={`px-4 py-2 rounded-2xl max-w-xs relative shadow-md text-primary text-base break-words
+        className={`px-4 py-2 max-sm:rounded-xl rounded-2xl max-sm:px-2 max-sm:py-1 max-w-xs relative shadow-md text-primary text-base break-words
           ${
             isOwn
-              ? "bg-gradient-to-r from-green-600 to-emerald-700  rounded-br-none"
-              : "bg-gradient-to-r from-fuchsia-700 to-purple-800   rounded-bl-none"
+              ? "bg-gradient-to-r from-green-600 to-emerald-700  rounded-br-none max-sm:rounded-br-none"
+              : "bg-gradient-to-r from-fuchsia-700 to-purple-800   rounded-bl-none max-sm:rounded-bl-none"
           }`}
       >
         {isEditing ? (
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 max-sm:gap-1">
             <input
               type="text"
               value={editedContent}
               onChange={(e) => setEditedContent(e.target.value)}
-              className="p-2 rounded-lg bg-gray-800 text-primary focus:outline-none"
+              className="p-2 rounded-lg  max-sm:p-1 bg-nav text-primary focus:outline-none"
             />
-            <div className="flex gap-3 text-sm justify-end">
+            <div className="flex gap-3 max-sm:gap-1.5 text-sm justify-end">
               <button
                 onClick={handleEditSubmit}
                 className="text-primary cursor-pointer hover:text-blue-400"
@@ -83,7 +83,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
           </div>
         ) : (
           <>
-            <p>{message.content}</p>
+            <p className="text-base max-sm:text-sm">{message.content}</p>
             <div className="flex justify-between items-center mt-1 text-[11px] opacity-70">
               <span>{formatTimestamp(message.createdAt)}</span>
               {isOwn && (
@@ -93,7 +93,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
                     onClick={() => setIsEditing(true)}
                     title="Edit"
                   >
-                    <MdEdit className="text-xl text-primary font-extrabold" />
+                    <MdEdit className="text-xl max-sm:text-lg text-primary font-extrabold" />
                   </button>
                   <button
                     className="hover:scale-110 transition cursor-pointer"
@@ -104,7 +104,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
                     }
                     title="Delete"
                   >
-                    <MdDeleteOutline className="text-xl text-primary font-extrabold" />
+                    <MdDeleteOutline className="text-xl max-sm:text-lg text-primary font-extrabold" />
                   </button>
                 </div>
               )}

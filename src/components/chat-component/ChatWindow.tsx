@@ -9,8 +9,16 @@ import {
   updateMessage,
 } from "../../lib/client/services/chatService";
 import MessageBubble from "./MessageBubble";
+import Link from "next/link";
+import Image from "next/image";
+import { defaultUserImage } from "@/utils/defautUserImage";
 
-const ChatWindow = ({ conversationId, initial, currentUserId }: any) => {
+const ChatWindow = ({
+  conversationId,
+  initial,
+  currentUserId,
+  otherUser,
+}: any) => {
   const [messages, setMessages] = useState(initial);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -68,6 +76,12 @@ const ChatWindow = ({ conversationId, initial, currentUserId }: any) => {
     socket.emit("localMessage", { ...newMessage, conversationId });
 
     setMessages((prev: any) => [...prev, newMessage]);
+
+    setTimeout(() => {
+      if (scrollRef.current) {
+        scrollRef.current.scrollIntoView({ behavior: "smooth" });
+      }
+    }, 100);
   };
 
   const handleDeleteMessage = async (messageId: string) => {
@@ -89,12 +103,40 @@ const ChatWindow = ({ conversationId, initial, currentUserId }: any) => {
   };
 
   return (
-    <div className="flex flex-col h-full bg-gradient-to-tr from-gray-600 via-slate-800 to-zinc-900 text-primary">
+    <div
+      className="flex flex-col h-full bg-gradient-to-tr from-gray-600 via-slate-800 to-zinc-900 text-primary 
+      w-full mx-auto max-md:pb-14 shadow-[0_0_5px] shadow-white"
+    >
+      {/* Header */}
+      <Link
+        href={`/profile/${otherUser?.id}`}
+        className="flex items-center gap-3 sm:gap-4 w-full 
+        bg-gradient-to-tr from-indigo-500/40 to-pink-500/20 
+        p-2 sm:p-3 border-b border-white sticky top-0 z-50"
+      >
+        <Image
+          src={otherUser?.image || defaultUserImage}
+          alt={otherUser?.name}
+          width={40}
+          height={40}
+          className="h-9 w-9 sm:h-10 sm:w-10 rounded-full object-cover border border-emerald-500"
+        />
+        <div className="min-w-0">
+          <p className="font-medium text-white truncate">{otherUser?.name}</p>
+          <p className="text-xs sm:text-sm text-gray-300 italic truncate">
+            @{otherUser?.username}
+          </p>
+        </div>
+      </Link>
+
       {/* Messages area */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3">
+      <div
+        className="flex-1 overflow-y-auto px-2 sm:px-4 py-2 sm:py-4 space-y-3 
+        scroll-smooth max-h-[calc(100vh-120px)]"
+      >
         {messages?.map((msg: any) => (
           <MessageBubble
-            key={msg.createdAt}
+            key={msg.id}
             message={msg}
             currentUserId={currentUserId}
             onEdit={handleEditMessage}
@@ -105,7 +147,7 @@ const ChatWindow = ({ conversationId, initial, currentUserId }: any) => {
       </div>
 
       {/* Input area */}
-      <div className="border-t border-gray-700 bg-gray-800 px-4 py-3">
+      <div className="border-t max-md:mb-3 border-gray-100">
         <MessageInput onSend={handleSend} />
       </div>
     </div>

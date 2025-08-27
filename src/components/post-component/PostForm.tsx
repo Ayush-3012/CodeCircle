@@ -62,7 +62,7 @@ const PostForm = ({
     }
   };
 
-  if(loading) return <Loader />
+  if (loading) return <Loader />;
 
   return (
     <form
@@ -84,11 +84,7 @@ const PostForm = ({
         {(media || (isEditing && initialMediaUrl)) && (
           <div className="relative w-32 h-full overflow-hidden rounded-md border border-emerald-500">
             <Image
-              src={
-                media
-                  ? URL.createObjectURL(media) // agar naya file select kiya hai
-                  : initialMediaUrl! // warna purana image/video
-              }
+              src={media ? URL.createObjectURL(media) : initialMediaUrl!}
               alt="Uploaded media"
               width={600}
               height={400}

@@ -1,4 +1,4 @@
-// app/chat/layout.tsx  (server component)
+// app/chat/layout.tsx
 import { ReactNode } from "react";
 import Sidebar from "@/components/chat-component/Sidebar";
 import { getUserConversations } from "@/lib/backend/services/chatServices/getUserConversations";
@@ -13,12 +13,14 @@ export default async function ChatLayout({
   const conversations = await getUserConversations(session?.userId);
 
   return (
-    <div className="flex h-screen bg-app text-primary">
-      <Sidebar initial={conversations} currentUserId={session?.userId} />
-
-      <div className="flex-1 flex flex-col border-l border-gray-700">
-        {children}
+    <div className="flex h-screen bg-app text-primary relative">
+      {/* Sidebar - permanent on md+, overlay on mobile */}
+      <div className="flex border-r border-gray-700">
+        <Sidebar initial={conversations} currentUserId={session?.userId} />
       </div>
+
+      {/* Chat Area */}
+      <div className="flex-1 flex flex-col">{children}</div>
     </div>
   );
 }
