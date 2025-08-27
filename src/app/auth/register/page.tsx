@@ -10,9 +10,19 @@ import Link from "next/link";
 const RegisterPage = () => {
   const { register } = useAuth();
 
-  const handleRegister = async (formData: RegisterFormData) => {
+  const handleRegister = async (data: RegisterFormData | FormData) => {
     try {
-      await register(formData);
+      if (data instanceof FormData) {
+        const registerData: RegisterFormData = {
+          name: data.get("name") as string,
+          username: data.get("username") as string,
+          email: data.get("email") as string,
+          password: data.get("password") as string,
+        };
+        await register(registerData);
+      } else {
+        await register(data);
+      }
     } catch (error) {
       console.log(error);
       toast.error("Something went wrong");

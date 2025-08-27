@@ -15,9 +15,17 @@ const EditProfilePage = () => {
   const user: any = useSelector((state: RootState) => state.auth.user);
   const { initialData, update, loading, setLoading } = useUser(user);
 
-  const handleUpdate = async (data: RegisterFormData) => {
+  const handleUpdate = async (data: RegisterFormData | FormData) => {
     try {
-      await update(data);
+      if (data instanceof FormData) {
+        const registerData: RegisterFormData = {
+          name: data.get("name") as string,
+          username: data.get("username") as string,
+        };
+        await update(registerData);
+      } else {
+        await update(data);
+      }
     } catch (err: any) {
       toast.error("Something went wrong");
     } finally {
