@@ -9,11 +9,13 @@ import { useAuth } from "@/lib/hooks/useAuth";
 import { motion } from "framer-motion";
 import Loader from "@/partials/Loader";
 import Link from "next/link";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [viewPassword, setViewPassword] = useState(false);
 
   const auth = useAuth();
 
@@ -53,13 +55,26 @@ const LoginPage = () => {
             onChange={(e) => setEmail(e.target.value)}
           />
 
-          <input
-            type="password"
-            placeholder="Password"
-            className="w-full px-4 py-3 rounded-md bg-nav text-primary placeholder:text-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <div className="relative">
+            <input
+              type={viewPassword ? "text" : "password"}
+              placeholder="Password"
+              className="w-full px-4 py-3 rounded-md bg-nav text-primary placeholder:text-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            {viewPassword ? (
+              <FaEyeSlash
+                onClick={() => setViewPassword(!viewPassword)}
+                className="absolute right-4 bottom-3 duration-150 transition-all text-3xl hover:text-emerald-400 transform hover:-translate-y-1.5 cursor-pointer"
+              />
+            ) : (
+              <FaEye
+                onClick={() => setViewPassword(!viewPassword)}
+                className="absolute right-4 bottom-3 duration-150 transition-all text-3xl hover:text-emerald-400 transform hover:-translate-y-1.5 cursor-pointer"
+              />
+            )}
+          </div>
 
           <motion.button
             type="submit"
@@ -75,7 +90,7 @@ const LoginPage = () => {
           New User?{" "}
           <Link
             href="/auth/register"
-            className="hover:text-sky-400 hover:underline transition"
+            className="hover:text-sky-400 hover:underline text-primary transition"
           >
             Register here
           </Link>

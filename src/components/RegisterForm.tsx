@@ -6,10 +6,11 @@ import { RegisterFormData } from "@/utils/types/users";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Loader from "@/partials/Loader";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 type RegisterFormProps = {
   initialData?: RegisterFormData;
-  onSubmit: (data: RegisterFormData) => Promise<void>;
+  onSubmit: (data: RegisterFormData | FormData) => Promise<void>;
   isEdit?: boolean;
   loading?: boolean;
 };
@@ -20,12 +21,13 @@ const RegisterForm = ({
   isEdit = false,
   loading = false,
 }: RegisterFormProps) => {
-  const [formData, setFormData] = useState<RegisterFormData>(
+  const [formData, setFormData] = useState<RegisterFormData & { confirmPassword?: string }>(
     initialData || {
       name: "",
       username: "",
       email: "",
       password: "",
+      confirmPassword: "",
       image: "",
       bio: "",
       githubUrl: "",
@@ -35,6 +37,8 @@ const RegisterForm = ({
   );
 
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [viewPassword, setViewPassword] = useState(false);
+  const [viewConfirmPassword, setViewConfirmPassword] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -45,10 +49,16 @@ const RegisterForm = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // simple check confirm password
+    if (!isEdit && formData.password !== formData.confirmPassword) {
+      alert("Passwords do not match!");
+      return;
+    }
+
     let submitData: any = new FormData();
 
     for (const key in formData) {
-      if (key === "image") continue;
+      if (key === "image" || key === "confirmPassword") continue;
       submitData.append(key, formData[key as keyof RegisterFormData] || "");
     }
 
@@ -99,14 +109,52 @@ const RegisterForm = ({
             placeholder="Email"
             className="w-full px-4 py-3 rounded-md bg-nav text-primary placeholder:text-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
-          <input
-            name="password"
-            type="password"
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="Password"
-            className="w-full px-4 py-3 rounded-md bg-nav text-primary placeholder:text-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
+
+          {/* Password */}
+          <div className="relative">
+            <input
+              name="password"
+              type={viewPassword ? "text" : "password"}
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Password"
+              className="w-full px-4 py-3 rounded-md bg-nav text-primary placeholder:text-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500 pr-12"
+            />
+            {viewPassword ? (
+              <FaEyeSlash
+                onClick={() => setViewPassword(!viewPassword)}
+                className="absolute right-4 bottom-3 text-2xl cursor-pointer text-secondary hover:text-emerald-400 transition"
+              />
+            ) : (
+              <FaEye
+                onClick={() => setViewPassword(!viewPassword)}
+                className="absolute right-4 bottom-3 text-2xl cursor-pointer text-secondary hover:text-emerald-400 transition"
+              />
+            )}
+          </div>
+
+          {/* Confirm Password */}
+          <div className="relative">
+            <input
+              name="confirmPassword"
+              type={viewConfirmPassword ? "text" : "password"}
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              placeholder="Confirm Password"
+              className="w-full px-4 py-3 rounded-md bg-nav text-primary placeholder:text-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500 pr-12"
+            />
+            {viewConfirmPassword ? (
+              <FaEyeSlash
+                onClick={() => setViewConfirmPassword(!viewConfirmPassword)}
+                className="absolute right-4 bottom-3 text-2xl cursor-pointer text-secondary hover:text-emerald-400 transition"
+              />
+            ) : (
+              <FaEye
+                onClick={() => setViewConfirmPassword(!viewConfirmPassword)}
+                className="absolute right-4 bottom-3 text-2xl cursor-pointer text-secondary hover:text-emerald-400 transition"
+              />
+            )}
+          </div>
         </>
       )}
 
@@ -166,6 +214,7 @@ const RegisterForm = ({
         placeholder="Portfolio URL"
         className="w-full px-4 py-3 rounded-md bg-nav text-primary placeholder:text-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
       />
+
       {/* Button */}
       <motion.button
         type="submit"

@@ -33,7 +33,7 @@ const RegisterPage = () => {
           Already have an account?{" "}
           <Link
             href="/auth/login"
-            className="hover:text-sky-400 hover:underline transition"
+            className="hover:text-sky-400 text-primary hover:underline transition"
           >
             Login here
           </Link>
