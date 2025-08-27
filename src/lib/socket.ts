@@ -1,7 +1,7 @@
 // src/lib/socket.ts
 import { io, Socket } from "socket.io-client";
 
-let socket: Socket;
+let socket: Socket | undefined;
 
 if (typeof window !== "undefined") {
   socket = io("http://localhost:5000", {
@@ -11,4 +11,4 @@ if (typeof window !== "undefined") {
   });
 }
 
-export default socket;
+export { socket };
