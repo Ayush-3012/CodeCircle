@@ -10,19 +10,9 @@ import Link from "next/link";
 const RegisterPage = () => {
   const { register } = useAuth();
 
-  const handleRegister = async (data: RegisterFormData | FormData) => {
+  const handleRegister = async (formData: RegisterFormData) => {
     try {
-      if (data instanceof FormData) {
-        const registerData: RegisterFormData = {
-          name: data.get("name") as string,
-          username: data.get("username") as string,
-          email: data.get("email") as string,
-          password: data.get("password") as string,
-        };
-        await register(registerData);
-      } else {
-        await register(data);
-      }
+      await register(formData);
     } catch (error) {
       console.log(error);
       toast.error("Something went wrong");
@@ -43,7 +33,7 @@ const RegisterPage = () => {
           Already have an account?{" "}
           <Link
             href="/auth/login"
-            className="hover:text-sky-400 text-primary hover:underline transition"
+            className="hover:text-sky-400 text-primar hover:underline transition"
           >
             Login here
           </Link>

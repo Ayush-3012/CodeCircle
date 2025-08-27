@@ -10,7 +10,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 type RegisterFormProps = {
   initialData?: RegisterFormData;
-  onSubmit: (data: RegisterFormData | FormData) => Promise<void>;
+  onSubmit: (data: RegisterFormData) => Promise<void>;
   isEdit?: boolean;
   loading?: boolean;
 };
@@ -21,7 +21,9 @@ const RegisterForm = ({
   isEdit = false,
   loading = false,
 }: RegisterFormProps) => {
-  const [formData, setFormData] = useState<RegisterFormData & { confirmPassword?: string }>(
+  const [formData, setFormData] = useState<
+    RegisterFormData & { confirmPassword?: string }
+  >(
     initialData || {
       name: "",
       username: "",
@@ -184,7 +186,13 @@ const RegisterForm = ({
         {(imageFile || formData.image) && (
           <div className="w-32 h-32 relative border border-emerald-600 rounded-md overflow-hidden">
             <Image
-              src={imageFile ? URL.createObjectURL(imageFile) : formData.image}
+              src={
+                imageFile
+                  ? URL.createObjectURL(imageFile)
+                  : typeof formData.image === "string" && formData.image
+                  ? formData.image
+                  : "/default-profile.png"
+              }
               alt="Profile preview"
               fill
               className="object-cover"
