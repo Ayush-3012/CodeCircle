@@ -1,5 +1,5 @@
 //  SERVER COMPONENT - FEED
-
+export const dynamic = "force-dynamic"; 
 import PostCard from "@/components/post-component/PostCard";
 import PostForm from "@/components/post-component/PostForm";
 import { getAllPosts } from "@/lib/backend/services/postServices/getAllPosts";

@@ -1,4 +1,5 @@
 // app/chat/page.tsx
+export const dynamic = "force-dynamic"; 
 import { getUserConversations } from "@/lib/backend/services/chatServices/getUserConversations";
 import { verifyToken } from "@/utils/token-manager";
 import { redirect } from "next/navigation";
