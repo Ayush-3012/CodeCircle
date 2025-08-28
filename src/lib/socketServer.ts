@@ -23,7 +23,7 @@ export const initSocket = (server: HTTPServer) => {
 
     socket.on("userOnline", (userId: string) => {
       onlineUsers.set(userId, socket.id);
-      io.emit("onlineUsers", Array.from(onlineUsers.keys()));
+      if (io) io.emit("onlineUsers", Array.from(onlineUsers.keys()));
     });
 
     socket.on("disconnect", () => {
@@ -32,7 +32,7 @@ export const initSocket = (server: HTTPServer) => {
           onlineUsers.delete(userId);
         }
       }
-      io.emit("onlineUsers", Array.from(onlineUsers.keys())); 
+      if (io) io.emit("onlineUsers", Array.from(onlineUsers.keys()));
     });
 
     socket.on("join", (conversationId: string) => {
@@ -46,7 +46,7 @@ export const initSocket = (server: HTTPServer) => {
         content,
         createdAt: new Date(),
       };
-      io.to(conversationId).emit("message", newMessage);
+      if (io) io.to(conversationId).emit("message", newMessage);
     });
 
     socket.on("messageUpdated", ({ conversationId, updatedMessage }: any) => {
