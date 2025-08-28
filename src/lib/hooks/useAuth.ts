@@ -11,7 +11,7 @@ import {
 } from "../client/services/authService";
 import toast from "react-hot-toast";
 import { removeUser, setUser } from "../redux/slices/authSlice";
-import socket from "@/lib/socket";
+import { socket } from "@/lib/socket";
 
 export const useAuth = () => {
   const dispatch = useDispatch();
@@ -28,9 +28,11 @@ export const useAuth = () => {
           dispatch(setUser(userId));
           if (socket && userId) socket.emit("userOnline", userId);
 
-          socket.on("onlineUsers", (users: string[]) => {
-            setOnlineUsers(users);
-          });
+          if (socket) {
+            socket.on("onlineUsers", (users: string[]) => {
+              setOnlineUsers(users);
+            });
+          }
         } catch (error: any) {
           toast.error(`${error?.response?.data?.message}, Please Login`, {
             id: "auth-error",
@@ -42,7 +44,7 @@ export const useAuth = () => {
 
     return () => {
       ignore = true;
-      socket.off("onlineUsers");
+      if (socket) socket.off("onlineUsers");
     };
   }, [dispatch, router]);
 
@@ -75,7 +77,7 @@ export const useAuth = () => {
   const logout = async () => {
     try {
       const res = await logoutUser();
-      socket.emit("userOffline");
+      if (socket) socket.emit("userOffline");
       toast.success(res.data.message);
       dispatch(removeUser());
       router.push("/");
