@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+🚀 CodeCircle – Developer Social Feed App
 
-## Getting Started
+CodeCircle is a full-stack social platform built with Next.js + TypeScript, powered by Prisma & MongoDB, and enhanced with real-time features via Socket.IO.
+It’s a space for developers to connect, share posts, and interact seamlessly.
 
-First, run the development server:
+✨ Features
+* 🔐 Authentication & Authorization with cookies + JWT
+* 📝 Create & Manage Posts (CRUD with Prisma + MongoDB)
+* 💬 Real-time Chat powered by Socket.IO
+* 👥 Follow / Unfollow System with live updates
+* 📊 Clean API & Service Layer design for scalability
+* 🛠️ TypeScript-first approach for safety & clarity
+* ⚡ Next.js App Router with server & client components
 
-```bash
+🛠️ Tech Stack
+* Frontend & Backend → Next.js 14 + TypeScript
+* Database → MongoDB with Prisma ORM
+* Real-time Communication → Socket.IO
+* Authentication → JWT + HTTP-only cookies
+* Deployment → Render
+
+
+⚡ Getting Started
+1️⃣ Clone the repo
+git clone https://github.com/Ayush-3012/codecircle.git
+cd codecircle
+
+2️⃣ Install dependencies
+npm install
+
+3️⃣ Setup environment variables
+
+Create a .env file in the root directory:
+
+DATABASE_URL="your-mongodb-url"
+JWT_SECRET="your-secret-key"
+NEXT_PUBLIC_SOCKET_URL="http://localhost:5000"
+
+4️⃣ Run database migrations
+npx prisma migrate dev
+
+5️⃣ Start the dev server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Server will be available at:
+👉 http://localhost:3000
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+🧠 Learnings from this Project
 
-## Learn More
+Gained hands-on experience in Next.js + TypeScript full-stack development
 
-To learn more about Next.js, take a look at the following resources:
+Learned to integrate Prisma with MongoDB effectively
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Explored real-time communication using Socket.IO
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Understood token verification, cookies & authentication flows deeply
 
-## Deploy on Vercel
+Improved understanding of structuring scalable full-stack apps
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+📜 License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is licensed under the MIT License.
