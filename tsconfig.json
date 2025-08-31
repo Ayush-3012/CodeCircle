@@ -5,7 +5,8 @@
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
-    "noEmit": true,
+    "noEmit": false,
+    "outDir": "dist",
     "esModuleInterop": true,
     "module": "commonjs",
     "moduleResolution": "node",
@@ -23,6 +24,7 @@
     }
   },
   "include": [
+    "server.ts",
     "next-env.d.ts",
     "**/*.ts",
     "**.ts",
