@@ -13,7 +13,7 @@ export const initSocket = (server: HTTPServer) => {
   io = new Server(server, {
     path: "/api/socket/io",
     cors: {
-      origin: "http://localhost:3000",
+      origin: ["http://localhost:3000", "https://codecircle-iozo.onrender.com"],
       methods: ["GET", "POST"],
     },
   });
