@@ -22,6 +22,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${rubik.variable} custom-font`}>
+      <head>
+        <link rel="icon" type="image/x-icon" href="/logo.png" />
+      </head>
       <body suppressHydrationWarning className="overflow-x-hidden">
         <AppProvider>
           <div className="flex flex-col md:flex-row h-screen">
