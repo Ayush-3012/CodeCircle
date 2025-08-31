@@ -7,6 +7,9 @@ export async function deletePost(id: string, userId: string) {
 
   if (post.authorId !== userId) return { forbidden: true };
 
+  await prisma.comment.deleteMany({
+    where: { postId: id },
+  });
   await prisma.post.delete({ where: { id } });
   return { success: true };
 }
