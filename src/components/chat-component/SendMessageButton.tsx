@@ -1,6 +1,5 @@
 "use client";
 
-import Loader from "@/partials/Loader";
 import { createOrGetConversation } from "../../lib/client/services/chatService";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -23,13 +22,11 @@ const SendMessageButton = ({ targetUserId }: { targetUserId: string }) => {
     }
   };
 
-  if(loading) return <Loader />
-
   return (
     <button
       onClick={handleClick}
       disabled={loading}
-      className="cursor-pointer"
+      className="cursor-pointer max-sm:px-3 max-sm:py-1.5 hover-gradient px-4 py-2 rounded-md text-primary   font-semibold max-sm:text-sm shadow-[0_0_5px] shadow-black"
     >
       {loading ? "Starting..." : "Send Message"}
     </button>

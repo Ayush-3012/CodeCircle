@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import SendMessageButton from "@/components/chat-component/SendMessageButton";
 import FollowSection from "@/components/follow-component/FollowSection";
 import { getAllPostsByUser } from "@/lib/backend/services/postServices/getAllPostsByUser";
@@ -85,11 +84,16 @@ export default async function ProfilePage({
                 </Link>
               )}
             </div>
-            <div className="hover:scale-110 max-sm:px-3 max-sm:py-1.5 px-4 py-2 text-primary hover-gradient duration-150 font-semibold max-sm:text-sm transition-all rounded-md shadow-[0_0_5px] shadow-black  cursor-pointer">
+            <div className="hover:scale-110 duration-150 transition-all">
               {currentUserId !== profileId ? (
                 <SendMessageButton targetUserId={profileId} />
               ) : (
-                <Link href={`/edit-profile`}>Edit Profile</Link>
+                <Link
+                  href={`/edit-profile`}
+                  className="cursor-pointer max-sm:px-3 max-sm:py-1.5 hover-gradient px-4 py-2 rounded-md text-primary   font-semibold max-sm:text-sm shadow-[0_0_5px] shadow-black"
+                >
+                  Edit Profile
+                </Link>
               )}
             </div>
           </div>
